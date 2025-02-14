@@ -13,7 +13,7 @@ class ConfigView extends StatelessWidget {
         title: const Text('ConfigView'),
       ),
       body: Center(
-        child: Text("${appLocalizations.config_view_title}"),
+        child: Text(appLocalizations.config_view_title),
       ),
     );
   }
