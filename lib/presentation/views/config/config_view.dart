@@ -10,7 +10,7 @@ class ConfigView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ConfigView'),
+        title: Text(appLocalizations.config_view_title),
       ),
       body: Center(
         child: Text(appLocalizations.config_view_title),

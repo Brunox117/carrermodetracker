@@ -30,6 +30,8 @@ class TeamGeneralWidget extends StatelessWidget {
               bottom: 20,
               child: Center(
                 child: Text(
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 19),
                   nombreEquipo,
                 ),
               ))
