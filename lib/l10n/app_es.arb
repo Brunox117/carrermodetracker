@@ -1,4 +1,7 @@
 {
+  "@@locale": "es",
   "config_view_title": "Configuración",
-  "home_view_title": "Equipos"
+  "@config_view_title": {},
+  "home_view_title": "Equipos",
+  "@home_view_title": {}
 }

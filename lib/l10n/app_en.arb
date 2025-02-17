@@ -1,4 +1,7 @@
 {
+  "@@locale": "en",
   "config_view_title": "Settings",
-  "home_view_title": "Teams"
+  "@config_view_title": {},
+  "home_view_title": "Teams",
+  "@home_view_title": {}
 }
