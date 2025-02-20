@@ -18,7 +18,7 @@ class TeamOverview extends StatelessWidget {
         child: Table(
           columnWidths: const {
             0: FlexColumnWidth(1.1), // Posición
-            1: FlexColumnWidth(2), // Nombre (más ancho)
+            1: FlexColumnWidth(2), // Nombre 
             2: FlexColumnWidth(1), // PJ
             3: FlexColumnWidth(1), // Goles
             4: FlexColumnWidth(1), // As.

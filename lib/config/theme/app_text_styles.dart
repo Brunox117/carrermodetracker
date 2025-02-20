@@ -10,5 +10,6 @@ extension TableTextTheme on TextTheme {
   TextStyle get tableBodyText => const TextStyle(
         fontSize: 14,
         height: 1.4,
+        overflow: TextOverflow.ellipsis
       );
 }
