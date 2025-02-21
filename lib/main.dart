@@ -5,11 +5,9 @@ import 'package:carrermodetracker/presentation/providers/config/theme_provider.d
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
   runApp(const ProviderScope(
     child: MainApp(),
   ));
