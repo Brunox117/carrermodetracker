@@ -1,7 +1,7 @@
 import 'package:carrermodetracker/presentation/screens/home/home_screen.dart';
 import 'package:carrermodetracker/presentation/views/config/config_view.dart';
 import 'package:carrermodetracker/presentation/views/home/home_view.dart';
-import 'package:carrermodetracker/presentation/views/team/team_overview.dart';
+import 'package:carrermodetracker/presentation/views/team/team_overview_view.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(initialLocation: '/', routes: [
@@ -20,7 +20,7 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                   path: '/teamoverview/:id',
                   builder: (context, state) {
                     final id = state.pathParameters['id'] ?? '';
-                    return TeamOverview(id: id);
+                    return TeamOverviewView(id: id);
                   },
                 )
               ])
