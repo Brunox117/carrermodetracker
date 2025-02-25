@@ -1,9 +1,15 @@
+import 'package:isar/isar.dart';
+
+part 'team.g.dart';
+
+@collection
 class Team {
-  final String name;
+  Id id = Isar.autoIncrement;
+  String name;
 
-  final String acronimos;
+  String acronimos;
 
-  final String logoURL;
+  String logoURL;
 
   Team({
     required this.name,
