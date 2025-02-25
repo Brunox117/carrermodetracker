@@ -1,4 +1,4 @@
-import 'package:carrermodetracker/presentation/widgets/home/add_team_view.dart';
+import 'package:carrermodetracker/presentation/widgets/home/add_team_button.dart';
 import 'package:carrermodetracker/presentation/widgets/home/team_general_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
