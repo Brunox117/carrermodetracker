@@ -14,6 +14,6 @@ class Team {
   Team({
     required this.name,
     required this.acronimos,
-    required this.logoURL,
+    this.logoURL = '',
   });
 }

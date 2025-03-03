@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
@@ -38,6 +39,15 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
   String acronimos = '';
   String logoURL = '';
 
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      final team = Team(name: name, acronimos: acronimos, logoURL: logoURL);
+      _formKey.currentState!.reset();
+      submitTeam(team);
+      context.go('/');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
@@ -63,7 +73,7 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
               ),
               CustomFormField(
                 hint: "Acrónimo (FCB, RM, BVB)",
-                onChanged: (value) => name = value,
+                onChanged: (value) => acronimos = value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'El acrónimo es requerido';
@@ -121,7 +131,9 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
               ),
               Center(
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _submitForm();
+                  },
                   icon: Icon(
                     Icons.save,
                     size: 70,
