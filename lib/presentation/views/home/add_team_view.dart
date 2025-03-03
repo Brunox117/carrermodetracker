@@ -3,6 +3,8 @@ import 'package:carrermodetracker/presentation/providers/teams/teams_provider.da
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class AddTeamView extends StatelessWidget {
   const AddTeamView({super.key});
@@ -29,6 +31,8 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
   }
 
   final _formKey = GlobalKey<FormState>();
+
+  final imagePicker = ImagePicker();
 
   String name = '';
   String acronimos = '';
@@ -67,12 +71,59 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 30),
+              const Center(
+                child: Text("Agrega una imagen o toma una foto"),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      final XFile? image = await imagePicker.pickImage(
+                          source: ImageSource.camera);
+                      if (image != null) {
+                        setState(() {
+                          logoURL = image.path;
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.camera_enhance, size: 80),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      final XFile? image = await imagePicker.pickImage(
+                          source: ImageSource.gallery);
+                      if (image != null) {
+                        setState(() {
+                          logoURL = image.path;
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.image, size: 80),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              (logoURL.isNotEmpty)
+                  ? SizedBox(
+                      height: 200,
+                      child: Image.file(
+                        File(logoURL),
+                        fit: BoxFit.contain,
+                      ),
+                    )
+                  : const SizedBox(
+                      height: 20,
+                    ),
+              const SizedBox(
+                height: 20,
+              ),
               Center(
                 child: IconButton(
                   onPressed: () {},
                   icon: Icon(
-                    Icons.add_circle_outline_rounded,
+                    Icons.save,
                     size: 70,
                     color: colors.secondary,
                   ),
