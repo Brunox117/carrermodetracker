@@ -1,11 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class TeamGeneralWidget extends StatelessWidget {
   final String nombreEquipo;
   final String id;
+  final String logoURL;
   const TeamGeneralWidget(
-      {super.key, required this.nombreEquipo, required this.id});
+      {super.key,
+      required this.nombreEquipo,
+      required this.id,
+      required this.logoURL});
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +25,28 @@ class TeamGeneralWidget extends StatelessWidget {
         child: Stack(
           children: [
             const SizedBox.expand(),
-            const Positioned(
+            Positioned(
               left: 0,
               right: 0,
-              top: 0,
-              bottom: 30,
-              child: Icon(
-                size: 100,
-                Icons.circle,
-              ),
+              top: 10,
+              bottom: 50,
+              child: (logoURL.isNotEmpty)
+                  ? SizedBox(
+                    height: 100,
+                    child: Image.file(
+                        File(logoURL),
+                        fit: BoxFit.contain,
+                      ),
+                  )
+                  : const Icon(
+                      size: 100,
+                      Icons.circle,
+                    ),
             ),
             Positioned(
                 left: 0,
                 right: 0,
-                bottom: 20,
+                bottom: 10,
                 child: Center(
                   child: Text(
                     style: const TextStyle(
