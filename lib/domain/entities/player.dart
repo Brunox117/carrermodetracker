@@ -7,6 +7,9 @@ part 'player.g.dart';
 class Player {
   Id id = Isar.autoIncrement;
   String name;
+  String number;
+  String position;
+  String imageURL;
   final int teamId;
 
   // Link para acceder al equipo relacionado
@@ -15,5 +18,8 @@ class Player {
   Player({
     required this.name,
     required this.teamId,
+    required this.number,
+    required this.position,
+    this.imageURL = '',
   });
 }
