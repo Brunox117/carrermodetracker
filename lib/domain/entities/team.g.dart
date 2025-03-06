@@ -39,7 +39,15 @@ const TeamSchema = CollectionSchema(
   deserializeProp: _teamDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'players': LinkSchema(
+      id: 5142083483174173681,
+      name: r'players',
+      target: r'Player',
+      single: false,
+      linkName: r'team',
+    )
+  },
   embeddedSchemas: {},
   getId: _teamGetId,
   getLinks: _teamGetLinks,
@@ -78,7 +86,7 @@ Team _teamDeserialize(
 ) {
   final object = Team(
     acronimos: reader.readString(offsets[0]),
-    logoURL: reader.readString(offsets[1]),
+    logoURL: reader.readStringOrNull(offsets[1]) ?? '',
     name: reader.readString(offsets[2]),
   );
   object.id = id;
@@ -95,7 +103,7 @@ P _teamDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 2:
       return (reader.readString(offset)) as P;
     default:
@@ -108,11 +116,12 @@ Id _teamGetId(Team object) {
 }
 
 List<IsarLinkBase<dynamic>> _teamGetLinks(Team object) {
-  return [];
+  return [object.players];
 }
 
 void _teamAttach(IsarCollection<dynamic> col, Id id, Team object) {
   object.id = id;
+  object.players.attach(col, col.isar.collection<Player>(), r'players', id);
 }
 
 extension TeamQueryWhereSort on QueryBuilder<Team, Team, QWhere> {
@@ -632,7 +641,63 @@ extension TeamQueryFilter on QueryBuilder<Team, Team, QFilterCondition> {
 
 extension TeamQueryObject on QueryBuilder<Team, Team, QFilterCondition> {}
 
-extension TeamQueryLinks on QueryBuilder<Team, Team, QFilterCondition> {}
+extension TeamQueryLinks on QueryBuilder<Team, Team, QFilterCondition> {
+  QueryBuilder<Team, Team, QAfterFilterCondition> players(
+      FilterQuery<Player> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'players');
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> playersLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'players', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> playersIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'players', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> playersIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'players', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> playersLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'players', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> playersLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'players', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> playersLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'players', lower, includeLower, upper, includeUpper);
+    });
+  }
+}
 
 extension TeamQuerySortBy on QueryBuilder<Team, Team, QSortBy> {
   QueryBuilder<Team, Team, QAfterSortBy> sortByAcronimos() {

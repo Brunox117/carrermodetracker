@@ -1,3 +1,4 @@
+import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:isar/isar.dart';
 
 part 'team.g.dart';
@@ -10,6 +11,10 @@ class Team {
   String acronimos;
 
   String logoURL;
+
+  // Backlink para obtener los jugadores del equipo
+  @Backlink(to: 'team')
+  final players = IsarLinks<Player>();
 
   Team({
     required this.name,
