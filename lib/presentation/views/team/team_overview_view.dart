@@ -24,7 +24,7 @@ class TeamOverviewView extends StatelessWidget {
         body: TabBarView(
           children: <Widget>[
             TeamOverview(id: id),
-            const RegisterMatchView(),
+            RegisterMatchView(id: id),
           ],
         ),
       ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterMatchView extends StatelessWidget {
-  const RegisterMatchView({super.key});
+  final String id;
+  const RegisterMatchView({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,9 @@ class RegisterMatchView extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           AddButton(
-            onPressed: () {},
+            onPressed: () {
+              context.push('/teamoverview/$id/addplayerview');
+            },
             text: 'Agregar jugador',
           ),
           AddButton(

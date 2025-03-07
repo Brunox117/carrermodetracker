@@ -16,7 +16,7 @@ class TeamGeneralWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.push('/teamoverview/${1}'),
+      onTap: () => context.push('/teamoverview/$id'),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
@@ -32,12 +32,12 @@ class TeamGeneralWidget extends StatelessWidget {
               bottom: 50,
               child: (logoURL.isNotEmpty)
                   ? SizedBox(
-                    height: 100,
-                    child: Image.file(
+                      height: 100,
+                      child: Image.file(
                         File(logoURL),
                         fit: BoxFit.contain,
                       ),
-                  )
+                    )
                   : const Icon(
                       size: 100,
                       Icons.circle,
