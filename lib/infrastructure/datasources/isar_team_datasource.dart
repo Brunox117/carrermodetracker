@@ -1,22 +1,13 @@
+import 'package:carrermodetracker/config/helpers/open_db.dart';
 import 'package:carrermodetracker/domain/datasources/team_datasource.dart';
 import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
 
 class IsarTeamDatasource extends TeamDatasource {
   late Future<Isar> db;
   IsarTeamDatasource() {
-    db = openDB();
+    db = openDB(TeamSchema);
   }
-
-  Future<Isar> openDB() async {
-    final dir = await getApplicationDocumentsDirectory();
-    if (Isar.instanceNames.isEmpty) {
-      return await Isar.open([TeamSchema], directory: dir.path);
-    }
-    return Future.value(Isar.getInstance());
-  }
-
   @override
   Future<bool> deleteTeam(Id id) async {
     final isar = await db;
