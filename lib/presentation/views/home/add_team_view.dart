@@ -1,11 +1,10 @@
 import 'dart:io';
 
+import 'package:carrermodetracker/config/helpers/save_image_in_localdb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 
 import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
@@ -99,7 +98,7 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
                       );
 
                       if (image != null) {
-                        await saveImageInLocalStorage(image);
+                        await saveImageInLocalStorage(image, 'teams');
                       }
                     },
                     icon: const Icon(Icons.camera_enhance, size: 80),
@@ -109,7 +108,11 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
                       final XFile? image = await imagePicker.pickImage(
                           source: ImageSource.gallery);
                       if (image != null) {
-                        saveImageInLocalStorage(image);
+                        String url =
+                            await saveImageInLocalStorage(image, 'teams');
+                        setState(() {
+                          logoURL = url;
+                        });
                       }
                     },
                     icon: const Icon(Icons.image, size: 80),
@@ -146,17 +149,5 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
             ],
           )),
     );
-  }
-
-  Future<void> saveImageInLocalStorage(XFile image) async {
-    final Directory appDir =
-        await getApplicationDocumentsDirectory();
-    String fileName = path.basename(image.path);
-    File permanentFile = File('${appDir.path}/$fileName');
-    final bytes = await File(image.path).readAsBytes();
-    await permanentFile.writeAsBytes(bytes);
-    setState(() {
-      logoURL = permanentFile.path;
-    });
   }
 }
