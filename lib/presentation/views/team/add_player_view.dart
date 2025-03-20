@@ -61,6 +61,21 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
                   return null;
                 },
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomFormField(
+                isTopField: false,
+                hint: "Número del jugador",
+                keyboardType: TextInputType.number,
+                onChanged: (value) => name = value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El número es requerido';
+                  }
+                  return null;
+                },
+              ),
             ],
           )),
     );
