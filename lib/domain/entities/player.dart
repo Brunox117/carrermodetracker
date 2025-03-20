@@ -10,14 +10,12 @@ class Player {
   String number;
   String position;
   String imageURL;
-  final int teamId;
 
   // Link para acceder al equipo relacionado
   final team = IsarLink<Team>();
 
   Player({
     required this.name,
-    required this.teamId,
     required this.number,
     required this.position,
     this.imageURL = '',

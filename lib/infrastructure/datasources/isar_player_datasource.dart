@@ -1,6 +1,7 @@
 import 'package:carrermodetracker/config/helpers/open_db.dart';
 import 'package:carrermodetracker/domain/datasources/player_datasource.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
+import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:isar/isar.dart';
 
 class IsarPlayerDatasource extends PlayerDatasource {
@@ -33,14 +34,19 @@ class IsarPlayerDatasource extends PlayerDatasource {
   @override
   Future<List<Player>> getPlayersByTeam(Id teamId) async {
     final isar = await db;
-    final players = await isar.players.filter().teamIdEqualTo(teamId).findAll();
-    return players;
+    return await isar.players
+        .filter()
+        .team((q) => q.idEqualTo(teamId))
+        .findAll();
   }
 
   @override
   Future<bool> savePlayer(Player player) async {
     final isar = await db;
-    isar.writeTxnSync(() => isar.players.putSync(player));
+    await isar.writeTxn(() async {
+      await isar.players.put(player);
+      await player.team.save();
+    });
     return true;
   }
 

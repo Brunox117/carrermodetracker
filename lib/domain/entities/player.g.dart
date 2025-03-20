@@ -36,11 +36,6 @@ const PlayerSchema = CollectionSchema(
       id: 3,
       name: r'position',
       type: IsarType.string,
-    ),
-    r'teamId': PropertySchema(
-      id: 4,
-      name: r'teamId',
-      type: IsarType.long,
     )
   },
   estimateSize: _playerEstimateSize,
@@ -87,7 +82,6 @@ void _playerSerialize(
   writer.writeString(offsets[1], object.name);
   writer.writeString(offsets[2], object.number);
   writer.writeString(offsets[3], object.position);
-  writer.writeLong(offsets[4], object.teamId);
 }
 
 Player _playerDeserialize(
@@ -101,7 +95,6 @@ Player _playerDeserialize(
     name: reader.readString(offsets[1]),
     number: reader.readString(offsets[2]),
     position: reader.readString(offsets[3]),
-    teamId: reader.readLong(offsets[4]),
   );
   object.id = id;
   return object;
@@ -122,8 +115,6 @@ P _playerDeserializeProp<P>(
       return (reader.readString(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
-    case 4:
-      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -788,58 +779,6 @@ extension PlayerQueryFilter on QueryBuilder<Player, Player, QFilterCondition> {
       ));
     });
   }
-
-  QueryBuilder<Player, Player, QAfterFilterCondition> teamIdEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'teamId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Player, Player, QAfterFilterCondition> teamIdGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'teamId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Player, Player, QAfterFilterCondition> teamIdLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'teamId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Player, Player, QAfterFilterCondition> teamIdBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'teamId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
 }
 
 extension PlayerQueryObject on QueryBuilder<Player, Player, QFilterCondition> {}
@@ -907,18 +846,6 @@ extension PlayerQuerySortBy on QueryBuilder<Player, Player, QSortBy> {
       return query.addSortBy(r'position', Sort.desc);
     });
   }
-
-  QueryBuilder<Player, Player, QAfterSortBy> sortByTeamId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'teamId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Player, Player, QAfterSortBy> sortByTeamIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'teamId', Sort.desc);
-    });
-  }
 }
 
 extension PlayerQuerySortThenBy on QueryBuilder<Player, Player, QSortThenBy> {
@@ -981,18 +908,6 @@ extension PlayerQuerySortThenBy on QueryBuilder<Player, Player, QSortThenBy> {
       return query.addSortBy(r'position', Sort.desc);
     });
   }
-
-  QueryBuilder<Player, Player, QAfterSortBy> thenByTeamId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'teamId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Player, Player, QAfterSortBy> thenByTeamIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'teamId', Sort.desc);
-    });
-  }
 }
 
 extension PlayerQueryWhereDistinct on QueryBuilder<Player, Player, QDistinct> {
@@ -1021,12 +936,6 @@ extension PlayerQueryWhereDistinct on QueryBuilder<Player, Player, QDistinct> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'position', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Player, Player, QDistinct> distinctByTeamId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'teamId');
     });
   }
 }
@@ -1059,12 +968,6 @@ extension PlayerQueryProperty on QueryBuilder<Player, Player, QQueryProperty> {
   QueryBuilder<Player, String, QQueryOperations> positionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'position');
-    });
-  }
-
-  QueryBuilder<Player, int, QQueryOperations> teamIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'teamId');
     });
   }
 }

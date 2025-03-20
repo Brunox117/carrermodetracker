@@ -6,6 +6,11 @@ import 'package:path/path.dart' as path;
 
 Future<String> saveImageInLocalStorage(XFile image, String directory) async {
   final Directory appDir = await getApplicationDocumentsDirectory();
+  // Crea directorios padres si es necesario
+  final Directory targetDir = Directory('${appDir.path}/$directory');
+  if (!await targetDir.exists()) {
+    await targetDir.create(recursive: true);
+  }
   String fileName = path.basename(image.path);
   File permanentFile = File('${appDir.path}/$directory/$fileName');
   final bytes = await File(image.path).readAsBytes();
