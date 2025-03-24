@@ -1,3 +1,4 @@
+import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:isar/isar.dart';
 
@@ -11,8 +12,9 @@ class Player {
   String position;
   String imageURL;
 
-  // Link para acceder al equipo relacionado
   final team = IsarLink<Team>();
+  @Backlink(to: 'player')
+  final stats = IsarLinks<Stats>();
 
   Player({
     required this.name,

@@ -50,6 +50,13 @@ const PlayerSchema = CollectionSchema(
       name: r'team',
       target: r'Team',
       single: true,
+    ),
+    r'stats': LinkSchema(
+      id: 7246260294797136728,
+      name: r'stats',
+      target: r'Stats',
+      single: false,
+      linkName: r'player',
     )
   },
   embeddedSchemas: {},
@@ -125,12 +132,13 @@ Id _playerGetId(Player object) {
 }
 
 List<IsarLinkBase<dynamic>> _playerGetLinks(Player object) {
-  return [object.team];
+  return [object.team, object.stats];
 }
 
 void _playerAttach(IsarCollection<dynamic> col, Id id, Player object) {
   object.id = id;
   object.team.attach(col, col.isar.collection<Team>(), r'team', id);
+  object.stats.attach(col, col.isar.collection<Stats>(), r'stats', id);
 }
 
 extension PlayerQueryWhereSort on QueryBuilder<Player, Player, QWhere> {
@@ -794,6 +802,62 @@ extension PlayerQueryLinks on QueryBuilder<Player, Player, QFilterCondition> {
   QueryBuilder<Player, Player, QAfterFilterCondition> teamIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'team', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> stats(
+      FilterQuery<Stats> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'stats');
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> statsLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stats', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> statsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stats', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> statsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stats', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> statsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stats', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> statsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stats', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> statsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'stats', lower, includeLower, upper, includeUpper);
     });
   }
 }
