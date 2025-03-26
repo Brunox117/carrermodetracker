@@ -9,7 +9,7 @@ import 'package:isar/isar.dart';
 class IsarStatsDatasource extends StatsDatasource {
   late Future<Isar> db;
   IsarStatsDatasource() {
-    db = openDB(StatsSchema);
+    db = openDB([StatsSchema]);
   }
 
   @override

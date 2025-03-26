@@ -7,7 +7,7 @@ import 'package:isar/isar.dart';
 class IsarPlayerDatasource extends PlayerDatasource {
   late Future<Isar> db;
   IsarPlayerDatasource() {
-    db = openDB(PlayerSchema);
+    db = openDB([PlayerSchema]);
   }
 
   @override

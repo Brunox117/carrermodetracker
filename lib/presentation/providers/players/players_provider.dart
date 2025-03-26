@@ -28,12 +28,23 @@ class StoragePlayersNotifier extends StateNotifier<Map<int, Player>> {
   }
 
   Future<void> addPlayer(Player player) async {
-    await playerStorageRepository.savePlayer(player);
+    await playerStorageRepository.savePlayer(player);    
     state = {...state, player.id: player};
   }
 
   Future<Player> getPlayer(int id) async {
     Player player = await playerStorageRepository.getPlayer(id);
+    state = {...state, player.id: player};
     return player;
+  }
+
+  Future<void> updatePlayer(int id, Player player) async {
+    await playerStorageRepository.updatePlayer(id, player);
+    state = {...state, player.id: player};
+  }
+
+  Future<void> deletePlayer(int id) async {
+    await playerStorageRepository.deletePlayer(id);
+    state = {...state}..remove(id);
   }
 }

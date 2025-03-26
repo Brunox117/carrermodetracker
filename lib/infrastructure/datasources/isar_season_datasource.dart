@@ -6,7 +6,7 @@ import 'package:isar/isar.dart';
 class IsarSeasonDatasource extends SeasonDatasource {
   late Future<Isar> db;
   IsarSeasonDatasource() {
-    db = openDB(SeasonSchema);
+    db = openDB([SeasonSchema]);
   }
 
   @override

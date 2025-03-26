@@ -6,7 +6,7 @@ import 'package:isar/isar.dart';
 class IsarTournamentDatasource extends TournamentDatasource {
   late Future<Isar> db;
   IsarTournamentDatasource() {
-    db = openDB(TournamentSchema);
+    db = openDB([TournamentSchema]);
   }
   @override
   Future<bool> deleteTournament(Id id) async {
