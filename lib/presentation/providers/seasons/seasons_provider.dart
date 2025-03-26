@@ -7,13 +7,39 @@ class SeasonStorageNotifier extends StateNotifier<Map<int, Season>> {
   final SeasonRepository seasonsStorageRepository;
   SeasonStorageNotifier({required this.seasonsStorageRepository}) : super({});
 
-  //   Future<bool> saveSeason(Season season);
+  Future<void> saveSeason(Season season) async {
+    await seasonsStorageRepository.saveSeason(season);
+    state = {...state, season.id: season};
+  }
 
-  // Future<Season> getSeason(Id id);
+  Future<Season> getSeason(int id) async {
+    if (state.containsKey(id)) {
+      return state[id]!;
+    }
+    Season season = await seasonsStorageRepository.getSeason(id);
+    state = {...state, season.id: season};
+    return season;
+  }
 
-  // Future<List<Season>> getSeasons({int limit = 10, offset = 0});
+  Future<List<Season>> getSeasons() async {
+    final seasons =
+        await seasonsStorageRepository.getSeasons(offset: page * 10, limit: 10);
+    page++;
+    final tempSeasonsMap = <int, Season>{};
+    for (final season in seasons) {
+      tempSeasonsMap[season.id] = season;
+    }
+    state = {...state, ...tempSeasonsMap};
+    return seasons;
+  }
 
-  // Future<bool> deleteSeason(Id id);
+  Future<void> deleteSeason(int id) async {
+    await seasonsStorageRepository.deleteSeason(id);
+    state = {...state}..remove(id);
+  }
 
-  // Future<bool> updateSeason(Id id, Season season);
+  Future<void> updateSeason(int id, Season season) async {
+    await seasonsStorageRepository.updateSeason(id, season);
+    state = {...state, season.id: season};
+  }
 }
