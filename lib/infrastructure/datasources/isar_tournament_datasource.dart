@@ -9,32 +9,51 @@ class IsarTournamentDatasource extends TournamentDatasource {
     db = openDB(TournamentSchema);
   }
   @override
-  Future<bool> deleteTournament(Id id) {
-    // TODO: implement deleteTournament
-    throw UnimplementedError();
+  Future<bool> deleteTournament(Id id) async {
+    final isar = await db;
+    final tournament =
+        await isar.tournaments.filter().idEqualTo(id).findFirst();
+    if (tournament != null) {
+      isar.writeTxnSync(() => isar.tournaments.deleteSync(id));
+      return true;
+    }
+    return false;
   }
 
   @override
-  Future<Tournament> getTournament(Id id) {
-    // TODO: implement getTournament
-    throw UnimplementedError();
+  Future<Tournament> getTournament(Id id) async {
+    final isar = await db;
+    final tournament = await isar.tournaments.get(id);
+    if (tournament != null) {
+      return tournament;
+    }
+    throw 'El torneo no existe';
   }
 
   @override
-  Future<List<Tournament>> getTournaments({int limit = 10, offset = 0}) {
-    // TODO: implement getTournaments
-    throw UnimplementedError();
+  Future<List<Tournament>> getTournaments({int limit = 10, offset = 0}) async {
+    final isar = await db;
+    return await isar.tournaments.where().offset(offset).limit(limit).findAll();
   }
 
   @override
-  Future<bool> saveTournament(Tournament tournament) {
-    // TODO: implement saveTournament
-    throw UnimplementedError();
+  Future<bool> saveTournament(Tournament tournament) async {
+    final isar = await db;
+    isar.writeTxn(() async {
+      await isar.tournaments.put(tournament);
+      await tournament.stats.save();
+    });
+    return true;
   }
 
   @override
-  Future<bool> updateTournament(Id id, Tournament tournament) {
-    // TODO: implement updateTournament
-    throw UnimplementedError();
+  Future<bool> updateTournament(Id id, Tournament tournament) async {
+    final isar = await db;
+    final originalTournament = await isar.tournaments.get(id);
+    if (originalTournament != null) {
+      originalTournament.logoURL = tournament.logoURL;
+      originalTournament.name = tournament.name;
+    }
+    return false;
   }
 }
