@@ -45,6 +45,7 @@ class IsarPlayerDatasource extends PlayerDatasource {
     final isar = await db;
     await isar.writeTxn(() async {
       await isar.players.put(player);
+      //UPDATE RELATION
       await player.team.save();
     });
     return true;

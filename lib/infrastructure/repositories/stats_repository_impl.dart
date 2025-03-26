@@ -13,11 +13,6 @@ class StatsRepositoryImpl extends StatsRepository {
   }
 
   @override
-  Future<List<Stats>> getALlStats({int limit = 10, offset = 0}) {
-    return datasource.getALlStats(limit: limit, offset: offset);
-  }
-
-  @override
   Future<Stats> getStats(Id id) {
     return datasource.getStats(id);
   }
@@ -30,5 +25,24 @@ class StatsRepositoryImpl extends StatsRepository {
   @override
   Future<bool> updateStats(Id id, Stats stats) {
     return datasource.updateStats(id, stats);
+  }
+
+  @override
+  Future<List<Stats>> getStatsByPlayer(
+      {int limit = 10, offset = 0, required Id id}) {
+    return datasource.getStatsByPlayer(limit: limit, offset: offset, id: id);
+  }
+
+  @override
+  Future<List<Stats>> getStatsBySeason(
+      {int limit = 10, offset = 0, required Id id}) {
+    return datasource.getStatsBySeason(id: id, limit: limit, offset: offset);
+  }
+
+  @override
+  Future<List<Stats>> getStatsByTournament(
+      {int limit = 10, offset = 0, required Id id}) {
+    return datasource.getStatsByTournament(
+        id: id, limit: limit, offset: offset);
   }
 }

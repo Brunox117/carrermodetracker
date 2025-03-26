@@ -6,7 +6,14 @@ abstract class StatsRepository {
 
   Future<Stats> getStats(Id id);
 
-  Future<List<Stats>> getALlStats({int limit = 10, offset = 0});
+  Future<List<Stats>> getStatsByTournament(
+      {int limit = 10, offset = 0, required Id id});
+
+  Future<List<Stats>> getStatsBySeason(
+      {int limit = 10, offset = 0, required Id id});
+
+  Future<List<Stats>> getStatsByPlayer(
+      {int limit = 10, offset = 0, required Id id});
 
   Future<bool> deleteStats(Id id);
 

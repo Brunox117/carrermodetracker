@@ -1,6 +1,9 @@
 import 'package:carrermodetracker/config/helpers/open_db.dart';
 import 'package:carrermodetracker/domain/datasources/stats_datasource.dart';
+import 'package:carrermodetracker/domain/entities/player.dart';
+import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
+import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:isar/isar.dart';
 
 class IsarStatsDatasource extends StatsDatasource {
@@ -10,32 +13,79 @@ class IsarStatsDatasource extends StatsDatasource {
   }
 
   @override
-  Future<bool> deleteStats(Id id) {
-    // TODO: implement deleteStats
-    throw UnimplementedError();
+  Future<bool> deleteStats(Id id) async {
+    final isar = await db;
+    final stats = await isar.stats.filter().idEqualTo(id).findFirst();
+    if (stats != null) {
+      isar.writeTxnSync(() => isar.stats.deleteSync(id));
+      return true;
+    }
+    return false;
   }
 
   @override
-  Future<List<Stats>> getALlStats({int limit = 10, offset = 0}) {
-    // TODO: implement getALlStats
-    throw UnimplementedError();
+  Future<Stats> getStats(Id id) async {
+    final isar = await db;
+    final stat = await isar.stats.get(id);
+    if (stat != null) {
+      return stat;
+    }
+    throw 'Stat no existe';
   }
 
   @override
-  Future<Stats> getStats(Id id) {
-    // TODO: implement getStats
-    throw UnimplementedError();
+  Future<bool> saveStats(Stats stats) async {
+    final isar = await db;
+    await isar.writeTxn(() async {
+      await isar.stats.put(stats);
+      //UPDATE RELATIONS
+      await stats.player.save();
+      await stats.season.save();
+      await stats.tournament.save();
+    });
+    return true;
   }
 
   @override
-  Future<bool> saveStats(Stats stats) {
-    // TODO: implement saveStats
-    throw UnimplementedError();
+  Future<bool> updateStats(Id id, Stats stats) async {
+    final isar = await db;
+    final originalStat = await isar.stats.get(id);
+    if (originalStat == null) return false;
+    originalStat.assists = stats.assists;
+    originalStat.goals = stats.goals;
+    originalStat.playedMatches = stats.playedMatches;
+    isar.writeTxnSync(() => isar.stats.putSync(originalStat));
+    return true;
   }
 
   @override
-  Future<bool> updateStats(Id id, Stats stats) {
-    // TODO: implement updateStats
-    throw UnimplementedError();
+  Future<List<Stats>> getStatsByPlayer(
+      {int limit = 10, offset = 0, required Id id}) async {
+    final isar = await db;
+    return await isar.stats.filter().player((q) => q.idEqualTo(id)).findAll();
+  }
+
+  @override
+  Future<List<Stats>> getStatsBySeason(
+      {int limit = 10, offset = 0, required Id id}) async {
+    final isar = await db;
+    return await isar.stats
+        .filter()
+        .season(
+          (q) => q.idEqualTo(id),
+        )
+        .findAll();
+  }
+
+  @override
+  Future<List<Stats>> getStatsByTournament(
+      {int limit = 10, offset = 0, required Id id}) async {
+    final isar = await db;
+    return await isar.stats
+        .filter()
+        .tournament(
+          (q) => q.idEqualTo(id),
+        )
+        .findAll();
   }
 }
