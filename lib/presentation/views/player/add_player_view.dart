@@ -1,10 +1,9 @@
-import 'dart:io';
-
-import 'package:carrermodetracker/config/helpers/save_image_in_localdb.dart';
 import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:carrermodetracker/domain/enums/positions.dart';
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
+import 'package:carrermodetracker/presentation/widgets/forms/add_image_widget.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
+import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -46,18 +45,20 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
           .read(teamsProvider.notifier)
           .getTeam(int.parse(widget.teamId));
 
-      final player = Player(
+      Player player = Player(
           name: name,
           number: number,
           position: position.name.toString().toUpperCase())
         ..team.value = team;
+      if (imageURL.isNotEmpty) {
+        player.imageURL = imageURL;
+      }
       _formKey.currentState!.reset();
       submitPlayer(player);
     }
   }
 
   final _formKey = GlobalKey<FormState>();
-  final imagePicker = ImagePicker();
 
   String name = '';
   String number = '';
@@ -66,8 +67,6 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Form(
@@ -121,67 +120,17 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
               const SizedBox(
                 height: 10,
               ),
-              const Center(
-                child: Text("Agrega una imagen o toma una foto"),
+              AddImageWidget(
+                hintText: 'Agrega una imagen o sube una foto',
+                documentsFolder: 'players',
+                onImageUploaded: (url) {
+                  setState(() => imageURL = url);
+                },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () async {
-                      final XFile? image = await imagePicker.pickImage(
-                        source: ImageSource.gallery,
-                      );
-
-                      if (image != null) {
-                        await saveImageInLocalStorage(image, 'teams');
-                      }
-                    },
-                    icon: const Icon(Icons.camera_enhance, size: 80),
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      final XFile? image = await imagePicker.pickImage(
-                          source: ImageSource.gallery);
-                      if (image != null) {
-                        String url =
-                            await saveImageInLocalStorage(image, 'players');
-                        setState(() {
-                          imageURL = url;
-                        });
-                      }
-                    },
-                    icon: const Icon(Icons.image, size: 80),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              (imageURL.isNotEmpty)
-                  ? SizedBox(
-                      height: 200,
-                      child: Image.file(
-                        File(imageURL),
-                        fit: BoxFit.contain,
-                      ),
-                    )
-                  : const SizedBox(
-                      height: 20,
-                    ),
               const SizedBox(
                 height: 20,
               ),
-              Center(
-                child: IconButton(
-                  onPressed: () {
-                    _submitForm();
-                  },
-                  icon: Icon(
-                    Icons.save,
-                    size: 70,
-                    color: colors.secondary,
-                  ),
-                ),
-              ),
+              SaveFormButton(submitForm: _submitForm),
             ],
           )),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const seedColor = Colors.lightBlue;
+const seedColor = Color.fromARGB(255, 193, 110, 220);
 
 class AppTheme {
   final bool isDarkMode;
@@ -9,21 +9,21 @@ class AppTheme {
         useMaterial3: true,
         colorSchemeSeed: seedColor,
         brightness: isDarkMode ? Brightness.dark : Brightness.light,
-        textTheme: _buildCustomTextTheme(),
+        textTheme: _buildCustomTextTheme(isDarkMode),
       );
-
-  TextTheme _buildCustomTextTheme() {
-    final baseTextTheme = isDarkMode
-        ? Typography.material2018().white
-        : Typography.material2018().black;
-
-    return baseTextTheme.copyWith(
-      bodyMedium: baseTextTheme.bodyMedium?.merge(
-        const TextStyle(fontSize: 14), // Estilo base
-      ),
-    );
-  }
 
   AppTheme copyWith({bool? isDarkMode}) =>
       AppTheme(isDarkMode: isDarkMode ?? this.isDarkMode);
+}
+
+TextTheme _buildCustomTextTheme(bool isDarkMode) {
+  final baseTextTheme = isDarkMode
+      ? Typography.material2018().white
+      : Typography.material2018().black;
+
+  return baseTextTheme.copyWith(
+    bodyMedium: baseTextTheme.bodyMedium?.merge(
+      const TextStyle(fontSize: 14),
+    ),
+  );
 }

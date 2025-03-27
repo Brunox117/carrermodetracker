@@ -19,16 +19,24 @@ class RegisterMatchView extends StatelessWidget {
           ),
           AddButton(
             onPressed: () {
+              context.push('/teamoverview/$id/addtournamentview');
+            },
+            text: 'Crea un torneo',
+          ),
+          AddButton(
+            onPressed: () {
               context.push('/teamoverview/$id/addplayerview');
             },
             text: 'Agregar jugador',
           ),
           AddButton(
-            onPressed: () {},
+            onPressed: () {
+              context.push('/teamoverview/$id/addstatview');
+            },
             text: 'Registra un partido',
           ),
           AddButton(
-            onPressed: () {},
+            onPressed: () {context.push('/teamoverview/$id/addseasonview');},
             text: 'Iniciar nueva temporada',
           ),
         ],

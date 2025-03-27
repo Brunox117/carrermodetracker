@@ -1,6 +1,16 @@
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/repositories/season_repository.dart';
+import 'package:carrermodetracker/presentation/providers/storage/seasons_storage_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final seasonsProvider =
+    StateNotifierProvider<SeasonStorageNotifier, Map<int, Season>>(
+  (ref) {
+    final seasonsStorageRepository = ref.watch(seasonsStorageProvider);
+    return SeasonStorageNotifier(
+        seasonsStorageRepository: seasonsStorageRepository);
+  },
+);
 
 class SeasonStorageNotifier extends StateNotifier<Map<int, Season>> {
   int page = 0;

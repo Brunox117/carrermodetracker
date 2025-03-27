@@ -41,7 +41,6 @@ class IsarSeasonDatasource extends SeasonDatasource {
     final isar = await db;
     isar.writeTxn(() async {
       await isar.seasons.put(season);
-      await season.stats.save();
     });
     return true;
   }

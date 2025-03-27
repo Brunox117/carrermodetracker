@@ -25,11 +25,11 @@ class SeasonRepositoryImpl extends SeasonRepository {
 
   @override
   Future<bool> saveSeason(Season season) {
-    return saveSeason(season);
+    return datasource.saveSeason(season);
   }
 
   @override
   Future<bool> updateSeason(Id id, Season season) {
-    return updateSeason(id, season);
+    return datasource.updateSeason(id, season);
   }
 }
