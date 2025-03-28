@@ -4,6 +4,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.d
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class AddSeasonView extends StatelessWidget {
   const AddSeasonView({super.key});
@@ -72,7 +73,12 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
                   return null;
                 },
               ),
-              SaveFormButton(submitForm: _submitForm),
+              SaveFormButton(
+                submitForm: () {
+                  _submitForm();
+                  context.pop();
+                },
+              ),
               SizedBox(height: MediaQuery.of(context).size.width * 0.3)
             ],
           )),
