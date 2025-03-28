@@ -41,6 +41,15 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
 
   final _formKey = GlobalKey<FormState>();
   String season = '';
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    final currentYear = now.month > 6 ? now.year : now.year - 1;
+    season = '$currentYear-${currentYear + 1}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -51,6 +60,7 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomFormField(
+                initialValue: season,
                 isTopField: true,
                 isBottomField: true,
                 hint: 'Agrega la temporada (2024-2025)',
