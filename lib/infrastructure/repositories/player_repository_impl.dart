@@ -24,7 +24,7 @@ class PlayerRepositoryImpl extends PlayerRepository {
   }
 
   @override
-  Future<bool> savePlayer(Player player) {
+  Future<Player> savePlayer(Player player) {
     return datasource.savePlayer(player);
   }
 

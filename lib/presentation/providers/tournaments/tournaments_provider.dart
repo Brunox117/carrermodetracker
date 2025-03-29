@@ -33,8 +33,9 @@ class StorageTournamentsNotifier extends StateNotifier<Map<int, Tournament>> {
   }
 
   Future<void> addTournament(Tournament tournament) async {
-    await tournamentStorageRepository.saveTournament(tournament);
-    state = {...state, tournament.id: tournament};
+    final tournamentWId =
+        await tournamentStorageRepository.saveTournament(tournament);
+    state = {...state, tournamentWId.id: tournamentWId};
   }
 
   Future<Tournament> getTournament(Id id) async {

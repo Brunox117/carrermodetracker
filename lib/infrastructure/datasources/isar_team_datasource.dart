@@ -46,10 +46,11 @@ class IsarTeamDatasource extends TeamDatasource {
   }
 
   @override
-  Future<bool> saveTeam(Team team) async {
+  Future<Team> saveTeam(Team team) async {
     final isar = await db;
-    isar.writeTxnSync(() => isar.teams.putSync(team));
-    return true;
+    final newID = isar.writeTxnSync<int>(() => isar.teams.putSync(team));
+    team.id = newID;
+    return team;
   }
 
   @override

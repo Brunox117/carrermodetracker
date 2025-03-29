@@ -2,7 +2,7 @@ import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:isar/isar.dart';
 
 abstract class PlayerRepository {
-  Future<bool> savePlayer(Player player);
+  Future<Player> savePlayer(Player player);
 
   Future<Player> getPlayer(Id id);
 

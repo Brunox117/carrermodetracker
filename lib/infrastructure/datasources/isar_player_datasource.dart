@@ -41,14 +41,18 @@ class IsarPlayerDatasource extends PlayerDatasource {
   }
 
   @override
-  Future<bool> savePlayer(Player player) async {
+  Future<Player> savePlayer(Player player) async {
     final isar = await db;
-    await isar.writeTxn(() async {
-      await isar.players.put(player);
-      //UPDATE RELATION
-      await player.team.save();
+    final newID = await isar.writeTxn<int>(() async {
+      return await isar.players.put(player);
     });
-    return true;
+    await isar.writeTxn(
+      () async {
+        await player.team.save();
+      },
+    );
+    player.id = newID;
+    return player;
   }
 
   @override

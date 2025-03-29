@@ -2,7 +2,7 @@ import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:isar/isar.dart';
 
 abstract class TeamRepository {
-  Future<bool> saveTeam(Team team);
+  Future<Team> saveTeam(Team team);
 
   Future<Team> getTeam(Id id);
 

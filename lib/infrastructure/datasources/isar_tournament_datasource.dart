@@ -37,13 +37,18 @@ class IsarTournamentDatasource extends TournamentDatasource {
   }
 
   @override
-  Future<bool> saveTournament(Tournament tournament) async {
+  Future<Tournament> saveTournament(Tournament tournament) async {
     final isar = await db;
-    isar.writeTxn(() async {
-      await isar.tournaments.put(tournament);
-      await tournament.stats.save();
+    final newID = await isar.writeTxn<int>(() async {
+      return await isar.tournaments.put(tournament);
     });
-    return true;
+    isar.writeTxn(
+      () async {
+        await tournament.stats.save();
+      },
+    );
+    tournament.id = newID;
+    return tournament;
   }
 
   @override

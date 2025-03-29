@@ -18,7 +18,7 @@ class StatsRepositoryImpl extends StatsRepository {
   }
 
   @override
-  Future<bool> saveStats(Stats stats) {
+  Future<Stats> saveStats(Stats stats) {
     return datasource.saveStats(stats);
   }
 

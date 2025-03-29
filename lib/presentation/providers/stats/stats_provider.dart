@@ -18,8 +18,8 @@ class StorageStatsNotifier extends StateNotifier<Map<int, Stats>> {
   StorageStatsNotifier({required this.statsStorageRepository}) : super({});
 
   Future<void> saveStats(Stats stats) async {
-    await statsStorageRepository.saveStats(stats);
-    state = {...state, stats.id: stats};
+    final statsWId = await statsStorageRepository.saveStats(stats);
+    state = {...state, statsWId.id: statsWId};
   }
 
   Future<Stats> getStats(int id) async {

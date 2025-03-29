@@ -24,7 +24,7 @@ class TeamRepositoryImpl extends TeamRepository {
   }
 
   @override
-  Future<bool> saveTeam(Team team) {
+  Future<Team> saveTeam(Team team) {
     return datasource.saveTeam(team);
   }
 

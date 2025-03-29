@@ -34,16 +34,21 @@ class IsarStatsDatasource extends StatsDatasource {
   }
 
   @override
-  Future<bool> saveStats(Stats stats) async {
+  Future<Stats> saveStats(Stats stats) async {
     final isar = await db;
-    await isar.writeTxn(() async {
-      await isar.stats.put(stats);
+    final newID = await isar.writeTxn<int>(() async {
+      return await isar.stats.put(stats);
       //UPDATE RELATIONS
-      await stats.player.save();
-      await stats.season.save();
-      await stats.tournament.save();
     });
-    return true;
+    await isar.writeTxn(
+      () async {
+        await stats.player.save();
+        await stats.season.save();
+        await stats.tournament.save();
+      },
+    );
+    stats.id = newID;
+    return stats;
   }
 
   @override

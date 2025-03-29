@@ -2,7 +2,7 @@ import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:isar/isar.dart';
 
 abstract class StatsDatasource {
-  Future<bool> saveStats(Stats stats);
+  Future<Stats> saveStats(Stats stats);
 
   Future<Stats> getStats(Id id);
 

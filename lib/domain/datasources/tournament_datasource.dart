@@ -2,7 +2,7 @@ import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:isar/isar.dart';
 
 abstract class TournamentDatasource {
-  Future<bool> saveTournament(Tournament tournament);
+  Future<Tournament> saveTournament(Tournament tournament);
 
   Future<Tournament> getTournament(Id id);
 

@@ -23,7 +23,7 @@ class TournamentRepositoryImpl extends TournamentRepository {
   }
 
   @override
-  Future<bool> saveTournament(Tournament tournament) {
+  Future<Tournament> saveTournament(Tournament tournament) {
     return datasource.saveTournament(tournament);
   }
 
