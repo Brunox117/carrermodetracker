@@ -6,7 +6,6 @@ import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.d
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';

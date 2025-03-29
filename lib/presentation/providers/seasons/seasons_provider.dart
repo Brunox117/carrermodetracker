@@ -34,7 +34,9 @@ class SeasonStorageNotifier extends StateNotifier<Map<int, Season>> {
   Future<List<Season>> getSeasons() async {
     final seasons =
         await seasonsStorageRepository.getSeasons(offset: page * 10, limit: 10);
-    page++;
+    if (seasons.isNotEmpty) {
+      page++;
+    }
     final tempSeasonsMap = <int, Season>{};
     for (final season in seasons) {
       tempSeasonsMap[season.id] = season;

@@ -26,7 +26,7 @@ class HomeViewState extends ConsumerState<HomeView> {
     setState(() {
       isLoading = true;
     });
-    teams = await ref.read(teamsProvider.notifier).loadNextPage();
+    await ref.read(teamsProvider.notifier).loadNextPage();
     setState(() {
       isLoading = false;
     });
@@ -34,6 +34,8 @@ class HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final teamsMap = ref.watch(teamsProvider);
+    teams = teamsMap.values.toList();
     final appLocalizations = AppLocalizations.of(context)!;
     return Scaffold(
         appBar: AppBar(

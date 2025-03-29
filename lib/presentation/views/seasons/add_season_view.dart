@@ -28,20 +28,59 @@ class _SeasonForm extends ConsumerStatefulWidget {
 }
 
 class __SeasonFormState extends ConsumerState<_SeasonForm> {
-  void submitSeason(Season season) {
-    ref.read(seasonsProvider.notifier).saveSeason(season);
+  final _formKey = GlobalKey<FormState>();
+  String season = '';
+  List<Season> savedSeasons = [];
+
+  void submitSeason(Season seasonTS) {
+    ref.read(seasonsProvider.notifier).saveSeason(seasonTS);
   }
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final Season seasonToSave = Season(season: season);
-      _formKey.currentState!.reset();
-      submitSeason(seasonToSave);
+      bool seasonExists =
+          savedSeasons.any((s) => s.season == seasonToSave.season);
+      if (seasonExists) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: const Text(
+                  'Ya tienes al menos una temporada con este nombre. ¿Estas seguro de que deseas guardar otra con el mismo nombre?'),
+              actions: [
+                TextButton(
+                  onPressed: () => context.pop(),
+                  child: const Text("No, cambiar nombre"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    submitSeason(seasonToSave);
+                    _formKey.currentState!.reset();
+                    context.pop();
+                    setState(() {
+                      season = '';
+                    });
+                  },
+                  child: const Text("Aceptar"),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        submitSeason(seasonToSave);
+        _formKey.currentState!.reset();
+        setState(() {
+          season = '';
+        });
+      }
     }
   }
 
-  final _formKey = GlobalKey<FormState>();
-  String season = '';
+  void getSeasons() async {
+    ref.read(seasonsProvider.notifier).getSeasons();
+  }
 
   @override
   void initState() {
@@ -49,17 +88,20 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
     final now = DateTime.now();
     final currentYear = now.month > 6 ? now.year : now.year - 1;
     season = '$currentYear-${currentYear + 1}';
+    getSeasons();
   }
 
   @override
   Widget build(BuildContext context) {
+    final seasonsMap = ref.watch(seasonsProvider);
+    savedSeasons = seasonsMap.values.toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Form(
           key: _formKey,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(height: MediaQuery.of(context).size.width * 0.1),
               CustomFormField(
                 initialValue: season,
                 isTopField: true,
@@ -76,10 +118,21 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
               SaveFormButton(
                 submitForm: () {
                   _submitForm();
-                  context.pop();
                 },
               ),
-              SizedBox(height: MediaQuery.of(context).size.width * 0.3)
+              const Text('Temporadas registradas'),
+              (savedSeasons.isEmpty)
+                  ? const Text('No tienes temporadas guardadas')
+                  : SizedBox(
+                      height: 400,
+                      child: ListView.builder(
+                        itemCount: savedSeasons.length,
+                        itemBuilder: (context, index) {
+                          final seasonSaved = savedSeasons[index];
+                          return Text(seasonSaved.season);
+                        },
+                      ),
+                    ),
             ],
           )),
     );

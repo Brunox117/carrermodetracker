@@ -34,21 +34,21 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                       path: '/addtournamentview',
                       builder: (context, state) {
                         // final id = state.pathParameters['id'] ?? '';
-                        return AddTournamentView();
+                        return const AddTournamentView();
                       },
                     ),
                     GoRoute(
                       path: '/addstatview',
                       builder: (context, state) {
                         // final id = state.pathParameters['id'] ?? '';
-                        return AddStatView();
+                        return const AddStatView();
                       },
                     ),
                     GoRoute(
                       path: '/addseasonview',
                       builder: (context, state) {
                         // final id = state.pathParameters['id'] ?? '';
-                        return AddSeasonView();
+                        return const AddSeasonView();
                       },
                     ),
                   ],
