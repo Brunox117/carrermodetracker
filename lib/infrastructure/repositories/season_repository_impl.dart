@@ -24,7 +24,7 @@ class SeasonRepositoryImpl extends SeasonRepository {
   }
 
   @override
-  Future<bool> saveSeason(Season season) {
+  Future<Season> saveSeason(Season season) {
     return datasource.saveSeason(season);
   }
 

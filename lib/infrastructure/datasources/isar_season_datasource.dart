@@ -37,12 +37,15 @@ class IsarSeasonDatasource extends SeasonDatasource {
   }
 
   @override
-  Future<bool> saveSeason(Season season) async {
+  Future<Season> saveSeason(Season season) async {
     final isar = await db;
-    isar.writeTxn(() async {
-      await isar.seasons.put(season);
+
+    // Ejecutar en transacción y capturar el ID generado
+    final newId = await isar.writeTxn<int>(() async {
+      return await isar.seasons.put(season);
     });
-    return true;
+    season.id = newId;
+    return season;
   }
 
   @override

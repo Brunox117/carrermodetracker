@@ -2,7 +2,7 @@ import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:isar/isar.dart';
 
 abstract class SeasonRepository {
-  Future<bool> saveSeason(Season season);
+  Future<Season> saveSeason(Season season);
 
   Future<Season> getSeason(Id id);
 
