@@ -74,6 +74,7 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
             children: [
               CustomFormField(
                 isTopField: true,
+                isBottomField: true,
                 hint: "Nombre del jugador",
                 onChanged: (value) => name = value,
                 validator: (value) {
@@ -84,10 +85,11 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
                 },
               ),
               const SizedBox(
-                height: 10,
+                height: 15,
               ),
               CustomFormField(
-                isTopField: false,
+                isTopField: true,
+                isBottomField: true,
                 hint: "Número del jugador",
                 keyboardType: TextInputType.number,
                 onChanged: (value) => number = value,

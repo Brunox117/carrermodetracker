@@ -40,8 +40,10 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                     GoRoute(
                       path: '/addstatview',
                       builder: (context, state) {
-                        // final id = state.pathParameters['id'] ?? '';
-                        return const AddStatView();
+                        final id = state.pathParameters['id'] ?? '';
+                        return AddStatView(
+                          id: id,
+                        );
                       },
                     ),
                     GoRoute(

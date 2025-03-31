@@ -54,6 +54,7 @@ class __TournamentFormState extends ConsumerState<_TournamentForm> {
             children: [
               CustomFormField(
                 isTopField: true,
+                isBottomField: true,
                 hint: "Nombre del torneo",
                 onChanged: (value) => name = value,
                 validator: (value) {
