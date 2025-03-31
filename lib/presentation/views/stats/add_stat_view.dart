@@ -1,6 +1,7 @@
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
-import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
+import 'package:carrermodetracker/presentation/widgets/forms/custom_number_form_field.dart';
+import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,9 +32,9 @@ class _StatsForm extends ConsumerStatefulWidget {
 
 class __StatsFormState extends ConsumerState<_StatsForm> {
   final _formKey = GlobalKey<FormState>();
-  String goals = '';
-  String assists = '';
-  String playedMatches = '';
+  int goals = 0;
+  int assists = 0;
+  int playedMatches = 0;
   // final season = IsarLink<Season>();
   // final tournament = IsarLink<Tournament>();
   // final player = IsarLink<Player>();
@@ -42,28 +43,86 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
     ref.read(statsProvider.notifier).saveStats(stat);
   }
 
+  void submitForm() {
+    print('Form submitted');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Form(
           key: _formKey,
           child: Column(
             children: [
-              CustomFormField(
-                keyboardType: const TextInputType.numberWithOptions(),
-                initialValue: goals,
-                isTopField: true,
-                isBottomField: true,
-                hint: 'Agrega la temporada (2024-2025)',
-                onChanged: (value) => goals = value,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Debes asignar un valor a la temporada';
-                  }
-                  return null;
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  children: [
+                    CustomNumberFormField(
+                      isBottomField: true,
+                      isTopField: true,
+                      label: 'Goles',
+                      hint: '',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo requerido';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        final number = int.tryParse(value);
+                        if (number != null) {
+                          goals = number;
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    CustomNumberFormField(
+                      isBottomField: true,
+                      isTopField: true,
+                      label: 'Asistencias',
+                      hint: '',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo requerido';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        final number = int.tryParse(value);
+                        if (number != null) {
+                          goals = number;
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    CustomNumberFormField(
+                      isBottomField: true,
+                      isTopField: true,
+                      label: 'Partidos jugados',
+                      hint: '',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo requerido';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        final number = int.tryParse(value);
+                        if (number != null) {
+                          goals = number;
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
+              SaveFormButton(submitForm: submitForm)
             ],
           )),
     );

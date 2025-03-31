@@ -1,37 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; 
 
-class CustomFormField extends StatelessWidget {
-  final bool isTopField; 
+class CustomNumberFormField extends StatelessWidget {
+  final bool isTopField;
   final bool isBottomField;
   final String? label;
   final String? hint;
   final TextStyle? hintStyle;
   final String? errorMessage;
-  final bool obscureText;
-  final TextInputType? keyboardType;
+  final bool allowDecimal; 
+  final bool allowNegative; 
   final int maxLines;
   final String initialValue;
   final Function(String)? onChanged;
   final Function(String)? onFieldSubmitted;
   final String? Function(String?)? validator;
-  final Color? bakcGroundColor;
+  final Color? backgroundColor; 
 
-  const CustomFormField(
-      {super.key,
-      this.isTopField = false,
-      this.isBottomField = false,
-      this.label,
-      this.hint,
-      this.errorMessage,
-      this.obscureText = false,
-      this.keyboardType = TextInputType.text,
-      this.maxLines = 1,
-      this.initialValue = '',
-      this.onChanged,
-      this.onFieldSubmitted,
-      this.validator,
-      this.hintStyle,
-      this.bakcGroundColor = const Color.fromARGB(255, 238, 238, 255)});
+  const CustomNumberFormField({
+    super.key,
+    this.isTopField = false,
+    this.isBottomField = false,
+    this.label,
+    this.hint,
+    this.errorMessage,
+    this.allowDecimal = false, 
+    this.allowNegative = false, 
+    this.maxLines = 1, 
+    this.initialValue = '',
+    this.onChanged,
+    this.onFieldSubmitted,
+    this.validator,
+    this.hintStyle,
+    this.backgroundColor =
+        const Color.fromARGB(255, 238, 238, 255), 
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +46,36 @@ class CustomFormField extends StatelessWidget {
 
     const borderRadius = Radius.circular(15);
 
+    
+    final TextInputType keyboardType = TextInputType.numberWithOptions(
+      signed: allowNegative,
+      decimal: allowDecimal,
+    );
+
+    final List<TextInputFormatter> inputFormatters = [];
+    String pattern = r'[0-9]'; 
+    if (allowDecimal) {
+      
+      pattern += r'\.?';
+    }
+    if (allowNegative) {
+      
+      pattern = r'^-?' + pattern + r'*$'; 
+      
+      
+      pattern = r'^-?(\d+\.?\d*|\.\d+)$';
+      
+      pattern = allowDecimal ? r'^-?\d*\.?\d*$' : r'^-?\d*$';
+    } else {
+      
+      pattern = allowDecimal ? r'^\d*\.?\d*$' : r'^\d*$';
+    }
+    inputFormatters.add(FilteringTextInputFormatter.allow(RegExp(pattern)));
+
     return Container(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8,),
       decoration: BoxDecoration(
-          color: bakcGroundColor,
+          color: backgroundColor,
           borderRadius: BorderRadius.only(
             topLeft: isTopField ? borderRadius : Radius.zero,
             topRight: isTopField ? borderRadius : Radius.zero,
@@ -64,8 +93,8 @@ class CustomFormField extends StatelessWidget {
         onChanged: onChanged,
         onFieldSubmitted: onFieldSubmitted,
         validator: validator,
-        obscureText: obscureText,
         keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
         style: const TextStyle(fontSize: 15, color: Colors.black54),
         maxLines: maxLines,
         initialValue: initialValue,
