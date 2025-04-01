@@ -44,6 +44,9 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
   int? selectedSeasonID;
   int? selectedPlayerID;
   int? selectedTournamentID;
+  Season? season;
+  Tournament? tournament;
+  Player? player;
 
   // final season = IsarLink<Season>();
   // final tournament = IsarLink<Tournament>();
@@ -53,8 +56,33 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
     ref.read(statsProvider.notifier).saveStats(stat);
   }
 
-  void submitForm() {
-    print('Form submitted');
+  void submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      if (selectedSeasonID != null) {
+        season = await ref
+            .read(seasonsProvider.notifier)
+            .getSeason(selectedSeasonID!);
+      }
+      if (selectedPlayerID != null) {
+        player = await ref
+            .read(playersProvider.notifier)
+            .getPlayer(selectedPlayerID!);
+      }
+      if (selectedTournamentID != null) {
+        tournament = await ref
+            .read(tournamentsProvider.notifier)
+            .getTournament(selectedTournamentID!);
+      }
+      if (season != null && tournament != null && player != null) {
+        final Stats stats =
+            Stats(assists: assists, goals: goals, playedMatches: playedMatches);
+        stats.player.value = player;
+        stats.tournament.value = tournament;
+        stats.season.value = season;
+        _formKey.currentState!.reset();
+        submitStat(stats);
+      }
+    }
   }
 
   @override
@@ -129,7 +157,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                       },
                     ),
                     const SizedBox(height: 30),
-                    Text("IDs seleccionados:"),
+                    const Text("IDs seleccionados:"),
                     Text("Season: ${selectedSeasonID ?? 'Ninguno'}"),
                     Text("Player: ${selectedPlayerID ?? 'Ninguno'}"),
                     Text("Tournament: ${selectedTournamentID ?? 'Ninguno'}"),
