@@ -1,13 +1,27 @@
+import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/team_table/player_info_row.dart';
 import 'package:carrermodetracker/presentation/widgets/team_table/table_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TeamOverview extends StatelessWidget {
+class TeamOverview extends ConsumerStatefulWidget {
   final String id;
   const TeamOverview({super.key, required this.id});
 
   @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _TeamOverviewState();
+}
+
+class _TeamOverviewState extends ConsumerState<TeamOverview> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(playersProvider.notifier).getPlayersByTeam(int.parse(widget.id));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final players = ref.read(playersProvider).values.toList();
     final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -15,9 +29,9 @@ class TeamOverview extends StatelessWidget {
         columnWidths: const {
           0: FlexColumnWidth(1.1), // Posición
           1: FlexColumnWidth(2), // Nombre
-          2: FlexColumnWidth(1), // PJ
-          3: FlexColumnWidth(1), // Goles
-          4: FlexColumnWidth(1), // As.
+          2: FlexColumnWidth(.9), // PJ
+          3: FlexColumnWidth(.9), // Goles
+          4: FlexColumnWidth(.9), // As.
         },
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
@@ -53,7 +67,7 @@ class TeamOverview extends StatelessWidget {
                 )),
                 // TableCell(child: Center(child: Text('PI'))),
               ]),
-          buildTableRow(context),
+          ...players.map((player) => buildTableRow(context, player)),
         ],
       ),
     );
