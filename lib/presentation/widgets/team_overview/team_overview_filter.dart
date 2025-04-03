@@ -33,16 +33,20 @@ class TeamOverviewFilter extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ExpansionTile(
-            title: Text("Filtrar por Temporada", style: textStyles.titleMedium),
+            title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Filtrar por Temporada", style: textStyles.titleMedium),
+                  (selectedSeasonIDs.isNotEmpty)
+                      ? IconButton(
+                          onPressed: onClearSeasonFilters,
+                          icon: const Icon(Icons.delete))
+                      : const SizedBox(),
+                ]),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             shape: const Border(),
             collapsedShape: const Border(),
             children: [
-              (selectedSeasonIDs.isNotEmpty)
-                  ? TextButton(
-                      onPressed: onClearSeasonFilters,
-                      child: const Text('Borrar filtros'))
-                  : const SizedBox(),
               Wrap(
                 spacing: 8.0,
                 runSpacing: 4.0,
@@ -62,16 +66,21 @@ class TeamOverviewFilter extends StatelessWidget {
             ]),
         const SizedBox(height: 10),
         ExpansionTile(
-            title: Text("Filtrar por Torneo", style: textStyles.titleMedium),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Filtrar por Torneo", style: textStyles.titleMedium),
+                (selectedTournamentIDs.isNotEmpty)
+                    ? IconButton(
+                        onPressed: onClearTournamentFilters,
+                        icon: const Icon(Icons.delete))
+                    : const SizedBox(),
+              ],
+            ),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             shape: const Border(),
             collapsedShape: const Border(),
             children: [
-              (selectedTournamentIDs.isNotEmpty)
-                  ? TextButton(
-                      onPressed: onClearTournamentFilters,
-                      child: const Text('Borrar filtros'))
-                  : const SizedBox(),
               Wrap(
                 spacing: 8.0,
                 runSpacing: 4.0,
