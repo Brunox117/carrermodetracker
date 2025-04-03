@@ -6,7 +6,7 @@ import 'package:carrermodetracker/presentation/providers/players/players_provide
 import 'package:carrermodetracker/presentation/providers/seasons/seasons_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
-import 'package:carrermodetracker/presentation/widgets/forms/custom_dropdown_button.dart';
+import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_number_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
@@ -157,15 +157,10 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                         });
                       },
                     ),
-                    const SizedBox(height: 30),
-                    const Text("IDs seleccionados:"),
-                    Text("Season: ${selectedSeasonID ?? 'Ninguno'}"),
-                    Text("Player: ${selectedPlayerID ?? 'Ninguno'}"),
-                    Text("Tournament: ${selectedTournamentID ?? 'Ninguno'}"),
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 70),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
                   child: Column(
                     children: [
                       CustomNumberFormField(
