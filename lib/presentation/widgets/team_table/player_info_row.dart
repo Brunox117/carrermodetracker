@@ -9,10 +9,8 @@ TableRow buildTableRow(BuildContext context, Player player) {
   int totalGoals = 0;
   int totalMatches = 0;
   int totalAssist = 0;
-  print('Checando el jugador ${player.name}');
+
   for (var element in player.stats) {
-    print(
-        'Checando stats ${element.goals} + ${element.assists} + ${element.playedMatches} del jugador ${element.player.value!.name}');
     totalGoals += element.goals;
     totalAssist += element.assists;
     totalMatches += element.playedMatches;

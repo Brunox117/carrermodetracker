@@ -21,7 +21,9 @@ class _TeamOverviewState extends ConsumerState<TeamOverview> {
 
   @override
   Widget build(BuildContext context) {
-    final players = ref.read(playersProvider).values.toList();
+    final players = ref.watch(playersProvider).values.where((player) =>
+        player.team.value != null &&
+        player.team.value!.id == int.parse(widget.id));
     final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.all(10.0),

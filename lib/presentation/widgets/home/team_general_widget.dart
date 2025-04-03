@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class TeamGeneralWidget extends StatelessWidget {
+class TeamGeneralWidget extends ConsumerWidget {
   final String nombreEquipo;
   final String id;
   final String logoURL;
@@ -14,7 +15,7 @@ class TeamGeneralWidget extends StatelessWidget {
       required this.logoURL});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final colors = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () => context.push('/teamoverview/$id'),

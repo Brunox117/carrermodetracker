@@ -19,7 +19,7 @@ class AddStatView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registra un partido'),
+        title: const Text('Registra estadísticas'),
       ),
       body: _StatsForm(
         teamID: id,
@@ -48,9 +48,15 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
   Tournament? tournament;
   Player? player;
 
-  // final season = IsarLink<Season>();
-  // final tournament = IsarLink<Tournament>();
-  // final player = IsarLink<Player>();
+  @override
+  void initState() {
+    super.initState();
+    ref
+        .read(playersProvider.notifier)
+        .getPlayersByTeam(int.parse(widget.teamID));
+    ref.read(tournamentsProvider.notifier).loadNextPage();
+    ref.read(seasonsProvider.notifier).getSeasons();
+  }
 
   void submitStat(Stats stat) {
     ref.read(statsProvider.notifier).saveStats(stat);

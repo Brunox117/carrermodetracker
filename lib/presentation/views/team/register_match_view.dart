@@ -33,7 +33,7 @@ class RegisterMatchView extends StatelessWidget {
             onPressed: () {
               context.push('/teamoverview/$id/addstatview');
             },
-            text: 'Registra un partido',
+            text: 'Registra estadísticas',
           ),
           AddButton(
             onPressed: () {context.push('/teamoverview/$id/addseasonview');},
