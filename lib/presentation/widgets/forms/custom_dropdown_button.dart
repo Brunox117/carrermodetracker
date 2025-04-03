@@ -42,6 +42,8 @@ class CustomDropdownButtonFormField<T> extends StatelessWidget {
               hint: Text(hintText ?? ''),
               items: items,
               onChanged: onChanged,
+              enableFeedback: true,
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
         ),
