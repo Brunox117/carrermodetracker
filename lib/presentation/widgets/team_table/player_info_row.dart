@@ -5,15 +5,19 @@ import 'package:flutter/material.dart';
 
 //NOT A WIDGET
 TableRow buildTableRow(BuildContext context, Player player,
-    int? selectedSeasonID, int? selectedTournamentID) {
+    List<int> selectedSeasonIDs, List<int> selectedTournamentIDs) {
   final textStyles = Theme.of(context).textTheme;
   int totalGoals = 0;
   int totalMatches = 0;
   int totalAssist = 0;
 
   for (var element in player.stats) {
-    bool seasonMatch = selectedSeasonID == null || element.season.value?.id == selectedSeasonID;
-    bool tournamentMatch = selectedTournamentID == null || element.tournament.value?.id == selectedTournamentID;
+    bool seasonMatch = selectedSeasonIDs.isEmpty ||
+        (element.season.value != null &&
+            selectedSeasonIDs.contains(element.season.value!.id));
+    bool tournamentMatch = selectedTournamentIDs.isEmpty ||
+        (element.tournament.value != null &&
+            selectedTournamentIDs.contains(element.tournament.value!.id));
 
     if (seasonMatch && tournamentMatch) {
       totalGoals += element.goals;

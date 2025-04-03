@@ -4,7 +4,6 @@ import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/providers/seasons/seasons_provider.dart';
 import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
-import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
 import 'package:carrermodetracker/presentation/widgets/team_table/player_info_row.dart';
 import 'package:carrermodetracker/presentation/widgets/team_table/table_text.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +27,11 @@ class _TeamOverviewState extends ConsumerState<TeamOverview> {
   }
 
   List<Player> players = [];
-  int? selectedSeasonID;
-  int? selectedTournamentID;
+  List<int> selectedSeasonIDs = [];
+  List<int> selectedTournamentIDs = [];
   List<Season> savedSeasons = [];
   List<Tournament> savedTournaments = [];
+
   @override
   Widget build(BuildContext context) {
     savedSeasons = ref.watch(seasonsProvider).values.toList();
@@ -44,63 +44,62 @@ class _TeamOverviewState extends ConsumerState<TeamOverview> {
             player.team.value!.id == int.parse(widget.id))
         .toList();
     final colors = Theme.of(context).colorScheme;
+    final textStyles = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomDropdownButtonFormField<int>(
-            labelText: "Filtra por temporada:",
-            hintText: "Temporada...",
-            value: selectedSeasonID,
-            items: savedSeasons.map((Season season) {
-              return DropdownMenuItem<int>(
-                value: season.id,
-                child: Text(season.season.toString()),
+          Text("Filtra por temporada:", style: textStyles.titleMedium),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 4.0,
+            children: savedSeasons.map((Season season) {
+              final isSelected = selectedSeasonIDs.contains(season.id);
+              return FilterChip(
+                label: Text(season.season.toString()),
+                selected: isSelected,
+                onSelected: (bool selected) {
+                  setState(() {
+                    if (selected) {
+                      selectedSeasonIDs.add(season.id);
+                    } else {
+                      selectedSeasonIDs.remove(season.id);
+                    }
+                  });
+                },
+                selectedColor: colors.primaryContainer,
+                showCheckmark: false,
               );
             }).toList(),
-            onChanged: (int? newValue) {
-              setState(() {
-                selectedSeasonID = newValue;
-              });
-            },
           ),
-          (selectedSeasonID != null)
-              ? TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedSeasonID = null;
-                    });
-                  },
-                  child: const Text("Borra filtro"))
-              : const SizedBox(),
-          const SizedBox(
-            height: 20,
-          ),
-          CustomDropdownButtonFormField<int>(
-            labelText: "Filtra por torneo:",
-            hintText: "Torneo...",
-            value: selectedTournamentID,
-            items: savedTournaments.map((Tournament tournament) {
-              return DropdownMenuItem<int>(
-                value: tournament.id,
-                child: Text(tournament.name),
+          const SizedBox(height: 20),
+          Text("Filtra por torneo:", style: textStyles.titleMedium),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 4.0,
+            children: savedTournaments.map((Tournament tournament) {
+              final isSelected = selectedTournamentIDs.contains(tournament.id);
+              return FilterChip(
+                label: Text(tournament.name),
+                selected: isSelected,
+                onSelected: (bool selected) {
+                  setState(() {
+                    if (selected) {
+                      selectedTournamentIDs.add(tournament.id);
+                    } else {
+                      selectedTournamentIDs.remove(tournament.id);
+                    }
+                  });
+                },
+                selectedColor: colors.primaryContainer,
+                showCheckmark: false,
               );
             }).toList(),
-            onChanged: (int? newValue) {
-              setState(() {
-                selectedTournamentID = newValue;
-              });
-            },
           ),
-          (selectedTournamentID != null)
-              ? TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedTournamentID = null;
-                    });
-                  },
-                  child: const Text("Borra filtro"))
-              : const SizedBox(),
           const SizedBox(height: 20),
           Table(
             columnWidths: const {
@@ -143,10 +142,9 @@ class _TeamOverviewState extends ConsumerState<TeamOverview> {
                       'As.',
                       isHeader: true,
                     )),
-                    // TableCell(child: Center(child: Text('PI'))),
                   ]),
               ...players.map((player) => buildTableRow(
-                  context, player, selectedSeasonID, selectedTournamentID)),
+                  context, player, selectedSeasonIDs, selectedTournamentIDs)),
             ],
           ),
         ],
