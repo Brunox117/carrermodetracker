@@ -28,7 +28,6 @@ TableRow buildTableRow(BuildContext context, Player player,
       TableCell(child: TableText(player.position)),
       TableCell(
           child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(Icons.person),
           Flexible(child: Text(player.name, style: textStyles.tableBodyText)),
