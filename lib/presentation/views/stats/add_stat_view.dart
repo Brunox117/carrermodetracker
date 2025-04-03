@@ -202,7 +202,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                         onChanged: (value) {
                           final number = int.tryParse(value);
                           if (number != null) {
-                            goals = number;
+                            assists = number;
                           }
                         },
                       ),
@@ -223,7 +223,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                         onChanged: (value) {
                           final number = int.tryParse(value);
                           if (number != null) {
-                            goals = number;
+                            playedMatches = number;
                           }
                         },
                       ),

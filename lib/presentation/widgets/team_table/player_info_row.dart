@@ -6,6 +6,17 @@ import 'package:flutter/material.dart';
 //NOT A WIDGET
 TableRow buildTableRow(BuildContext context, Player player) {
   final textStyles = Theme.of(context).textTheme;
+  int totalGoals = 0;
+  int totalMatches = 0;
+  int totalAssist = 0;
+  print('Checando el jugador ${player.name}');
+  for (var element in player.stats) {
+    print(
+        'Checando stats ${element.goals} + ${element.assists} + ${element.playedMatches} del jugador ${element.player.value!.name}');
+    totalGoals += element.goals;
+    totalAssist += element.assists;
+    totalMatches += element.playedMatches;
+  }
   return TableRow(
     decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -19,9 +30,9 @@ TableRow buildTableRow(BuildContext context, Player player) {
           Flexible(child: Text(player.name, style: textStyles.tableBodyText)),
         ],
       )),
-      const TableCell(child: TableText("29")),
-      const TableCell(child: TableText("20")),
-      const TableCell(child: TableText("2")),
+      TableCell(child: TableText(totalMatches.toString())),
+      TableCell(child: TableText(totalGoals.toString())),
+      TableCell(child: TableText(totalAssist.toString())),
     ],
   );
 }

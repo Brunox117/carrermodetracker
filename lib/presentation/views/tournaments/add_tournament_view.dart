@@ -41,11 +41,19 @@ class __TournamentFormState extends ConsumerState<_TournamentForm> {
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    ref.read(tournamentsProvider.notifier).loadNextPage();
+  }
+
   final _formKey = GlobalKey<FormState>();
   String name = '';
   String logoURL = '';
   @override
   Widget build(BuildContext context) {
+    List<Tournament> savedTournaments =
+        ref.watch(tournamentsProvider).values.toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Form(
@@ -75,6 +83,19 @@ class __TournamentFormState extends ConsumerState<_TournamentForm> {
                 },
               ),
               SaveFormButton(submitForm: _submitForm),
+              const Text('Torneos registrados'),
+              (savedTournaments.isEmpty)
+                  ? const Text('No tienes torneos guardados')
+                  : SizedBox(
+                      height: 400,
+                      child: ListView.builder(
+                        itemCount: savedTournaments.length,
+                        itemBuilder: (context, index) {
+                          final tournament = savedTournaments[index];
+                          return Text(tournament.name);
+                        },
+                      ),
+                    ),
             ],
           )),
     );
