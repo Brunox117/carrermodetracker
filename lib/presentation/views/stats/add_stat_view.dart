@@ -6,6 +6,7 @@ import 'package:carrermodetracker/presentation/providers/players/players_provide
 import 'package:carrermodetracker/presentation/providers/seasons/seasons_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
+import 'package:carrermodetracker/presentation/widgets/forms/custom_dropdown_button.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_number_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
@@ -106,12 +107,10 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Selecciona Temporada:",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    DropdownButton<int>(
+                    CustomDropdownButtonFormField<int>(
+                      labelText: "Selecciona Temporada:",
+                      hintText: "Temporada...",
                       value: selectedSeasonID,
-                      hint: const Text("Temporada..."),
-                      isExpanded: true,
                       items: savedSeasons.map((Season season) {
                         return DropdownMenuItem<int>(
                           value: season.id,
@@ -125,12 +124,10 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    Text("Selecciona Jugador:",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    DropdownButton<int>(
+                    CustomDropdownButtonFormField<int>(
+                      labelText: "Selecciona Jugador:",
+                      hintText: "Jugador...",
                       value: selectedPlayerID,
-                      hint: const Text("Jugador..."),
-                      isExpanded: true,
                       items: savedPlayers.map((Player player) {
                         return DropdownMenuItem<int>(
                           value: player.id,
@@ -144,12 +141,10 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    Text("Selecciona Torneo:",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    DropdownButton<int>(
+                    CustomDropdownButtonFormField<int>(
+                      labelText: "Selecciona Torneo:",
+                      hintText: "Torneo...",
                       value: selectedTournamentID,
-                      hint: const Text("Torneo..."),
-                      isExpanded: true,
                       items: savedTournaments.map((Tournament tournament) {
                         return DropdownMenuItem<int>(
                           value: tournament.id,
