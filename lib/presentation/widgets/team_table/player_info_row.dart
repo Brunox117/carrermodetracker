@@ -4,16 +4,22 @@ import 'package:carrermodetracker/presentation/widgets/team_table/table_text.dar
 import 'package:flutter/material.dart';
 
 //NOT A WIDGET
-TableRow buildTableRow(BuildContext context, Player player) {
+TableRow buildTableRow(BuildContext context, Player player,
+    int? selectedSeasonID, int? selectedTournamentID) {
   final textStyles = Theme.of(context).textTheme;
   int totalGoals = 0;
   int totalMatches = 0;
   int totalAssist = 0;
 
   for (var element in player.stats) {
-    totalGoals += element.goals;
-    totalAssist += element.assists;
-    totalMatches += element.playedMatches;
+    bool seasonMatch = selectedSeasonID == null || element.season.value?.id == selectedSeasonID;
+    bool tournamentMatch = selectedTournamentID == null || element.tournament.value?.id == selectedTournamentID;
+
+    if (seasonMatch && tournamentMatch) {
+      totalGoals += element.goals;
+      totalAssist += element.assists;
+      totalMatches += element.playedMatches;
+    }
   }
   return TableRow(
     decoration: const BoxDecoration(

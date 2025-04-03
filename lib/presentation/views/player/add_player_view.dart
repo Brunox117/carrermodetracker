@@ -4,6 +4,7 @@ import 'package:carrermodetracker/presentation/providers/teams/teams_provider.da
 import 'package:carrermodetracker/presentation/widgets/forms/add_image_widget.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
+import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -103,21 +104,21 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
               const SizedBox(
                 height: 10,
               ),
-              DropdownButton<Positions>(
-                  alignment: Alignment.center,
-                  value: position,
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        position = value;
-                      });
-                    }
-                  },
-                  items: Positions.values.map((Positions position1) {
-                    return DropdownMenuItem<Positions>(
-                        value: position1,
-                        child: Text(position1.name.toUpperCase()));
-                  }).toList()),
+              CustomDropdownButtonFormField(
+                items: Positions.values.map((Positions position1) {
+                  return DropdownMenuItem<Positions>(
+                      value: position1,
+                      child: Text(position1.name.toUpperCase()));
+                }).toList(),
+                value: position,
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      position = value;
+                    });
+                  }
+                },
+              ),
               const SizedBox(
                 height: 10,
               ),

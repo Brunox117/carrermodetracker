@@ -145,7 +145,8 @@ class _TeamOverviewState extends ConsumerState<TeamOverview> {
                     )),
                     // TableCell(child: Center(child: Text('PI'))),
                   ]),
-              ...players.map((player) => buildTableRow(context, player)),
+              ...players.map((player) => buildTableRow(
+                  context, player, selectedSeasonID, selectedTournamentID)),
             ],
           ),
         ],
