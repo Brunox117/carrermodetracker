@@ -51,55 +51,67 @@ class _TeamOverviewState extends ConsumerState<TeamOverview> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Filtra por temporada:", style: textStyles.titleMedium),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8.0,
-            runSpacing: 4.0,
-            children: savedSeasons.map((Season season) {
-              final isSelected = selectedSeasonIDs.contains(season.id);
-              return FilterChip(
-                label: Text(season.season.toString()),
-                selected: isSelected,
-                onSelected: (bool selected) {
-                  setState(() {
-                    if (selected) {
-                      selectedSeasonIDs.add(season.id);
-                    } else {
-                      selectedSeasonIDs.remove(season.id);
-                    }
-                  });
-                },
-                selectedColor: colors.primaryContainer,
-                showCheckmark: false,
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 20),
-          Text("Filtra por torneo:", style: textStyles.titleMedium),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8.0,
-            runSpacing: 4.0,
-            children: savedTournaments.map((Tournament tournament) {
-              final isSelected = selectedTournamentIDs.contains(tournament.id);
-              return FilterChip(
-                label: Text(tournament.name),
-                selected: isSelected,
-                onSelected: (bool selected) {
-                  setState(() {
-                    if (selected) {
-                      selectedTournamentIDs.add(tournament.id);
-                    } else {
-                      selectedTournamentIDs.remove(tournament.id);
-                    }
-                  });
-                },
-                selectedColor: colors.primaryContainer,
-                showCheckmark: false,
-              );
-            }).toList(),
-          ),
+          ExpansionTile(
+              title:
+                  Text("Filtrar por Temporada", style: textStyles.titleMedium),
+              expandedCrossAxisAlignment: CrossAxisAlignment.start,
+              shape: const Border(),
+              collapsedShape: const Border(),
+              children: [
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
+                  children: savedSeasons.map((Season season) {
+                    final isSelected = selectedSeasonIDs.contains(season.id);
+                    return FilterChip(
+                      label: Text(season.season.toString()),
+                      selected: isSelected,
+                      onSelected: (bool selected) {
+                        setState(() {
+                          if (selected) {
+                            selectedSeasonIDs.add(season.id);
+                          } else {
+                            selectedSeasonIDs.remove(season.id);
+                          }
+                        });
+                      },
+                      selectedColor: colors.primaryContainer,
+                      showCheckmark: false,
+                    );
+                  }).toList(),
+                ),
+              ]),
+          const SizedBox(height: 10),
+          ExpansionTile(
+              title: Text("Filtrar por Torneo", style: textStyles.titleMedium),
+              expandedCrossAxisAlignment: CrossAxisAlignment.start,
+              shape: const Border(),
+              collapsedShape: const Border(),
+              children: [
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
+                  children: savedTournaments.map((Tournament tournament) {
+                    final isSelected =
+                        selectedTournamentIDs.contains(tournament.id);
+                    return FilterChip(
+                      label: Text(tournament.name),
+                      selected: isSelected,
+                      onSelected: (bool selected) {
+                        setState(() {
+                          if (selected) {
+                            selectedTournamentIDs.add(tournament.id);
+                          } else {
+                            selectedTournamentIDs.remove(tournament.id);
+                          }
+                        });
+                      },
+                      selectedColor: colors.primaryContainer,
+                      showCheckmark: false,
+                    );
+                  }).toList(),
+                ),
+              ]),
           const SizedBox(height: 20),
           Table(
             columnWidths: const {
