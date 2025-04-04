@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:carrermodetracker/config/helpers/image_utilities.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/add_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

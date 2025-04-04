@@ -58,6 +58,7 @@ class IsarTournamentDatasource extends TournamentDatasource {
     if (originalTournament != null) {
       originalTournament.logoURL = tournament.logoURL;
       originalTournament.name = tournament.name;
+      isar.writeTxnSync(() => isar.tournaments.putSync(originalTournament));
     }
     return false;
   }
