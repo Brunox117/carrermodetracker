@@ -35,13 +35,16 @@ class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {
   }
 
   Future<Team> getTeam(int id) async {
+    if (state.containsKey(id)) {
+      return state[id]!;
+    }
     Team team = await teamStorageRepository.getTeam(id);
     state = {...state, team.id: team};
     return team;
   }
 
-  Future<void> updateTeam(Team team) async {
-    await teamStorageRepository.updateTeam(team.id, team);
-    state = {...state, team.id: team};
+  Future<void> updateTeam(int id,Team team) async {
+    await teamStorageRepository.updateTeam(id, team);
+    state = {...state, id: team};
   }
 }

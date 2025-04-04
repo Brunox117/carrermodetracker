@@ -41,7 +41,10 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
   }
 
   void updateTeam(Team team) async {
-    ref.read(teamsProvider.notifier).updateTeam(team);
+    team.id = int.parse(widget.teamid!);
+    ref
+        .read(teamsProvider.notifier)
+        .updateTeam(int.parse(widget.teamid!), team);
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -52,7 +55,7 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
   String acronimos = '';
   String logoURL = '';
 
-  void getTeamInfo() async {
+  void getOldTeamInfo() async {
     Team oldTeam = await ref
         .read(teamsProvider.notifier)
         .getTeam(int.parse(widget.teamid!));
@@ -67,7 +70,7 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
   void initState() {
     super.initState();
     if (widget.teamid != null) {
-      getTeamInfo();
+      getOldTeamInfo();
     }
   }
 
@@ -75,8 +78,13 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
     if (_formKey.currentState!.validate()) {
       final team = Team(name: name, acronimos: acronimos, logoURL: logoURL);
       _formKey.currentState!.reset();
-      submitTeam(team);
-      context.go('/');
+      if (widget.teamid == null) {
+        submitTeam(team);
+        context.go('/');
+      } else {
+        updateTeam(team);
+        context.pop();
+      }
     }
   }
 
@@ -92,6 +100,7 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
               CustomFormField(
                 isTopField: true,
                 hint: "Nombre del equipo",
+                key: ValueKey(name),
                 initialValue: name,
                 onChanged: (value) => name = value,
                 validator: (value) {
@@ -106,6 +115,8 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
               ),
               CustomFormField(
                 hint: "Acrónimo (FCB, RM, BVB)",
+                key: ValueKey(acronimos),
+                initialValue: acronimos,
                 onChanged: (value) => acronimos = value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
