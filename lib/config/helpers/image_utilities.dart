@@ -29,3 +29,17 @@ Future<String> saveImageInLocalStorage(XFile image, String directory) async {
   await permanentFile.writeAsBytes(bytes);
   return permanentFile.path;
 }
+
+Future<bool> deleteImage(String imageUrl) async {
+  try {
+    final file = File(imageUrl);
+    if (await file.exists()) {
+      await file.delete();
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    return false;
+  }
+}
