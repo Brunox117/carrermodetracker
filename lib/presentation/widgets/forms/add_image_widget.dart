@@ -26,12 +26,12 @@ class _AddImageWidgetState extends State<AddImageWidget> {
   Future<void> _pickImage(ImageSource source) async {
     final XFile? image = await imagePicker.pickImage(source: source);
     if (image != null) {
-      String url = await saveImageInLocalStorage(
-        image,
-        widget.documentsFolder,
-      );
-      setState(() => imageURL = url);
-      widget.onImageUploaded?.call(url);
+      // String url = await saveImageInLocalStorage(
+      //   image,
+      //   widget.documentsFolder,
+      // );
+      setState(() => imageURL = image.path);
+      widget.onImageUploaded?.call(image.path);
     }
   }
 
