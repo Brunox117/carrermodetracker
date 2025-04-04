@@ -122,13 +122,13 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
               const SizedBox(
                 height: 10,
               ),
-              AddImageWidget(
-                hintText: 'Agrega una imagen o sube una foto',
-                documentsFolder: 'players',
-                onImageUploaded: (url) {
-                  setState(() => imageURL = url);
-                },
-              ),
+              // AddImageWidget(
+              //   hintText: 'Agrega una imagen o sube una foto',
+              //   documentsFolder: 'players',
+              //   onImageUploaded: (url) {
+              //     setState(() => imageURL = url);
+              //   },
+              // ),
               const SizedBox(
                 height: 20,
               ),

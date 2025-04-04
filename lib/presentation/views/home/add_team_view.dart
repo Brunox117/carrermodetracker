@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:carrermodetracker/config/helpers/image_utilities.dart';
+import 'package:carrermodetracker/presentation/widgets/forms/add_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -37,14 +38,14 @@ class _TeamForm extends ConsumerStatefulWidget {
 
 class __TeamFormState extends ConsumerState<_TeamForm> {
   void submitTeam(Team team) async {
-    ref.read(teamsProvider.notifier).addTeam(team);
+    ref.read(teamsProvider.notifier).addTeam(team, _selectedLogoFile);
   }
 
   void updateTeam(Team team) async {
     team.id = int.parse(widget.teamid!);
     ref
         .read(teamsProvider.notifier)
-        .updateTeam(int.parse(widget.teamid!), team);
+        .updateTeam(int.parse(widget.teamid!), team, _selectedLogoFile);
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -54,6 +55,7 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
   String name = '';
   String acronimos = '';
   String logoURL = '';
+  XFile? _selectedLogoFile;
 
   void getOldTeamInfo() async {
     Team oldTeam = await ref
@@ -126,52 +128,15 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
                 },
               ),
               const SizedBox(height: 30),
-              const Center(
-                child: Text("Agrega una imagen o toma una foto"),
+              AddImageWidget(
+                key: (logoURL.isNotEmpty) ? ValueKey(logoURL) : null,
+                hintText: 'Agrega una imagen o toma una foto',
+                documentsFolder: 'teams',
+                onImageUploaded: (selectedImage) {
+                  setState(() => _selectedLogoFile = selectedImage);
+                },
+                imageURLFromFather: logoURL,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () async {
-                      final XFile? image = await imagePicker.pickImage(
-                        source: ImageSource.gallery,
-                      );
-
-                      if (image != null) {
-                        await saveImageInLocalStorage(image, 'teams');
-                      }
-                    },
-                    icon: const Icon(Icons.camera_enhance, size: 80),
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      final XFile? image = await imagePicker.pickImage(
-                          source: ImageSource.gallery);
-                      if (image != null) {
-                        String url =
-                            await saveImageInLocalStorage(image, 'teams');
-                        setState(() {
-                          logoURL = url;
-                        });
-                      }
-                    },
-                    icon: const Icon(Icons.image, size: 80),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              (logoURL.isNotEmpty)
-                  ? SizedBox(
-                      height: 200,
-                      child: Image.file(
-                        File(logoURL),
-                        fit: BoxFit.contain,
-                      ),
-                    )
-                  : const SizedBox(
-                      height: 20,
-                    ),
               const SizedBox(
                 height: 20,
               ),

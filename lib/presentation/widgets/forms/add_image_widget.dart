@@ -6,14 +6,15 @@ import 'package:image_picker/image_picker.dart';
 class AddImageWidget extends StatefulWidget {
   final String hintText;
   final String documentsFolder;
-  final Function(String)? onImageUploaded;
+  final Function(XFile)? onImageUploaded;
+  final String imageURLFromFather;
 
-  const AddImageWidget({
-    super.key,
-    required this.hintText,
-    required this.documentsFolder,
-    this.onImageUploaded,
-  });
+  const AddImageWidget(
+      {super.key,
+      required this.hintText,
+      required this.documentsFolder,
+      this.onImageUploaded,
+      this.imageURLFromFather = ''});
 
   @override
   State<AddImageWidget> createState() => _AddImageWidgetState();
@@ -26,13 +27,15 @@ class _AddImageWidgetState extends State<AddImageWidget> {
   Future<void> _pickImage(ImageSource source) async {
     final XFile? image = await imagePicker.pickImage(source: source);
     if (image != null) {
-      // String url = await saveImageInLocalStorage(
-      //   image,
-      //   widget.documentsFolder,
-      // );
       setState(() => imageURL = image.path);
-      widget.onImageUploaded?.call(image.path);
+      widget.onImageUploaded?.call(image);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    imageURL = widget.imageURLFromFather;
   }
 
   @override
@@ -44,8 +47,7 @@ class _AddImageWidgetState extends State<AddImageWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: () =>
-                  _pickImage(ImageSource.camera),
+              onPressed: () => _pickImage(ImageSource.camera),
               icon: const Icon(Icons.camera_enhance, size: 80),
             ),
             IconButton(

@@ -75,13 +75,13 @@ class __TournamentFormState extends ConsumerState<_TournamentForm> {
               const SizedBox(
                 height: 10,
               ),
-              AddImageWidget(
-                hintText: 'Agrega una imagen o sube una foto',
-                documentsFolder: 'tournament',
-                onImageUploaded: (url) {
-                  setState(() => logoURL = url);
-                },
-              ),
+              // AddImageWidget(
+              //   hintText: 'Agrega una imagen o sube una foto',
+              //   documentsFolder: 'tournament',
+              //   onImageUploaded: (url) {
+              //     setState(() => logoURL = url);
+              //   },
+              // ),
               SaveFormButton(submitForm: _submitForm),
               const Text('Torneos registrados'),
               (savedTournaments.isEmpty)
