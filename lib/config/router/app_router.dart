@@ -61,11 +61,18 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                   },
                 ),
                 GoRoute(
+                  path: '/editteam/:id',
+                  builder: (context, state) {
+                    final id = state.pathParameters['id'];
+                    return AddTeamView(teamid: id);
+                  },
+                ),
+                GoRoute(
                   path: '/addteam',
                   builder: (context, state) {
                     return const AddTeamView();
                   },
-                )
+                ),
               ])
         ]),
         StatefulShellBranch(routes: [

@@ -10,15 +10,15 @@ import 'package:carrermodetracker/presentation/widgets/team_table/table_text.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TeamOverview extends ConsumerStatefulWidget {
+class TeamPlayersOverview extends ConsumerStatefulWidget {
   final String id;
-  const TeamOverview({super.key, required this.id});
+  const TeamPlayersOverview({super.key, required this.id});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TeamOverviewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TeamPlayersOverviewState();
 }
 
-class _TeamOverviewState extends ConsumerState<TeamOverview> {
+class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
   @override
   void initState() {
     super.initState();

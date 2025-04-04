@@ -11,20 +11,26 @@ import 'package:carrermodetracker/presentation/providers/teams/teams_provider.da
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 
 class AddTeamView extends StatelessWidget {
-  const AddTeamView({super.key});
+  final String? teamid;
+  const AddTeamView({super.key, this.teamid});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agregar equipo'),
+        title: Text((teamid == null) ? 'Agregar equipo' : 'Editar equipo'),
       ),
-      body: _TeamForm(),
+      body: _TeamForm(
+        teamid: teamid,
+      ),
     );
   }
 }
 
 class _TeamForm extends ConsumerStatefulWidget {
+  final String? teamid;
+
+  const _TeamForm({required this.teamid});
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => __TeamFormState();
 }
@@ -34,6 +40,10 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
     ref.read(teamsProvider.notifier).addTeam(team);
   }
 
+  void updateTeam(Team team) async {
+    ref.read(teamsProvider.notifier).updateTeam(team);
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   final imagePicker = ImagePicker();
@@ -41,6 +51,25 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
   String name = '';
   String acronimos = '';
   String logoURL = '';
+
+  void getTeamInfo() async {
+    Team oldTeam = await ref
+        .read(teamsProvider.notifier)
+        .getTeam(int.parse(widget.teamid!));
+    setState(() {
+      name = oldTeam.name;
+      acronimos = oldTeam.acronimos;
+      logoURL = oldTeam.logoURL;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.teamid != null) {
+      getTeamInfo();
+    }
+  }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -63,6 +92,7 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
               CustomFormField(
                 isTopField: true,
                 hint: "Nombre del equipo",
+                initialValue: name,
                 onChanged: (value) => name = value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
