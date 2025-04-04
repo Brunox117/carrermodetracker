@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:carrermodetracker/config/helpers/save_image_in_localdb.dart';
+import 'package:carrermodetracker/config/helpers/image_utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
