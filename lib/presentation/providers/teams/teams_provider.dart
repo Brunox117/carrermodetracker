@@ -4,6 +4,8 @@ import 'package:carrermodetracker/domain/repositories/team_repository.dart';
 import 'package:carrermodetracker/presentation/providers/storage/teams_storage_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io'; // Needed for File
+import 'package:flutter/painting.dart'; // Needed for PaintingBinding
 
 final teamsProvider =
     StateNotifierProvider<StorageTeamsNotifier, Map<int, Team>>(
@@ -55,6 +57,7 @@ class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {
     Team oldTeam = await teamStorageRepository.getTeam(id);
     if (imageFile != null) {
       if (oldTeam.logoURL.isNotEmpty) {
+        PaintingBinding.instance.imageCache.evict(FileImage(File(oldTeam.logoURL)));
         await deleteImage(oldTeam.logoURL);
       }
       team.logoURL =
