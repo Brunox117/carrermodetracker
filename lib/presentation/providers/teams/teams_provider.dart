@@ -15,13 +15,32 @@ final teamsProvider =
   },
 );
 
+final teamProvider =
+    FutureProvider.autoDispose.family<Team, int>((ref, id) async {
+  final notifier = ref.watch(teamsProvider.notifier);
+  return notifier.getTeam(id);
+});
+
+final homeViewInitializationProvider = FutureProvider<void>((ref) async {
+  await ref.read(teamsProvider.notifier).initialize();
+});
+
 class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {
   int page = 0;
+  bool isLoadingNextPage = false;
   final TeamRepository teamStorageRepository;
 
   StorageTeamsNotifier({required this.teamStorageRepository}) : super({});
 
+  Future<void> initialize() async {
+    page = 0;
+    state = {};
+    await loadNextPage();
+  }
+
   Future<List<Team>> loadNextPage() async {
+    if (isLoadingNextPage) return [];
+    isLoadingNextPage = true;
     final teams =
         await teamStorageRepository.getTeams(offset: page * 10, limit: 10);
     page++;
@@ -30,6 +49,7 @@ class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {
       tempTeamsMap[team.id] = team;
     }
     state = {...state, ...tempTeamsMap};
+    isLoadingNextPage = false;
     return teams;
   }
 
@@ -57,7 +77,8 @@ class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {
     Team oldTeam = await teamStorageRepository.getTeam(id);
     if (imageFile != null) {
       if (oldTeam.logoURL.isNotEmpty) {
-        PaintingBinding.instance.imageCache.evict(FileImage(File(oldTeam.logoURL)));
+        PaintingBinding.instance.imageCache
+            .evict(FileImage(File(oldTeam.logoURL)));
         await deleteImage(oldTeam.logoURL);
       }
       team.logoURL =
