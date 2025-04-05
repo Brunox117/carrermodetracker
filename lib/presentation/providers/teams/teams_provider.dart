@@ -17,7 +17,11 @@ final teamsProvider =
 
 final teamProvider =
     FutureProvider.autoDispose.family<Team, int>((ref, id) async {
-  return ref.watch(teamsProvider.notifier).getTeam(id);
+  final teamsMap = ref.watch(teamsProvider);
+  if (teamsMap.containsKey(id)) {
+    return teamsMap[id]!;
+  }
+  return ref.read(teamsProvider.notifier).getTeam(id);
 });
 
 class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {
