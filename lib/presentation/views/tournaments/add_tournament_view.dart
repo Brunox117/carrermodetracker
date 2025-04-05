@@ -5,6 +5,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.d
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddTournamentView extends StatelessWidget {
   const AddTournamentView({super.key});
@@ -30,7 +31,7 @@ class _TournamentForm extends ConsumerStatefulWidget {
 
 class __TournamentFormState extends ConsumerState<_TournamentForm> {
   void submitTournament(Tournament tournament) {
-    ref.read(tournamentsProvider.notifier).addTournament(tournament);
+    ref.read(tournamentsProvider.notifier).addTournament(tournament, imageFile);
   }
 
   void _submitForm() async {
@@ -50,6 +51,7 @@ class __TournamentFormState extends ConsumerState<_TournamentForm> {
   final _formKey = GlobalKey<FormState>();
   String name = '';
   String logoURL = '';
+  XFile? imageFile;
   @override
   Widget build(BuildContext context) {
     List<Tournament> savedTournaments =
@@ -78,8 +80,8 @@ class __TournamentFormState extends ConsumerState<_TournamentForm> {
               AddImageWidget(
                 hintText: 'Agrega una imagen o sube una foto',
                 documentsFolder: 'tournament',
-                onImageUploaded: (url) {
-                  setState(() => logoURL = url);
+                onImageUploaded: (selectedImage) {
+                  setState(() => imageFile = selectedImage);
                 },
               ),
               SaveFormButton(submitForm: _submitForm),

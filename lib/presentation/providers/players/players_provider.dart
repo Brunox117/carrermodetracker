@@ -1,7 +1,9 @@
+import 'package:carrermodetracker/config/helpers/image_utilities.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/repositories/player_repository.dart';
 import 'package:carrermodetracker/presentation/providers/storage/players_storage_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 final playersProvider =
     StateNotifierProvider<StoragePlayersNotifier, Map<int, Player>>(
@@ -27,8 +29,13 @@ class StoragePlayersNotifier extends StateNotifier<Map<int, Player>> {
     return players;
   }
 
-  Future<void> addPlayer(Player player) async {
+  Future<void> addPlayer(Player player, XFile? imageFile) async {
     final playerWId = await playerStorageRepository.savePlayer(player);
+    if (imageFile != null) {
+      playerWId.imageURL = await saveImageInLocalStorage(
+          imageFile, 'players', playerWId.id.toString());
+      await playerStorageRepository.updatePlayer(playerWId.id, playerWId);
+    }
     state = {...state, playerWId.id: playerWId};
   }
 
@@ -38,7 +45,7 @@ class StoragePlayersNotifier extends StateNotifier<Map<int, Player>> {
     return player;
   }
 
-  Future<void> updatePlayer(int id, Player player) async {
+  Future<void> updatePlayer(int id, Player player, XFile? imageFile) async {
     await playerStorageRepository.updatePlayer(id, player);
     state = {...state, player.id: player};
   }

@@ -2,6 +2,7 @@ import 'package:carrermodetracker/config/router/app_router.dart';
 import 'package:carrermodetracker/config/theme/app_theme.dart';
 import 'package:carrermodetracker/presentation/providers/config/locale_provider.dart';
 import 'package:carrermodetracker/presentation/providers/config/theme_provider.dart';
+import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,6 +19,7 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(teamsProvider.notifier).loadNextPage();
     final AppTheme appTheme = ref.watch(themeNotifierProvider);
     final locale = ref.watch(localeProvider);
     return MaterialApp.router(

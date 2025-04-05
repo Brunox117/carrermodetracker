@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddPlayerView extends StatelessWidget {
   final String id;
@@ -36,7 +37,7 @@ class _PlayerForm extends ConsumerStatefulWidget {
 
 class __PlayerFormState extends ConsumerState<_PlayerForm> {
   void submitPlayer(Player player) {
-    ref.read(playersProvider.notifier).addPlayer(player);
+    ref.read(playersProvider.notifier).addPlayer(player, imageFile);
   }
 
   void _submitForm() async {
@@ -64,6 +65,7 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
   String number = '';
   Positions position = Positions.dc;
   String imageURL = '';
+  XFile? imageFile;
 
   @override
   Widget build(BuildContext context) {
@@ -125,8 +127,8 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
               AddImageWidget(
                 hintText: 'Agrega una imagen o sube una foto',
                 documentsFolder: 'players',
-                onImageUploaded: (url) {
-                  setState(() => imageURL = url);
+                onImageUploaded: (selectedImage) {
+                  setState(() => imageFile = selectedImage);
                 },
               ),
               const SizedBox(

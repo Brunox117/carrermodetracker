@@ -1,7 +1,9 @@
+import 'package:carrermodetracker/config/helpers/image_utilities.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:carrermodetracker/domain/repositories/tournament_repository.dart';
 import 'package:carrermodetracker/presentation/providers/storage/tournament_storage_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 
 final tournamentsProvider =
@@ -32,9 +34,15 @@ class StorageTournamentsNotifier extends StateNotifier<Map<int, Tournament>> {
     return tournaments;
   }
 
-  Future<void> addTournament(Tournament tournament) async {
+  Future<void> addTournament(Tournament tournament, XFile? imageFile) async {
     final tournamentWId =
         await tournamentStorageRepository.saveTournament(tournament);
+    if (imageFile != null) {
+      tournamentWId.logoURL = await saveImageInLocalStorage(
+          imageFile, 'tournaments', tournamentWId.id.toString());
+      await tournamentStorageRepository.updateTournament(
+          tournamentWId.id, tournamentWId);
+    }
     state = {...state, tournamentWId.id: tournamentWId};
   }
 
@@ -44,7 +52,8 @@ class StorageTournamentsNotifier extends StateNotifier<Map<int, Tournament>> {
     return tournament;
   }
 
-  Future<void> updateTournament(Id id, Tournament tournament) async {
+  Future<void> updateTournament(
+      Id id, Tournament tournament, XFile? imageFile) async {
     await tournamentStorageRepository.updateTournament(id, tournament);
     state = {...state, tournament.id: tournament};
   }

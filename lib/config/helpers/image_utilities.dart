@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as path;
 
-Future<String> saveImageInLocalStorage(XFile image, String directory) async {
+Future<String> saveImageInLocalStorage(XFile image, String directory, String imageName) async {
   Directory targetDir;
 
   if (kDebugMode) {
@@ -23,8 +23,8 @@ Future<String> saveImageInLocalStorage(XFile image, String directory) async {
     await targetDir.create(recursive: true);
   }
 
-  String fileName = path.basename(image.path);
-  File permanentFile = File('${targetDir.path}/$fileName');
+  String fileExtension = path.extension(image.path);
+  File permanentFile = File('${targetDir.path}/$imageName$fileExtension');
   final bytes = await File(image.path).readAsBytes();
   await permanentFile.writeAsBytes(bytes);
   return permanentFile.path;

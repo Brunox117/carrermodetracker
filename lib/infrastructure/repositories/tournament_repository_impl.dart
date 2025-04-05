@@ -29,6 +29,6 @@ class TournamentRepositoryImpl extends TournamentRepository {
 
   @override
   Future<bool> updateTournament(Id id, Tournament tournament) {
-    return updateTournament(id, tournament);
+    return datasource.updateTournament(id, tournament);
   }
 }
