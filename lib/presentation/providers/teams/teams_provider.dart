@@ -4,8 +4,8 @@ import 'package:carrermodetracker/domain/repositories/team_repository.dart';
 import 'package:carrermodetracker/presentation/providers/storage/teams_storage_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io'; // Needed for File
-import 'package:flutter/painting.dart'; // Needed for PaintingBinding
+import 'dart:io';
+import 'package:flutter/painting.dart';
 
 final teamsProvider =
     StateNotifierProvider<StorageTeamsNotifier, Map<int, Team>>(
@@ -17,12 +17,7 @@ final teamsProvider =
 
 final teamProvider =
     FutureProvider.autoDispose.family<Team, int>((ref, id) async {
-  final notifier = ref.watch(teamsProvider.notifier);
-  return notifier.getTeam(id);
-});
-
-final homeViewInitializationProvider = FutureProvider<void>((ref) async {
-  await ref.read(teamsProvider.notifier).initialize();
+  return ref.watch(teamsProvider.notifier).getTeam(id);
 });
 
 class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {

@@ -11,7 +11,6 @@ class HomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final teamsMap = ref.watch(teamsProvider);
-    final notifier = ref.read(teamsProvider.notifier);
     final teams = teamsMap.values.toList();
 
     final scrollController = ScrollController();
@@ -19,7 +18,7 @@ class HomeView extends ConsumerWidget {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        notifier.loadNextPage();
+        ref.read(teamsProvider.notifier).loadNextPage();
       }
     });
 
