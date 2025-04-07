@@ -1,5 +1,6 @@
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
+import 'package:carrermodetracker/presentation/widgets/team_table/table_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     final playerAsync =
         ref.watch(singlePlayerProvider(int.parse(widget.playerID)));
     final statsFromPlayer = ref
@@ -48,8 +50,51 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
           appBar: AppBar(
             title: Text(player.name),
           ),
-          body: const Center(
-            child: Text('PlayerView'),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Table(
+                  columnWidths: const {
+                    0: FlexColumnWidth(3), // Competición
+                    1: FlexColumnWidth(1), // PJ
+                    2: FlexColumnWidth(1), // G
+                    3: FlexColumnWidth(1), // A
+                  },
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: [
+                    TableRow(
+                        decoration: BoxDecoration(
+                            color: colors.secondary.withOpacity(0.2),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10))),
+                        children: const [
+                          TableCell(
+                              child: TableText(
+                            'Competición',
+                            isHeader: true,
+                          )),
+                          TableCell(
+                              child: TableText(
+                            'P',
+                            isHeader: true,
+                          )),
+                          TableCell(
+                              child: TableText(
+                            'G',
+                            isHeader: true,
+                          )),
+                          TableCell(
+                              child: TableText(
+                            'A',
+                            isHeader: true,
+                          )),
+                        ]),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
