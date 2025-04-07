@@ -7,7 +7,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.da
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:go_router/go_router.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -45,22 +45,66 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
     ref.read(playersProvider.notifier).addPlayer(player, imageFile);
   }
 
+  void updatePlayer(Player player) {
+    ref
+        .read(playersProvider.notifier)
+        .updatePlayer(int.parse(widget.playerId!), player, imageFile);
+  }
+
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final Team team = await ref
-          .read(teamsProvider.notifier)
-          .getTeam(int.parse(widget.teamId));
+      if (widget.playerId != null) {
+        final Team team = ref
+            .read(teamsProvider)
+            .values
+            .firstWhere((element) => element.id == oldPlayer!.team.value!.id);
+        Player player = Player(
+            name: name,
+            number: number,
+            position: position.name.toString().toUpperCase())
+          ..team.value = team;
+        _formKey.currentState!.reset();
+        updatePlayer(player);
+        context.pop();
+      } else {
+        final Team team = await ref
+            .read(teamsProvider.notifier)
+            .getTeam(int.parse(widget.teamId));
 
-      Player player = Player(
-          name: name,
-          number: number,
-          position: position.name.toString().toUpperCase())
-        ..team.value = team;
-      if (imageURL.isNotEmpty) {
-        player.imageURL = imageURL;
+        Player player = Player(
+            name: name,
+            number: number,
+            position: position.name.toString().toUpperCase())
+          ..team.value = team;
+        if (imageURL.isNotEmpty) {
+          player.imageURL = imageURL;
+        }
+        _formKey.currentState!.reset();
+        submitPlayer(player);
       }
-      _formKey.currentState!.reset();
-      submitPlayer(player);
+    }
+  }
+
+  void getOldPlayerInfo() {
+    oldPlayer = ref.read(playersProvider).values.firstWhere(
+          (element) => element.id == (int.parse(widget.playerId!)),
+        );
+    setState(() {
+      name = oldPlayer!.name;
+      number = oldPlayer!.number;
+      imageURL = oldPlayer!.imageURL;
+      position = Positions.values.firstWhere(
+        (element) =>
+            element.name.toString().toUpperCase() == oldPlayer!.position,
+      );
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.playerId != null) {
+      getOldPlayerInfo();
     }
   }
 
@@ -71,6 +115,7 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
   Positions position = Positions.dc;
   String imageURL = '';
   XFile? imageFile;
+  Player? oldPlayer;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +126,8 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
           child: ListView(
             children: [
               CustomFormField(
+                key: ValueKey(name),
+                initialValue: name,
                 isTopField: true,
                 isBottomField: true,
                 hint: "Nombre del jugador",
@@ -97,6 +144,8 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
               ),
               CustomFormField(
                 isTopField: true,
+                key: ValueKey(number),
+                initialValue: number,
                 isBottomField: true,
                 hint: "Número del jugador",
                 keyboardType: TextInputType.number,
@@ -130,11 +179,13 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
                 height: 10,
               ),
               AddImageWidget(
+                key: (imageURL.isNotEmpty) ? ValueKey(imageURL) : null,
                 hintText: 'Agrega una imagen o sube una foto',
                 documentsFolder: 'players',
                 onImageUploaded: (selectedImage) {
                   setState(() => imageFile = selectedImage);
                 },
+                imageURLFromFather: imageURL,
               ),
               const SizedBox(
                 height: 20,

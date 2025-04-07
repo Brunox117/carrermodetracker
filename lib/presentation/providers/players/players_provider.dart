@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:carrermodetracker/config/helpers/image_utilities.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/repositories/player_repository.dart';
 import 'package:carrermodetracker/presentation/providers/storage/players_storage_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -56,8 +59,19 @@ class StoragePlayersNotifier extends StateNotifier<Map<int, Player>> {
   }
 
   Future<void> updatePlayer(int id, Player player, XFile? imageFile) async {
+    Player oldPlayer = await playerStorageRepository.getPlayer(id);
+    player.id = oldPlayer.id;
+    if (imageFile != null) {
+      if (oldPlayer.imageURL.isNotEmpty) {
+        PaintingBinding.instance.imageCache
+            .evict(FileImage(File(oldPlayer.imageURL)));
+        await deleteImage(oldPlayer.imageURL);
+      }
+      player.imageURL =
+          await saveImageInLocalStorage(imageFile, 'players', id.toString());
+    }
     await playerStorageRepository.updatePlayer(id, player);
-    state = {...state, player.id: player};
+    state = {...state, id: player};
   }
 
   Future<void> deletePlayer(int id) async {

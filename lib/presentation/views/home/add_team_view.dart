@@ -39,7 +39,6 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
   }
 
   void updateTeam(Team team) async {
-    team.id = int.parse(widget.teamid!);
     ref
         .read(teamsProvider.notifier)
         .updateTeam(int.parse(widget.teamid!), team, _selectedLogoFile);
