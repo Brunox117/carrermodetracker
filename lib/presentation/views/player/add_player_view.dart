@@ -13,23 +13,28 @@ import 'package:carrermodetracker/presentation/providers/players/players_provide
 import 'package:image_picker/image_picker.dart';
 
 class AddPlayerView extends StatelessWidget {
-  final String id;
-  const AddPlayerView({super.key, required this.id});
+  final String? playerId;
+  final String teamId;
+  const AddPlayerView({super.key, required this.teamId, this.playerId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agregar jugador'),
+        title: Text((playerId == null) ? 'Agregar jugador' : "Editar jugador"),
       ),
-      body: _PlayerForm(teamId: id),
+      body: _PlayerForm(
+        teamId: teamId,
+        playerId: playerId,
+      ),
     );
   }
 }
 
 class _PlayerForm extends ConsumerStatefulWidget {
   final String teamId;
-  const _PlayerForm({required this.teamId});
+  final String? playerId;
+  const _PlayerForm({required this.teamId, this.playerId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => __PlayerFormState();

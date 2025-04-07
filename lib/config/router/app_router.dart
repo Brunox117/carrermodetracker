@@ -28,7 +28,7 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                       path: '/addplayerview',
                       builder: (context, state) {
                         final id = state.pathParameters['id'] ?? '';
-                        return AddPlayerView(id: id);
+                        return AddPlayerView(teamId: id);
                       },
                     ),
                     GoRoute(
@@ -66,6 +66,17 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                   builder: (context, state) {
                     final id = state.pathParameters['id'];
                     return AddTeamView(teamid: id);
+                  },
+                ),
+                GoRoute(
+                  path: '/editplayer/:playerId',
+                  builder: (context, state) {
+                    final id = state.pathParameters['id'] ?? '';
+                    final playerId = state.pathParameters['playerId'];
+                    return AddPlayerView(
+                      teamId: id,
+                      playerId: playerId,
+                    );
                   },
                 ),
                 GoRoute(

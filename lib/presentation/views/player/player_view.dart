@@ -1,3 +1,4 @@
+import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/table_row_divider.dart';
@@ -46,25 +47,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
     int totalAssists = 0;
 
     //Populate stats by tournament ex(La Liga, 40, 10, 3)
-    for (final stat in statsFromPlayer) {
-      final Tournament? tournament = stat.tournament.value;
-      if (tournament != null) {
-        final int tournamentId = tournament.id;
-        if (statsByTournament.containsKey(tournamentId)) {
-          statsByTournament[tournamentId]!['playedMatches'] +=
-              stat.playedMatches;
-          statsByTournament[tournamentId]!['goals'] += stat.goals;
-          statsByTournament[tournamentId]!['assists'] += stat.assists;
-        } else {
-          statsByTournament[tournamentId] = {
-            'name': tournament.name,
-            'playedMatches': stat.playedMatches,
-            'goals': stat.goals,
-            'assists': stat.assists,
-          };
-        }
-      }
-    }
+    populateStatsByTournament(statsFromPlayer, statsByTournament);
 
     //Build row per stats by tournament also register total stats
     final List<TableRow> statRows = statsByTournament.values.map((aggStat) {
@@ -91,7 +74,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
     }).toList();
 
     //Build totals row
-    final TableRow totalRow = TableRow(
+    final TableRow totalsRow = TableRow(
       decoration: BoxDecoration(
           color: colors.primary.withOpacity(0.2),
           borderRadius: const BorderRadius.all(Radius.circular(8))),
@@ -128,7 +111,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
         return Scaffold(
           floatingActionButton: IconButton.filledTonal(
             onPressed: () {
-              context.push('/editplayer/${widget.playerID}');
+              context.push('/editplayer/${player.id}');
             },
             icon: const Icon(Icons.edit),
           ),
@@ -183,7 +166,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
                             child: SizedBox(
                           height: 20,
                         ))),
-                    totalRow,
+                    totalsRow,
                   ],
                 ),
               ],
@@ -194,5 +177,29 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
       error: (error, stackTrace) => Text('Algo salió mal :( $error'),
       loading: () => const Center(child: CircularProgressIndicator()),
     );
+  }
+
+  void populateStatsByTournament(List<Stats> statsFromPlayer,
+      Map<int, Map<String, dynamic>> statsByTournament) {
+    //Populate stats by tournament ex(La Liga, 40, 10, 3)
+    for (final stat in statsFromPlayer) {
+      final Tournament? tournament = stat.tournament.value;
+      if (tournament != null) {
+        final int tournamentId = tournament.id;
+        if (statsByTournament.containsKey(tournamentId)) {
+          statsByTournament[tournamentId]!['playedMatches'] +=
+              stat.playedMatches;
+          statsByTournament[tournamentId]!['goals'] += stat.goals;
+          statsByTournament[tournamentId]!['assists'] += stat.assists;
+        } else {
+          statsByTournament[tournamentId] = {
+            'name': tournament.name,
+            'playedMatches': stat.playedMatches,
+            'goals': stat.goals,
+            'assists': stat.assists,
+          };
+        }
+      }
+    }
   }
 }
