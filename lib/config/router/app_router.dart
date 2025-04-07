@@ -3,6 +3,7 @@ import 'package:carrermodetracker/presentation/views/config/config_view.dart';
 import 'package:carrermodetracker/presentation/views/home/add_team_view.dart';
 import 'package:carrermodetracker/presentation/views/home/home_view.dart';
 import 'package:carrermodetracker/presentation/views/player/add_player_view.dart';
+import 'package:carrermodetracker/presentation/views/player/player_view.dart';
 import 'package:carrermodetracker/presentation/views/seasons/add_season_view.dart';
 import 'package:carrermodetracker/presentation/views/stats/add_stat_view.dart';
 import 'package:carrermodetracker/presentation/views/team/team_overview_view.dart';
@@ -65,6 +66,15 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                   builder: (context, state) {
                     final id = state.pathParameters['id'];
                     return AddTeamView(teamid: id);
+                  },
+                ),
+                GoRoute(
+                  path: '/playerview/:playerID',
+                  builder: (context, state) {
+                    final playerID = state.pathParameters['playerID'];
+                    return PlayerView(
+                      playerID: playerID ?? '',
+                    );
                   },
                 ),
                 GoRoute(

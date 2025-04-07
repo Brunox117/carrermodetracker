@@ -2,6 +2,7 @@ import 'package:carrermodetracker/config/theme/app_text_styles.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/presentation/widgets/team_table/table_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 //NOT A WIDGET
 TableRow buildTableRow(BuildContext context, Player player,
@@ -31,11 +32,14 @@ TableRow buildTableRow(BuildContext context, Player player,
     children: [
       TableCell(child: TableText(player.position)),
       TableCell(
-          child: Row(
-        children: [
-          const Icon(Icons.person),
-          Flexible(child: Text(player.name, style: textStyles.tableBodyText)),
-        ],
+          child: GestureDetector(
+            onTap: () => context.push('/playerview/${player.id}'),
+        child: Row(
+          children: [
+            const Icon(Icons.person),
+            Flexible(child: Text(player.name, style: textStyles.tableBodyText)),
+          ],
+        ),
       )),
       TableCell(child: TableText(totalMatches.toString())),
       TableCell(child: TableText(totalGoals.toString())),

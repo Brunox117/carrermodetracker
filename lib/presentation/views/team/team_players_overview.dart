@@ -15,7 +15,8 @@ class TeamPlayersOverview extends ConsumerStatefulWidget {
   const TeamPlayersOverview({super.key, required this.id});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TeamPlayersOverviewState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TeamPlayersOverviewState();
 }
 
 class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
@@ -115,17 +116,17 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
                       )),
                       TableCell(
                           child: TableText(
-                        'PJ',
+                        'P',
                         isHeader: true,
                       )),
                       TableCell(
                           child: TableText(
-                        'Goles',
+                        'G',
                         isHeader: true,
                       )),
                       TableCell(
                           child: TableText(
-                        'As.',
+                        'A',
                         isHeader: true,
                       )),
                     ]),
