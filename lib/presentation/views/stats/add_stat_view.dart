@@ -71,9 +71,8 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
             .getSeason(selectedSeasonID!);
       }
       if (selectedPlayerID != null) {
-        player = await ref
-            .read(playersProvider.notifier)
-            .getPlayer(selectedPlayerID!);
+        final playersMap = ref.read(playersProvider);
+        player = playersMap[selectedPlayerID];
       }
       if (selectedTournamentID != null) {
         tournament = await ref
@@ -160,7 +159,8 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
                   child: Column(
                     children: [
                       CustomNumberFormField(

@@ -98,6 +98,7 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
             children: [
               CustomFormField(
                 isTopField: true,
+                isBottomField: true,
                 hint: "Nombre del equipo",
                 key: ValueKey(name),
                 initialValue: name,
@@ -113,6 +114,8 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
                 height: 10,
               ),
               CustomFormField(
+                isBottomField: true,
+                isTopField: true,
                 hint: "Acrónimo (FCB, RM, BVB)",
                 key: ValueKey(acronimos),
                 initialValue: acronimos,

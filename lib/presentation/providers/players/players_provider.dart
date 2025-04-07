@@ -14,6 +14,16 @@ final playersProvider =
   },
 );
 
+final singlePlayerProvider = FutureProvider.autoDispose.family<Player, int>(
+  (ref, id) {
+    final playersMap = ref.watch(playersProvider);
+    if (playersMap.containsKey(id)) {
+      return playersMap[id]!;
+    }
+    return ref.read(playersProvider.notifier).getPlayer(id);
+  },
+);
+
 class StoragePlayersNotifier extends StateNotifier<Map<int, Player>> {
   final PlayerRepository playerStorageRepository;
 
