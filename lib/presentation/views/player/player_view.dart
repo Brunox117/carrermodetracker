@@ -1,5 +1,6 @@
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
+import 'package:carrermodetracker/presentation/widgets/shared/table_row_divider.dart';
 import 'package:carrermodetracker/presentation/widgets/team_table/table_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,14 +49,12 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
       if (tournament != null) {
         final int tournamentId = tournament.id;
         if (aggregatedStats.containsKey(tournamentId)) {
-          // Si ya existe, suma las estadísticas
           aggregatedStats[tournamentId]!['playedMatches'] += stat.playedMatches;
           aggregatedStats[tournamentId]!['goals'] += stat.goals;
           aggregatedStats[tournamentId]!['assists'] += stat.assists;
         } else {
-          // Si no existe, crea una nueva entrada
           aggregatedStats[tournamentId] = {
-            'name': tournament.name, // Guardamos el nombre para mostrarlo
+            'name': tournament.name,
             'playedMatches': stat.playedMatches,
             'goals': stat.goals,
             'assists': stat.assists,
@@ -64,22 +63,18 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
       }
     }
 
-    // 2. Crear las TableRows a partir de las estadísticas agregadas y calcular totales
     int totalPlayedMatches = 0;
     int totalGoals = 0;
     int totalAssists = 0;
 
     final List<TableRow> statRows = aggregatedStats.values.map((aggStat) {
-      // Sumar a los totales
       totalPlayedMatches += aggStat['playedMatches'] as int;
       totalGoals += aggStat['goals'] as int;
       totalAssists += aggStat['assists'] as int;
 
-      // Crear la fila para este torneo
       return TableRow(
         children: [
           TableCell(
-            // Usando TableText para consistencia, asumiendo que maneja el estilo
             child: TableText(aggStat['name'].toString()),
           ),
           TableCell(
@@ -181,6 +176,12 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
                           )),
                         ]),
                     ...statRows,
+                    tableRowDivider(
+                        4,
+                        const TableCell(
+                            child: SizedBox(
+                          height: 20,
+                        ))),
                     totalRow,
                   ],
                 ),
