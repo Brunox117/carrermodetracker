@@ -40,20 +40,23 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
           (stat) => stat.player.value?.id == int.parse(widget.playerID),
         )
         .toList();
+    final Map<int, Map<String, dynamic>> statsByTournament = {};
+    int totalPlayedMatches = 0;
+    int totalGoals = 0;
+    int totalAssists = 0;
 
-    final Map<int, Map<String, dynamic>> aggregatedStats = {};
-
+    //Populate stats by tournament ex(La Liga, 40, 10, 3)
     for (final stat in statsFromPlayer) {
       final Tournament? tournament = stat.tournament.value;
-
       if (tournament != null) {
         final int tournamentId = tournament.id;
-        if (aggregatedStats.containsKey(tournamentId)) {
-          aggregatedStats[tournamentId]!['playedMatches'] += stat.playedMatches;
-          aggregatedStats[tournamentId]!['goals'] += stat.goals;
-          aggregatedStats[tournamentId]!['assists'] += stat.assists;
+        if (statsByTournament.containsKey(tournamentId)) {
+          statsByTournament[tournamentId]!['playedMatches'] +=
+              stat.playedMatches;
+          statsByTournament[tournamentId]!['goals'] += stat.goals;
+          statsByTournament[tournamentId]!['assists'] += stat.assists;
         } else {
-          aggregatedStats[tournamentId] = {
+          statsByTournament[tournamentId] = {
             'name': tournament.name,
             'playedMatches': stat.playedMatches,
             'goals': stat.goals,
@@ -63,11 +66,8 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
       }
     }
 
-    int totalPlayedMatches = 0;
-    int totalGoals = 0;
-    int totalAssists = 0;
-
-    final List<TableRow> statRows = aggregatedStats.values.map((aggStat) {
+    //Build row per stats by tournament also register total stats
+    final List<TableRow> statRows = statsByTournament.values.map((aggStat) {
       totalPlayedMatches += aggStat['playedMatches'] as int;
       totalGoals += aggStat['goals'] as int;
       totalAssists += aggStat['assists'] as int;
@@ -90,6 +90,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
       );
     }).toList();
 
+    //Build totals row
     final TableRow totalRow = TableRow(
       decoration: BoxDecoration(
           color: colors.primary.withOpacity(0.2),
