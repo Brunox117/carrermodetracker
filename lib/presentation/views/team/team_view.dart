@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -26,9 +28,21 @@ class TeamView extends ConsumerWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Center(child: Text(team.name, style: textStyles.titleLarge)),
+                const SizedBox(
+                  height: 10,
+                ),
+                (team.logoURL.isEmpty)
+                    ? const SizedBox()
+                    : SizedBox(
+                        height: 200,
+                        child: Image.file(
+                          File(team.logoURL),
+                          fit: BoxFit.contain,
+                        ),
+                      )
               ],
             ),
           );
