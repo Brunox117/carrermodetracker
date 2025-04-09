@@ -51,7 +51,8 @@ class SeasonStorageNotifier extends StateNotifier<Map<int, Season>> {
   }
 
   Future<void> updateSeason(int id, Season season) async {
+    season.id = id;
     await seasonsStorageRepository.updateSeason(id, season);
-    state = {...state, season.id: season};
+    state = {...state, id: season};
   }
 }

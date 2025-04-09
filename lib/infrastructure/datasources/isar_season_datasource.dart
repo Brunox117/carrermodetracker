@@ -54,6 +54,7 @@ class IsarSeasonDatasource extends SeasonDatasource {
     final originalSeason = await isar.seasons.get(id);
     if (originalSeason == null) return false;
     originalSeason.season = season.season;
+    isar.writeTxnSync(() => isar.seasons.putSync(originalSeason));
     return true;
   }
 }
