@@ -31,9 +31,15 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
   final _formKey = GlobalKey<FormState>();
   String season = '';
   List<Season> savedSeasons = [];
+  bool updatingSeason = false;
+  int? updateSeasonId;
 
   void submitSeason(Season seasonTS) {
     ref.read(seasonsProvider.notifier).saveSeason(seasonTS);
+  }
+
+  void updateSeason(int id, Season seasonTU) {
+    ref.read(seasonsProvider.notifier).updateSeason(id, seasonTU);
   }
 
   void _submitForm() async {
@@ -93,6 +99,7 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
 
   @override
   Widget build(BuildContext context) {
+    final textStyles = Theme.of(context).textTheme;
     final seasonsMap = ref.watch(seasonsProvider);
     savedSeasons = seasonsMap.values.toList();
     return Padding(
@@ -103,6 +110,7 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
             children: [
               SizedBox(height: MediaQuery.of(context).size.width * 0.1),
               CustomFormField(
+                key: ValueKey(season),
                 initialValue: season,
                 isTopField: true,
                 isBottomField: true,
@@ -120,7 +128,10 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
                   _submitForm();
                 },
               ),
-              const Text('Temporadas registradas'),
+              Text(
+                'Temporadas registradas',
+                style: textStyles.titleLarge,
+              ),
               (savedSeasons.isEmpty)
                   ? const Text('No tienes temporadas guardadas')
                   : SizedBox(
@@ -129,7 +140,26 @@ class __SeasonFormState extends ConsumerState<_SeasonForm> {
                         itemCount: savedSeasons.length,
                         itemBuilder: (context, index) {
                           final seasonSaved = savedSeasons[index];
-                          return Text(seasonSaved.season);
+                          return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  seasonSaved.season,
+                                  style: textStyles.bodyLarge,
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        updatingSeason = true;
+                                        updateSeasonId = seasonSaved.id;
+                                        season = seasonSaved.season;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      size: 18,
+                                    ))
+                              ]);
                         },
                       ),
                     ),

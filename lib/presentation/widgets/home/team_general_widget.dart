@@ -30,7 +30,7 @@ class TeamGeneralWidget extends ConsumerWidget {
               left: 0,
               right: 0,
               top: 10,
-              bottom: 50,
+              bottom: 30,
               child: (logoURL.isNotEmpty)
                   ? SizedBox(
                       height: 100,

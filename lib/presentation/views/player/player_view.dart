@@ -181,7 +181,6 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
 
   void populateStatsByTournament(List<Stats> statsFromPlayer,
       Map<int, Map<String, dynamic>> statsByTournament) {
-    //Populate stats by tournament ex(La Liga, 40, 10, 3)
     for (final stat in statsFromPlayer) {
       final Tournament? tournament = stat.tournament.value;
       if (tournament != null) {
