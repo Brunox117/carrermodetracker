@@ -15,4 +15,6 @@ abstract class StatsDatasource {
   Future<bool> deleteStats(Id id);
 
   Future<bool> updateStats(Id id, Stats stats);
+
+  Future<Stats?> getStatByTripleKey(Id playerId, Id tournamentId, Id seasonId);
 }

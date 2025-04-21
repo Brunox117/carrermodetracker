@@ -12,6 +12,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.da
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+
 class AddStatView extends StatelessWidget {
   final String id;
   const AddStatView({super.key, required this.id});
@@ -59,8 +60,12 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
     ref.read(seasonsProvider.notifier).getSeasons();
   }
 
-  void submitStat(Stats stat) {
+  void saveStat(Stats stat) {
     ref.read(statsProvider.notifier).saveStats(stat);
+  }
+
+  void updateStat(Stats stat) {
+    ref.read(statsProvider.notifier).updateStats(stat.id, stat);
   }
 
   void submitForm() async {
@@ -86,7 +91,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
         stats.tournament.value = tournament;
         stats.season.value = season;
         _formKey.currentState!.reset();
-        submitStat(stats);
+        saveStat(stats);
       }
     }
   }

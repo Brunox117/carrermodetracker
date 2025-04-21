@@ -93,4 +93,16 @@ class IsarStatsDatasource extends StatsDatasource {
         )
         .findAll();
   }
+
+  @override
+  Future<Stats?> getStatByTripleKey(
+      Id playerId, Id tournamentId, Id seasonId) async {
+    final isar = await db;
+    return await isar.stats
+        .filter()
+        .player((q) => q.idEqualTo(playerId))
+        .season((q) => q.idEqualTo(seasonId))
+        .tournament((q) => q.idEqualTo(tournamentId))
+        .findFirst();
+  }
 }
