@@ -1,3 +1,4 @@
+import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
@@ -11,7 +12,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/custom_number_form_
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:go_router/go_router.dart';
 
 class AddStatView extends StatelessWidget {
   final String id;
@@ -64,8 +65,8 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
     ref.read(statsProvider.notifier).saveStats(stat);
   }
 
-  void updateStat(Stats stat) {
-    ref.read(statsProvider.notifier).updateStats(stat.id, stat);
+  void updateStat(Stats stat, int id) {
+    ref.read(statsProvider.notifier).updateStats(id, stat);
   }
 
   void submitForm() async {
@@ -85,13 +86,31 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
             .getTournament(selectedTournamentID!);
       }
       if (season != null && tournament != null && player != null) {
-        final Stats stats =
+        final Stats? alreadeSavedStat = await ref
+            .read(statsProvider.notifier)
+            .getStatByTripleKey(player!.id, tournament!.id, season!.id);
+        final Stats statToSave =
             Stats(assists: assists, goals: goals, playedMatches: playedMatches);
-        stats.player.value = player;
-        stats.tournament.value = tournament;
-        stats.season.value = season;
-        _formKey.currentState!.reset();
-        saveStat(stats);
+        statToSave.player.value = player;
+        statToSave.tournament.value = tournament;
+        statToSave.season.value = season;
+        if (alreadeSavedStat == null) {
+          _formKey.currentState!.reset();
+          saveStat(statToSave);
+        } else {
+          showDefaultDialog(
+              // ignore: use_build_context_synchronously
+              context,
+              'Parece que ya guardaste una estadística con estos datos,¿Deseas actualizarla?',
+              'Si, actualizar',
+              'No, cambiar datos', () {
+            context.pop();
+          }, () {
+            context.pop();
+            updateStat(statToSave, alreadeSavedStat.id);
+            _formKey.currentState!.reset();
+          });
+        }
       }
     }
   }

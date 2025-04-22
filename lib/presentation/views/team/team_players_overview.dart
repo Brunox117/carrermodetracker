@@ -100,7 +100,7 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
               children: [
                 TableRow(
                     decoration: BoxDecoration(
-                        color: colors.secondary.withOpacity(0.2),
+                        color: colors.secondary.withValues(alpha: 0.2),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10))),
                     children: const [

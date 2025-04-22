@@ -76,7 +76,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
     //Build totals row
     final TableRow totalsRow = TableRow(
       decoration: BoxDecoration(
-          color: colors.primary.withOpacity(0.2),
+          color: colors.primary.withValues(alpha: 0.2),
           borderRadius: const BorderRadius.all(Radius.circular(8))),
       children: [
         const TableCell(
@@ -134,7 +134,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
                   children: [
                     TableRow(
                         decoration: BoxDecoration(
-                            color: colors.secondary.withOpacity(0.2),
+                            color: colors.secondary.withValues(alpha: 0.2),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(10))),
                         children: const [
