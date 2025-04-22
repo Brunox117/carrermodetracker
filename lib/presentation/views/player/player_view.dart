@@ -58,7 +58,10 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
       return TableRow(
         children: [
           TableCell(
-            child: TableText(aggStat['name'].toString()),
+            child:
+                GestureDetector(
+                  onTap: () => context.push('/tournamentview/${aggStat['tournamentId']}'),
+                  child: TableText(aggStat['name'].toString())),
           ),
           TableCell(
             child: TableText(aggStat['playedMatches'].toString()),
@@ -193,6 +196,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
         } else {
           statsByTournament[tournamentId] = {
             'name': tournament.name,
+            'tournamentId': tournament.id,
             'playedMatches': stat.playedMatches,
             'goals': stat.goals,
             'assists': stat.assists,

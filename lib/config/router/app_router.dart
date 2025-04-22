@@ -8,6 +8,7 @@ import 'package:carrermodetracker/presentation/views/seasons/add_season_view.dar
 import 'package:carrermodetracker/presentation/views/stats/add_stat_view.dart';
 import 'package:carrermodetracker/presentation/views/team/team_overview_view.dart';
 import 'package:carrermodetracker/presentation/views/tournaments/add_tournament_view.dart';
+import 'package:carrermodetracker/presentation/views/tournaments/tournament_view.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(initialLocation: '/', routes: [
@@ -85,6 +86,15 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                     final playerID = state.pathParameters['playerID'];
                     return PlayerView(
                       playerID: playerID ?? '',
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: '/tournamentview/:tournamentID',
+                  builder: (context, state) {
+                    final tournamentID = state.pathParameters['tournamentID'];
+                    return TournamentView(
+                      tournamentID: tournamentID ?? '',
                     );
                   },
                 ),

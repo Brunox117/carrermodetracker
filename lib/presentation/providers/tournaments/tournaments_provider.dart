@@ -15,6 +15,17 @@ final tournamentsProvider =
   },
 );
 
+final singleTournamentProvider =
+    FutureProvider.autoDispose.family<Tournament, int>(
+  (ref, id) {
+    final tournamentsMap = ref.watch(tournamentsProvider);
+    if (tournamentsMap.containsKey(id)) {
+      return tournamentsMap[id]!;
+    }
+    return ref.read(tournamentsProvider.notifier).getTournament(id);
+  },
+);
+
 class StorageTournamentsNotifier extends StateNotifier<Map<int, Tournament>> {
   int page = 0;
   final TournamentRepository tournamentStorageRepository;
