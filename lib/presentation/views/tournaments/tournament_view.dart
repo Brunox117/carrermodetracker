@@ -23,14 +23,13 @@ class TournamentView extends ConsumerWidget {
 
           populateStatsByTournament(
               tournament.stats.toList(), statsByTournament);
-
-          // Convertir el mapa a una lista de jugadores con sus goles
-          List<Map<String, dynamic>> playersList =
-              statsByTournament.values.toList();
-          List<Map<String, dynamic>> top5PGoals = getTopScorers(playersList);
-          List<Map<String, dynamic>> top5PAssists = getTopScorers(playersList);
+          //Get best 5 players for each stat
+          List<Map<String, dynamic>> top5PGoals =
+              getTopScorers(statsByTournament.values.toList());
+          List<Map<String, dynamic>> top5PAssists =
+              getTopAssists(statsByTournament.values.toList());
           List<Map<String, dynamic>> top5PPlayedMatches =
-              getTopScorers(playersList);
+              getTopPlayedMatches(statsByTournament.values.toList());
 
           return Scaffold(
             appBar: AppBar(
@@ -38,85 +37,44 @@ class TournamentView extends ConsumerWidget {
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  (tournament.logoURL.isEmpty)
-                      ? const SizedBox()
-                      : SizedBox(
-                          height: 200,
-                          child: Image.file(
-                            File(tournament.logoURL),
-                            fit: BoxFit.contain,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    (tournament.logoURL.isEmpty)
+                        ? const SizedBox()
+                        : SizedBox(
+                            height: 200,
+                            child: Image.file(
+                              File(tournament.logoURL),
+                              fit: BoxFit.contain,
+                            ),
                           ),
-                        ),
-                  CustomCard(
-                      child: Row(
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Máximos goleadores',
-                            style: textStyles.titleMedium,
-                          ),
-                          Column(
-                            children: top5PGoals
-                                .map((player) => Text(
-                                      '${player['name']}: ${player['goals']}',
-                                      style: textStyles.bodyMedium,
-                                    ))
-                                .toList(),
-                          )
-                        ],
-                      ),
-                    ],
-                  )),
-                  CustomCard(
-                      child: Row(
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Máximos asistentes',
-                            style: textStyles.titleMedium,
-                          ),
-                          // Mostrar la lista de los 5 máximos goleadores
-                          Column(
-                            children: top5PGoals
-                                .map((player) => Text(
-                                      '${player['name']}: ${player['assists']}',
-                                      style: textStyles.bodyMedium,
-                                    ))
-                                .toList(),
-                          )
-                        ],
-                      ),
-                    ],
-                  )),
-                  CustomCard(
-                      child: Row(
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Más participaciones',
-                            style: textStyles.titleMedium,
-                          ),
-                          Column(
-                            children: top5PGoals
-                                .map((player) => Text(
-                                      '${player['name']}: ${player['playedMatches']}',
-                                      style: textStyles.bodyMedium,
-                                    ))
-                                .toList(),
-                          )
-                        ],
-                      ),
-                    ],
-                  )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
+                    Text(
+                      "Los mejores",
+                      style: textStyles.titleLarge,
+                    ),
+                    _PlayerStatsTableCard(
+                      title: 'Máximos goleadores',
+                      players: top5PGoals,
+                      statKey: 'goals',
+                    ),
+                    const SizedBox(height: 16.0),
+                    _PlayerStatsTableCard(
+                      title: 'Máximos asistentes',
+                      players: top5PAssists,
+                      statKey: 'assists',
+                    ),
+                    const SizedBox(height: 16.0),
+                    _PlayerStatsTableCard(
+                      title: 'Más participaciones',
+                      players: top5PPlayedMatches,
+                      statKey: 'playedMatches',
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -161,6 +119,7 @@ class TournamentView extends ConsumerWidget {
         } else {
           statsByPlayer[playerId] = {
             'name': player.name,
+            'imageURL': player.imageURL,
             'playerId': player.id,
             'playedMatches': stat.playedMatches,
             'goals': stat.goals,
@@ -169,5 +128,62 @@ class TournamentView extends ConsumerWidget {
         }
       }
     }
+  }
+}
+
+class _PlayerStatsTableCard extends StatelessWidget {
+  final String title;
+  final List<Map<String, dynamic>> players;
+  final String statKey;
+
+  const _PlayerStatsTableCard({
+    required this.title,
+    required this.players,
+    required this.statKey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyles = Theme.of(context).textTheme;
+    return CustomCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: textStyles.titleMedium,
+          ),
+          const SizedBox(height: 8.0),
+          Table(
+            columnWidths: const {
+              0: FlexColumnWidth(2), // Nombre
+              1: FlexColumnWidth(1), // Stat
+            },
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: [
+              ...players.map((player) {
+                return TableRow(
+                  children: [
+                    TableCell(
+                      child: Text(
+                        player['name'],
+                        style: textStyles.bodyMedium,
+                      ),
+                    ),
+                    TableCell(
+                      child: Text(
+                        '${player[statKey]}',
+                        style: textStyles.bodyMedium,
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
