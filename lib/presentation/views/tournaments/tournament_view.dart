@@ -6,6 +6,7 @@ import 'package:carrermodetracker/presentation/providers/tournaments/tournaments
 import 'package:carrermodetracker/presentation/widgets/shared/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class TournamentView extends ConsumerWidget {
   final String tournamentID;
@@ -32,6 +33,12 @@ class TournamentView extends ConsumerWidget {
               getTopPlayedMatches(statsByTournament.values.toList());
 
           return Scaffold(
+            floatingActionButton: IconButton.filledTonal(
+              onPressed: () {
+                context.push('/edittournament/${tournament.id}');
+              },
+              icon: const Icon(Icons.edit),
+            ),
             appBar: AppBar(
               title: Text(tournament.name),
             ),
@@ -53,6 +60,7 @@ class TournamentView extends ConsumerWidget {
                       "Los mejores",
                       style: textStyles.titleLarge,
                     ),
+                    const SizedBox(height: 16.0),
                     _PlayerStatsTableCard(
                       title: 'Máximos goleadores',
                       players: top5PGoals,

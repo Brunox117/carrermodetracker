@@ -81,6 +81,15 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                   },
                 ),
                 GoRoute(
+                  path: '/edittournament/:tournamentId',
+                  builder: (context, state) {
+                    final tournamentId = state.pathParameters['tournamentId'];
+                    return AddTournamentView(
+                      tournamentId: tournamentId,
+                    );
+                  },
+                ),
+                GoRoute(
                   path: '/playerview/:playerID',
                   builder: (context, state) {
                     final playerID = state.pathParameters['playerID'];

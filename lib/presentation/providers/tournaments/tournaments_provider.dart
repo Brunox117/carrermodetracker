@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:carrermodetracker/config/helpers/image_utilities.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:carrermodetracker/domain/repositories/tournament_repository.dart';
 import 'package:carrermodetracker/presentation/providers/storage/tournament_storage_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
@@ -65,8 +68,20 @@ class StorageTournamentsNotifier extends StateNotifier<Map<int, Tournament>> {
 
   Future<void> updateTournament(
       Id id, Tournament tournament, XFile? imageFile) async {
+    Tournament oldTournament =
+        await tournamentStorageRepository.getTournament(id);
+    tournament.id = oldTournament.id;
+    if (imageFile != null) {
+      if (oldTournament.logoURL.isNotEmpty) {
+        PaintingBinding.instance.imageCache
+            .evict(FileImage(File(oldTournament.logoURL)));
+        await deleteImage(oldTournament.logoURL);
+      }
+      tournament.logoURL = await saveImageInLocalStorage(
+          imageFile, 'tournaments', id.toString());
+    }
     await tournamentStorageRepository.updateTournament(id, tournament);
-    state = {...state, tournament.id: tournament};
+    state = {...state, id: tournament};
   }
 
   Future<void> deleteTournament(Id id) async {
