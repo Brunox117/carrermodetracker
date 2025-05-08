@@ -77,11 +77,12 @@ class StorageTournamentsNotifier extends StateNotifier<Map<int, Tournament>> {
             .evict(FileImage(File(oldTournament.logoURL)));
         await deleteImage(oldTournament.logoURL);
       }
-      tournament.logoURL = await saveImageInLocalStorage(
+      oldTournament.logoURL = await saveImageInLocalStorage(
           imageFile, 'tournaments', id.toString());
     }
-    await tournamentStorageRepository.updateTournament(id, tournament);
-    state = {...state, id: tournament};
+    oldTournament.name = tournament.name;
+    await tournamentStorageRepository.updateTournament(id, oldTournament);
+    state = {...state, id: oldTournament};
   }
 
   Future<void> deleteTournament(Id id) async {
