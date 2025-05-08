@@ -34,6 +34,74 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
   List<Season> savedSeasons = [];
   List<Tournament> savedTournaments = [];
 
+  String currentSortColumn = '';
+  bool isAscending = true;
+
+  Map<String, int> getFilteredStats(Player player) {
+    int totalGoals = 0;
+    int totalMatches = 0;
+    int totalAssists = 0;
+
+    for (var element in player.stats) {
+      bool seasonMatch = selectedSeasonIDs.isEmpty ||
+          (element.season.value != null &&
+              selectedSeasonIDs.contains(element.season.value!.id));
+      bool tournamentMatch = selectedTournamentIDs.isEmpty ||
+          (element.tournament.value != null &&
+              selectedTournamentIDs.contains(element.tournament.value!.id));
+
+      if (seasonMatch && tournamentMatch) {
+        totalGoals += element.goals;
+        totalAssists += element.assists;
+        totalMatches += element.playedMatches;
+      }
+    }
+
+    return {
+      'goals': totalGoals,
+      'matches': totalMatches,
+      'assists': totalAssists,
+    };
+  }
+
+  void sortPlayers(String column) {
+    setState(() {
+      if (currentSortColumn == column) {
+        isAscending = !isAscending;
+      } else {
+        currentSortColumn = column;
+        isAscending = true;
+      }
+
+      players.sort((a, b) {
+        var aStats = getFilteredStats(a);
+        var bStats = getFilteredStats(b);
+
+        int comparison;
+        switch (column) {
+          case 'position':
+            comparison = a.position.compareTo(b.position);
+            break;
+          case 'name':
+            comparison = a.name.compareTo(b.name);
+            break;
+          case 'matches':
+            comparison = aStats['matches']!.compareTo(bStats['matches']!);
+            break;
+          case 'goals':
+            comparison = aStats['goals']!.compareTo(bStats['goals']!);
+            break;
+          case 'assists':
+            comparison = aStats['assists']!.compareTo(bStats['assists']!);
+            break;
+          default:
+            return 0;
+        }
+        return isAscending ? comparison : -comparison;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     savedSeasons = ref.watch(seasonsProvider).values.toList();
@@ -45,6 +113,36 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
             player.team.value != null &&
             player.team.value!.id == int.parse(widget.id))
         .toList();
+
+    if (currentSortColumn.isNotEmpty) {
+      players.sort((a, b) {
+        var aStats = getFilteredStats(a);
+        var bStats = getFilteredStats(b);
+
+        int comparison;
+        switch (currentSortColumn) {
+          case 'position':
+            comparison = a.position.compareTo(b.position);
+            break;
+          case 'name':
+            comparison = a.name.compareTo(b.name);
+            break;
+          case 'matches':
+            comparison = aStats['matches']!.compareTo(bStats['matches']!);
+            break;
+          case 'goals':
+            comparison = aStats['goals']!.compareTo(bStats['goals']!);
+            break;
+          case 'assists':
+            comparison = aStats['assists']!.compareTo(bStats['assists']!);
+            break;
+          default:
+            return 0;
+        }
+        return isAscending ? comparison : -comparison;
+      });
+    }
+
     final colors = Theme.of(context).colorScheme;
 
     return Padding(
@@ -106,38 +204,53 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
                     children: [
                       TableCell(
                           child: GestureDetector(
-                              onTap: () {},
-                              child: const TableText(
+                              onTap: () => sortPlayers('position'),
+                              child: TableText(
                                 'Posición',
                                 isHeader: true,
+                                suffix: currentSortColumn == 'position'
+                                    ? (isAscending ? ' ↑' : ' ↓')
+                                    : '',
                               ))),
                       TableCell(
                           child: GestureDetector(
-                              onTap: () {},
-                              child: const TableText(
+                              onTap: () => sortPlayers('name'),
+                              child: TableText(
                                 'Nombre',
                                 isHeader: true,
+                                suffix: currentSortColumn == 'name'
+                                    ? (isAscending ? ' ↑' : ' ↓')
+                                    : '',
                               ))),
                       TableCell(
                           child: GestureDetector(
-                              onTap: () {},
-                              child: const TableText(
+                              onTap: () => sortPlayers('matches'),
+                              child: TableText(
                                 'P',
                                 isHeader: true,
+                                suffix: currentSortColumn == 'matches'
+                                    ? (isAscending ? ' ↑' : ' ↓')
+                                    : '',
                               ))),
                       TableCell(
                           child: GestureDetector(
-                              onTap: () {},
-                              child: const TableText(
+                              onTap: () => sortPlayers('goals'),
+                              child: TableText(
                                 'G',
                                 isHeader: true,
+                                suffix: currentSortColumn == 'goals'
+                                    ? (isAscending ? ' ↑' : ' ↓')
+                                    : '',
                               ))),
                       TableCell(
                           child: GestureDetector(
-                              onTap: () {},
-                              child: const TableText(
+                              onTap: () => sortPlayers('assists'),
+                              child: TableText(
                                 'A',
                                 isHeader: true,
+                                suffix: currentSortColumn == 'assists'
+                                    ? (isAscending ? ' ↑' : ' ↓')
+                                    : '',
                               ))),
                     ]),
                 ...players.map((player) => buildTableRow(
