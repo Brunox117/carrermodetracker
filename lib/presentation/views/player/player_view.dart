@@ -58,10 +58,10 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
       return TableRow(
         children: [
           TableCell(
-            child:
-                GestureDetector(
-                  onTap: () => context.push('/tournamentview/${aggStat['tournamentId']}'),
-                  child: TableText(aggStat['name'].toString())),
+            child: GestureDetector(
+                onTap: () =>
+                    context.push('/tournamentview/${aggStat['tournamentId']}'),
+                child: TableText(aggStat['name'].toString())),
           ),
           TableCell(
             child: TableText(aggStat['playedMatches'].toString()),
@@ -79,7 +79,7 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
     //Build totals row
     final TableRow totalsRow = TableRow(
       decoration: BoxDecoration(
-          color: colors.primary.withValues(alpha: 0.2),
+          color: colors.primary.withValues(alpha: 0.3),
           borderRadius: const BorderRadius.all(Radius.circular(8))),
       children: [
         const TableCell(
@@ -112,11 +112,31 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
     return playerAsync.when(
       data: (player) {
         return Scaffold(
-          floatingActionButton: IconButton.filledTonal(
-            onPressed: () {
-              context.push('/editplayer/${player.id}');
-            },
-            icon: const Icon(Icons.edit),
+          floatingActionButton: Stack(
+            children: [
+              Positioned(
+                bottom: 16,
+                right: 0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    IconButton.filledTonal(
+                      onPressed: () {
+                        context.push('/editplayer/${player.id}');
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+                    const SizedBox(height: 1),
+                    IconButton.filledTonal(
+                      onPressed: () {
+                        context.push('/playerindividualstats/${player.id}');
+                      },
+                      icon: const Icon(Icons.add_chart_rounded),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           appBar: AppBar(
             title: Text(player.name),

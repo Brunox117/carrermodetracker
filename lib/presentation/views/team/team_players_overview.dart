@@ -190,9 +190,9 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
               columnWidths: const {
                 0: FlexColumnWidth(1.1), // Posición
                 1: FlexColumnWidth(2), // Nombre
-                2: FlexColumnWidth(.9), // PJ
-                3: FlexColumnWidth(.9), // Goles
-                4: FlexColumnWidth(.9), // As.
+                2: FlexColumnWidth(.6), // PJ
+                3: FlexColumnWidth(.6), // Goles
+                4: FlexColumnWidth(.6), // As.
               },
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
