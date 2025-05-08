@@ -103,32 +103,42 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
                         color: colors.secondary.withValues(alpha: 0.2),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10))),
-                    children: const [
+                    children: [
                       TableCell(
-                          child: TableText(
-                        'Posición',
-                        isHeader: true,
-                      )),
+                          child: GestureDetector(
+                              onTap: () {},
+                              child: const TableText(
+                                'Posición',
+                                isHeader: true,
+                              ))),
                       TableCell(
-                          child: TableText(
-                        'Nombre',
-                        isHeader: true,
-                      )),
+                          child: GestureDetector(
+                              onTap: () {},
+                              child: const TableText(
+                                'Nombre',
+                                isHeader: true,
+                              ))),
                       TableCell(
-                          child: TableText(
-                        'P',
-                        isHeader: true,
-                      )),
+                          child: GestureDetector(
+                              onTap: () {},
+                              child: const TableText(
+                                'P',
+                                isHeader: true,
+                              ))),
                       TableCell(
-                          child: TableText(
-                        'G',
-                        isHeader: true,
-                      )),
+                          child: GestureDetector(
+                              onTap: () {},
+                              child: const TableText(
+                                'G',
+                                isHeader: true,
+                              ))),
                       TableCell(
-                          child: TableText(
-                        'A',
-                        isHeader: true,
-                      )),
+                          child: GestureDetector(
+                              onTap: () {},
+                              child: const TableText(
+                                'A',
+                                isHeader: true,
+                              ))),
                     ]),
                 ...players.map((player) => buildTableRow(
                     context, player, selectedSeasonIDs, selectedTournamentIDs)),
