@@ -11,6 +11,7 @@ class PlayerIndividualStats extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final textStyles = Theme.of(context).textTheme;
+    final statsProv = ref.watch(statsProvider.notifier);
     final statsFromPlayer = ref
         .watch(statsProvider)
         .values
@@ -51,7 +52,9 @@ class PlayerIndividualStats extends ConsumerWidget {
                             IconButton(
                                 onPressed: () {}, icon: const Icon(Icons.edit)),
                             IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  statsProv.deleteStats(stat.id);
+                                },
                                 icon: const Icon(Icons.delete)),
                           ],
                         ),

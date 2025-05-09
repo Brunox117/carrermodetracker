@@ -15,12 +15,7 @@ class IsarStatsDatasource extends StatsDatasource {
   @override
   Future<bool> deleteStats(Id id) async {
     final isar = await db;
-    final stats = await isar.stats.filter().idEqualTo(id).findFirst();
-    if (stats != null) {
-      isar.writeTxnSync(() => isar.stats.deleteSync(id));
-      return true;
-    }
-    return false;
+    return await isar.writeTxn<bool>(() async => await isar.stats.delete(id));
   }
 
   @override
