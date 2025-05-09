@@ -75,7 +75,13 @@ class StoragePlayersNotifier extends StateNotifier<Map<int, Player>> {
   }
 
   Future<void> deletePlayer(int id) async {
-    await playerStorageRepository.deletePlayer(id);
-    state = {...state}..remove(id);
+    //Give some time to return to club view and avoid no player exception
+    Future.delayed(
+      const Duration(milliseconds: 350),
+      () async {
+        await playerStorageRepository.deletePlayer(id);
+        state = {...state}..remove(id);
+      },
+    );
   }
 }

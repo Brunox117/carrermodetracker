@@ -39,6 +39,10 @@ class RegisterMatchView extends StatelessWidget {
             onPressed: () {context.push('/teamoverview/$id/addseasonview');},
             text: 'Iniciar nueva temporada',
           ),
+          AddButton(
+            onPressed: () {context.push('/teamoverview/$id/addseasonview');},
+            text: 'Eliminar jugadores',
+          ),
         ],
       ),
     );

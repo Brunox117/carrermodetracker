@@ -1,3 +1,4 @@
+import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
@@ -132,6 +133,26 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
                         context.push('/playerindividualstats/${player.id}');
                       },
                       icon: const Icon(Icons.add_chart_rounded),
+                    ),
+                    const SizedBox(height: 1),
+                    IconButton.filledTonal(
+                      onPressed: () {
+                        showDefaultDialog(
+                            context,
+                            "¿Estás seguro de que deseas borrar el jugador?",
+                            "Aceptar",
+                            'Cancelar', () {
+                          context.pop();
+                        }, () {
+                          context.pop();
+                          context.pop();
+
+                          ref
+                              .read(playersProvider.notifier)
+                              .deletePlayer(int.parse(widget.playerID));
+                        });
+                      },
+                      icon: const Icon(Icons.delete),
                     ),
                   ],
                 ),

@@ -1,24 +1,26 @@
 import 'package:carrermodetracker/config/helpers/open_db.dart';
 import 'package:carrermodetracker/domain/datasources/player_datasource.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
+import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:isar/isar.dart';
 
 class IsarPlayerDatasource extends PlayerDatasource {
   late Future<Isar> db;
   IsarPlayerDatasource() {
-    db = openDB([PlayerSchema]);
+    db = openDB([PlayerSchema, StatsSchema]);
   }
 
   @override
   Future<bool> deletePlayer(Id id) async {
     final isar = await db;
-    final player = await isar.players.filter().idEqualTo(id).findFirst();
-    if (player != null) {
-      isar.writeTxnSync(() => isar.players.deleteSync(id));
-      return true;
-    }
-    return false;
+    return await isar.writeTxn<bool>(() async {
+      await isar.stats
+          .filter()
+          .player((q) => q.idEqualTo(id))
+          .deleteAll();
+      return await isar.players.delete(id);
+    });
   }
 
   @override
