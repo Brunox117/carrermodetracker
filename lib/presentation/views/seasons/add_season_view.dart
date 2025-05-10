@@ -1,5 +1,10 @@
+import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
+import 'package:carrermodetracker/domain/entities/stats.dart';
+import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:carrermodetracker/presentation/providers/seasons/seasons_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
+import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
@@ -178,27 +183,51 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
                               itemCount: savedSeasons.length,
                               itemBuilder: (context, index) {
                                 final seasonSaved = savedSeasons[index];
-                                return Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        seasonSaved.season,
-                                        style: textStyles.bodyLarge,
-                                      ),
-                                      IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              updatingSeason = true;
-                                              updateSeasonId = seasonSaved.id;
-                                              season = seasonSaved.season;
-                                            });
+                                return Row(children: [
+                                  Text(
+                                    seasonSaved.season,
+                                    style: textStyles.bodyLarge,
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          updatingSeason = true;
+                                          updateSeasonId = seasonSaved.id;
+                                          season = seasonSaved.season;
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        size: 18,
+                                      )),
+                                  IconButton(
+                                      onPressed: () {
+                                        showDefaultDialog(
+                                          context,
+                                          '¿Estás seguro de que deseas borrar esta temporada? Se borraran todas las estadísticas relacionadas con la misma',
+                                          'Aceptar',
+                                          'Cancelar',
+                                          () => context.pop(),
+                                          () {
+                                            for (Stats stat
+                                                in seasonSaved.stats) {
+                                              ref
+                                                  .read(statsProvider.notifier)
+                                                  .deleteStats(stat.id);
+                                            }
+                                            ref
+                                                .read(seasonsProvider.notifier)
+                                                .deleteSeason(seasonSaved.id);
+                                            context.pop();
                                           },
-                                          icon: const Icon(
-                                            Icons.edit,
-                                            size: 18,
-                                          ))
-                                    ]);
+                                        );
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        size: 18,
+                                      ))
+                                ]);
                               },
                             ),
                           ),

@@ -14,7 +14,7 @@ class IsarSeasonDatasource extends SeasonDatasource {
     final isar = await db;
     final season = await isar.seasons.filter().idEqualTo(id).findFirst();
     if (season != null) {
-      isar.writeTxnSync(() => isar.seasons.deleteSync(id));
+      await isar.writeTxn(() => isar.seasons.delete(id));
       return true;
     }
     return false;
