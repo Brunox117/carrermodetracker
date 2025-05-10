@@ -86,7 +86,12 @@ class StorageTournamentsNotifier extends StateNotifier<Map<int, Tournament>> {
   }
 
   Future<void> deleteTournament(Id id) async {
-    await tournamentStorageRepository.deleteTournament(id);
-    state = {...state}..remove(id);
+    Future.delayed(
+      const Duration(milliseconds: 350),
+      () async {
+        await tournamentStorageRepository.deleteTournament(id);
+        state = {...state}..remove(id);
+      },
+    );
   }
 }

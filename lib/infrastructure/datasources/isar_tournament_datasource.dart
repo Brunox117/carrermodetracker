@@ -1,12 +1,13 @@
 import 'package:carrermodetracker/config/helpers/open_db.dart';
 import 'package:carrermodetracker/domain/datasources/tournament_datasource.dart';
+import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:isar/isar.dart';
 
 class IsarTournamentDatasource extends TournamentDatasource {
   late Future<Isar> db;
   IsarTournamentDatasource() {
-    db = openDB([TournamentSchema]);
+    db = openDB([TournamentSchema, StatsSchema]);
   }
   @override
   Future<bool> deleteTournament(Id id) async {
@@ -14,8 +15,15 @@ class IsarTournamentDatasource extends TournamentDatasource {
     final tournament =
         await isar.tournaments.filter().idEqualTo(id).findFirst();
     if (tournament != null) {
-      isar.writeTxnSync(() => isar.tournaments.deleteSync(id));
-      return true;
+     return await isar.writeTxn(
+        () async {
+          await isar.stats
+              .filter()
+              .tournament((q) => q.idEqualTo(id))
+              .deleteAll();
+          return await isar.tournaments.delete(id);
+        },
+      );
     }
     return false;
   }

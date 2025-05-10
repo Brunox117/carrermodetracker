@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,11 +16,40 @@ class TeamView extends ConsumerWidget {
     final textStyles = Theme.of(context).textTheme;
 
     return Scaffold(
-      floatingActionButton: IconButton.filledTonal(
-        onPressed: () {
-          context.push('/editteam/$id');
-        },
-        icon: const Icon(Icons.edit),
+      floatingActionButton: Stack(
+        children: [
+          Positioned(
+            bottom: 16,
+            right: 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                IconButton.filledTonal(
+                  onPressed: () {
+                    context.push('/editteam/$id');
+                  },
+                  icon: const Icon(Icons.edit),
+                ),
+                const SizedBox(height: 1),
+                IconButton.filledTonal(
+                  onPressed: () {
+                    showDefaultDialog(
+                        context,
+                        "¿Estás seguro de que deseas borrar el equipo?",
+                        "Aceptar",
+                        'Cancelar', () {
+                      context.pop();
+                    }, () {
+                      context.pop();
+                      context.pop();
+                    });
+                  },
+                  icon: const Icon(Icons.delete),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       body: teamAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
@@ -33,11 +34,43 @@ class TournamentView extends ConsumerWidget {
               getTopPlayedMatches(statsByTournament.values.toList());
 
           return Scaffold(
-            floatingActionButton: IconButton.filledTonal(
-              onPressed: () {
-                context.push('/edittournament/${tournament.id}');
-              },
-              icon: const Icon(Icons.edit),
+            floatingActionButton: Stack(
+              children: [
+                Positioned(
+                  bottom: 16,
+                  right: 0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      IconButton.filledTonal(
+                        onPressed: () {
+                          context.push('/edittournament/${tournament.id}');
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      const SizedBox(height: 1),
+                      IconButton.filledTonal(
+                        onPressed: () {
+                          showDefaultDialog(
+                              context,
+                              "¿Estás seguro de que deseas borrar el torneo, borrarlo también va a borrar todas las estadísticas asociadas a este torneo?",
+                              "Aceptar",
+                              'Cancelar', () {
+                            context.pop();
+                          }, () {
+                            context.pop();
+                            context.pop();
+                            ref
+                                .read(tournamentsProvider.notifier)
+                                .deleteTournament(int.parse(tournamentID));
+                          });
+                        },
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             appBar: AppBar(
               title: Text(tournament.name),
