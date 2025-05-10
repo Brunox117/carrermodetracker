@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
+import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/custom_card.dart';
 import 'package:flutter/material.dart';
@@ -57,9 +58,14 @@ class TournamentView extends ConsumerWidget {
                               "Aceptar",
                               'Cancelar', () {
                             context.pop();
-                          }, () {
+                          }, () async {
                             context.pop();
                             context.pop();
+                            for (Stats stat in tournament.stats) {
+                              ref
+                                  .read(statsProvider.notifier)
+                                  .deleteStats(stat.id);
+                            }
                             ref
                                 .read(tournamentsProvider.notifier)
                                 .deleteTournament(int.parse(tournamentID));
