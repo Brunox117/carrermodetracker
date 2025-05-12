@@ -73,7 +73,6 @@ class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {
 
   Future<void> updateTeam(int id, Team team, XFile? imageFile) async {
     Team oldTeam = await teamStorageRepository.getTeam(id);
-    team.id = oldTeam.id;
     if (imageFile != null) {
       if (oldTeam.logoURL.isNotEmpty) {
         PaintingBinding.instance.imageCache
