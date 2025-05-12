@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
@@ -112,6 +114,11 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
 
     return playerAsync.when(
       data: (player) {
+        File? imageFile =
+            (player.imageURL == "") ? null : File(player.imageURL);
+        if (imageFile != null && !imageFile.existsSync()) {
+          imageFile = null;
+        }
         return Scaffold(
           floatingActionButton: Stack(
             children: [
@@ -166,6 +173,15 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
+                (imageFile != null)
+                    ? SizedBox(
+                        height: 140,
+                        child: Image.file(
+                          imageFile,
+                          fit: BoxFit.contain,
+                        ),
+                      )
+                    : const SizedBox(),
                 const SizedBox(height: 20),
                 Table(
                   columnWidths: const {
