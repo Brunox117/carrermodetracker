@@ -85,4 +85,18 @@ class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {
     }
     state = {...state, id: team};
   }
+
+  Future<void> deleteTeam(int id) async {
+    Future.delayed(
+      const Duration(milliseconds: 350),
+      () async {
+        Team? team = state[id];
+        if (team != null && team.logoURL != "") {
+          await deleteImage(team.logoURL);
+        }
+        await teamStorageRepository.deleteTeam(id);
+        state = {...state}..remove(id);
+      },
+    );
+  }
 }

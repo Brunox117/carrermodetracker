@@ -24,7 +24,7 @@ class IsarTeamDatasource extends TeamDatasource {
     final isar = await db;
     final team = await isar.teams.filter().idEqualTo(id).findFirst();
     if (team != null) {
-      isar.writeTxnSync(() => isar.teams.deleteSync(id));
+      isar.writeTxn(() => isar.teams.delete(id));
       return true;
     }
     return false;

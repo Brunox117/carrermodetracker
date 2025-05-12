@@ -1,10 +1,8 @@
 import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
-import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:carrermodetracker/presentation/providers/seasons/seasons_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
-import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
