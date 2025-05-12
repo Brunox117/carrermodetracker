@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
@@ -10,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
+import 'package:carrermodetracker/presentation/views/player/player_card.dart';
 
 class PlayerView extends ConsumerStatefulWidget {
   final String playerID;
@@ -114,11 +113,6 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
 
     return playerAsync.when(
       data: (player) {
-        File? imageFile =
-            (player.imageURL == "") ? null : File(player.imageURL);
-        if (imageFile != null && !imageFile.existsSync()) {
-          imageFile = null;
-        }
         return Scaffold(
           floatingActionButton: Stack(
             children: [
@@ -153,7 +147,6 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
                         }, () {
                           context.pop();
                           context.pop();
-
                           ref
                               .read(playersProvider.notifier)
                               .deletePlayer(int.parse(widget.playerID));
@@ -171,65 +164,64 @@ class _PlayerViewState extends ConsumerState<PlayerView> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                (imageFile != null)
-                    ? SizedBox(
-                        height: 140,
-                        child: Image.file(
-                          imageFile,
-                          fit: BoxFit.contain,
-                        ),
-                      )
-                    : const SizedBox(),
-                const SizedBox(height: 20),
-                Table(
-                  columnWidths: const {
-                    0: FlexColumnWidth(4), // Competición
-                    1: FlexColumnWidth(1), // PJ
-                    2: FlexColumnWidth(1), // G
-                    3: FlexColumnWidth(1), // A
-                  },
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    TableRow(
-                        decoration: BoxDecoration(
-                            color: colors.secondary.withValues(alpha: 0.2),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10))),
-                        children: const [
-                          TableCell(
-                              child: TableText(
-                            'Competición',
-                            isHeader: true,
-                          )),
-                          TableCell(
-                              child: TableText(
-                            'J',
-                            isHeader: true,
-                          )),
-                          TableCell(
-                              child: TableText(
-                            'G',
-                            isHeader: true,
-                          )),
-                          TableCell(
-                              child: TableText(
-                            'A',
-                            isHeader: true,
-                          )),
-                        ]),
-                    ...statRows,
-                    tableRowDivider(
-                        4,
-                        const TableCell(
-                            child: SizedBox(
-                          height: 20,
-                        ))),
-                    totalsRow,
-                  ],
-                ),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  PlayerCard(
+                    player: player,
+                    totalPlayedMatches: totalPlayedMatches,
+                    totalGoals: totalGoals,
+                    totalAssists: totalAssists,
+                  ),
+                  const SizedBox(height: 20),
+                  Table(
+                    columnWidths: const {
+                      0: FlexColumnWidth(4), // Competición
+                      1: FlexColumnWidth(1), // PJ
+                      2: FlexColumnWidth(1), // G
+                      3: FlexColumnWidth(1), // A
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      TableRow(
+                          decoration: BoxDecoration(
+                              color: colors.secondary.withValues(alpha: 0.2),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10))),
+                          children: const [
+                            TableCell(
+                                child: TableText(
+                              'Competición',
+                              isHeader: true,
+                            )),
+                            TableCell(
+                                child: TableText(
+                              'J',
+                              isHeader: true,
+                            )),
+                            TableCell(
+                                child: TableText(
+                              'G',
+                              isHeader: true,
+                            )),
+                            TableCell(
+                                child: TableText(
+                              'A',
+                              isHeader: true,
+                            )),
+                          ]),
+                      ...statRows,
+                      tableRowDivider(
+                          4,
+                          const TableCell(
+                              child: SizedBox(
+                            height: 20,
+                          ))),
+                      totalsRow,
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
