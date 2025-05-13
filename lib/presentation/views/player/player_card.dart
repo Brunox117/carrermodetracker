@@ -42,31 +42,24 @@ class PlayerCard extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Text(
-                  player.name,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildStatCard(
                       context,
-                      'Partidos',
                       totalPlayedMatches.toString(),
                       Icons.sports_score,
                     ),
                     const SizedBox(width: 16),
                     _buildStatCard(
                       context,
-                      'Goles',
                       totalGoals.toString(),
                       Icons.sports_soccer,
                     ),
                     const SizedBox(width: 16),
                     _buildStatCard(
                       context,
-                      'Asistencias',
                       totalAssists.toString(),
                       Icons.assistant_outlined,
                     ),
@@ -82,7 +75,6 @@ class PlayerCard extends StatelessWidget {
 
   Widget _buildStatCard(
     BuildContext context,
-    String label,
     String value,
     IconData icon,
   ) {
@@ -103,10 +95,6 @@ class PlayerCard extends StatelessWidget {
                   color: colors.primary,
                   fontWeight: FontWeight.bold,
                 ),
-          ),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
       ),
