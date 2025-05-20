@@ -4,14 +4,12 @@ class BestStatsCard extends StatelessWidget {
   final String title;
   final List<Map<String, dynamic>> players;
   final String statKey;
-  final bool useTable;
 
   const BestStatsCard({
     super.key,
     required this.title,
     required this.players,
     required this.statKey,
-    this.useTable = false,
   });
 
   @override
@@ -28,60 +26,30 @@ class BestStatsCard extends StatelessWidget {
           children: [
             Text(title, style: textStyles.titleMedium),
             const SizedBox(height: 8),
-            if (useTable)
-              Table(
-                columnWidths: const {
-                  0: FlexColumnWidth(2),
-                  1: FlexColumnWidth(1),
-                },
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: [
-                  ...players.map((player) {
-                    return TableRow(
-                      children: [
-                        TableCell(
-                          child: Text(
-                            player['name'],
-                            style: textStyles.bodyMedium,
-                          ),
-                        ),
-                        TableCell(
-                          child: Text(
-                            '${player[statKey]}',
-                            style: textStyles.bodyMedium,
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                ],
-              )
-            else
-              ...players.map((player) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          player['name'],
-                          style: textStyles.bodyMedium,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+            ...players.map((player) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        player['name'],
+                        style: textStyles.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      Text(
-                        '${player[statKey]}',
-                        style: textStyles.bodyMedium?.copyWith(
-                          color: colors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ),
+                    Text(
+                      '${player[statKey]}',
+                      style: textStyles.bodyMedium?.copyWith(
+                        color: colors.primary,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                );
-              }),
+                    ),
+                  ],
+                ),
+              );
+            }),
           ],
         ),
       ),
