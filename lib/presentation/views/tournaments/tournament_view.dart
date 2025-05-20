@@ -5,7 +5,7 @@ import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
-import 'package:carrermodetracker/presentation/widgets/shared/custom_card.dart';
+import 'package:carrermodetracker/presentation/widgets/shared/best_stats_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -100,19 +100,19 @@ class TournamentView extends ConsumerWidget {
                       style: textStyles.titleLarge,
                     ),
                     const SizedBox(height: 16.0),
-                    _PlayerStatsTableCard(
+                    BestStatsCard(
                       title: 'Máximos goleadores',
                       players: top5PGoals,
                       statKey: 'goals',
                     ),
                     const SizedBox(height: 16.0),
-                    _PlayerStatsTableCard(
+                    BestStatsCard(
                       title: 'Máximos asistentes',
                       players: top5PAssists,
                       statKey: 'assists',
                     ),
                     const SizedBox(height: 16.0),
-                    _PlayerStatsTableCard(
+                    BestStatsCard(
                       title: 'Más participaciones',
                       players: top5PPlayedMatches,
                       statKey: 'playedMatches',
@@ -175,62 +175,5 @@ class TournamentView extends ConsumerWidget {
         }
       }
     }
-  }
-}
-
-class _PlayerStatsTableCard extends StatelessWidget {
-  final String title;
-  final List<Map<String, dynamic>> players;
-  final String statKey;
-
-  const _PlayerStatsTableCard({
-    required this.title,
-    required this.players,
-    required this.statKey,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final textStyles = Theme.of(context).textTheme;
-    return CustomCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: textStyles.titleMedium,
-          ),
-          const SizedBox(height: 8.0),
-          Table(
-            columnWidths: const {
-              0: FlexColumnWidth(2), // Nombre
-              1: FlexColumnWidth(1), // Stat
-            },
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              ...players.map((player) {
-                return TableRow(
-                  children: [
-                    TableCell(
-                      child: Text(
-                        player['name'],
-                        style: textStyles.bodyMedium,
-                      ),
-                    ),
-                    TableCell(
-                      child: Text(
-                        '${player[statKey]}',
-                        style: textStyles.bodyMedium,
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-                  ],
-                );
-              }),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 }

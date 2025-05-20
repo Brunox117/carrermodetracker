@@ -6,6 +6,7 @@ import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
+import 'package:carrermodetracker/presentation/widgets/shared/best_stats_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -32,58 +33,19 @@ class TeamView extends ConsumerWidget {
     };
   }
 
-  List<Player> getTopPlayers(List<Player> players, String statType) {
+  List<Map<String, dynamic>> getTopPlayers(List<Player> players, String statType) {
     players.sort((a, b) {
       var aStats = getPlayerStats(a);
       var bStats = getPlayerStats(b);
       return bStats[statType]!.compareTo(aStats[statType]!);
     });
-    return players.take(3).toList();
-  }
-
-  Widget buildStatCard(BuildContext context, String title, List<Player> players,
-      String statType) {
-    final colors = Theme.of(context).colorScheme;
-    final textStyles = Theme.of(context).textTheme;
-
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: textStyles.titleMedium),
-            const SizedBox(height: 8),
-            ...players.map((player) {
-              final stats = getPlayerStats(player);
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        player.name,
-                        style: textStyles.bodyMedium,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Text(
-                      '${stats[statType]}',
-                      style: textStyles.bodyMedium?.copyWith(
-                        color: colors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ],
-        ),
-      ),
-    );
+    return players.take(3).map((player) {
+      final stats = getPlayerStats(player);
+      return {
+        'name': player.name,
+        statType: stats[statType],
+      };
+    }).toList();
   }
 
   @override
@@ -191,30 +153,27 @@ class TeamView extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
-                                child: buildStatCard(
-                                  context,
-                                  'Goleadores',
-                                  topScorers,
-                                  'goals',
+                                child: BestStatsCard(
+                                  title: 'Goleadores',
+                                  players: topScorers,
+                                  statKey: 'goals',
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
-                                child: buildStatCard(
-                                  context,
-                                  'Asistencias',
-                                  topAssists,
-                                  'assists',
+                                child: BestStatsCard(
+                                  title: 'Asistencias',
+                                  players: topAssists,
+                                  statKey: 'assists',
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 12),
-                          buildStatCard(
-                            context,
-                            'Más Partidos Jugados',
-                            mostPlayed,
-                            'matches',
+                          BestStatsCard(
+                            title: 'Más Partidos Jugados',
+                            players: mostPlayed,
+                            statKey: 'matches',
                           ),
                         ],
                       ),
