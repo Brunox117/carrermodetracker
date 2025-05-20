@@ -8,64 +8,88 @@ class RegisterMatchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    final colors = Theme.of(context).colorScheme;
+
+    return SingleChildScrollView(
+        child: Padding(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'Registra partidos, agrega nuevos jugadores e inicia nuevas temporadas',
-            style: textStyles.bodyLarge,
-            textAlign: TextAlign.center,
-          ),
-          AddButton(
-            onPressed: () {
-              context.push('/teamoverview/$id/addtournamentview');
-            },
-            text: 'Crea un torneo',
-          ),
-          AddButton(
-            onPressed: () {
-              context.push('/teamoverview/$id/addplayerview');
-            },
-            text: 'Agregar jugador',
-          ),
-          AddButton(
-            onPressed: () {
-              context.push('/teamoverview/$id/addstatview');
-            },
-            text: 'Registra estadísticas',
-          ),
-          AddButton(
-            onPressed: () {context.push('/teamoverview/$id/addseasonview');},
-            text: 'Iniciar nueva temporada',
-          ),
-          AddButton(
-            onPressed: () {context.push('/teamoverview/$id/addseasonview');},
-            text: 'Eliminar jugadores',
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  'Registra partidos, agrega nuevos jugadores e inicia nuevas temporadas',
+                  style: textStyles.bodyLarge?.copyWith(
+                    color: colors.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                _buildActionButton(
+                  context,
+                  icon: Icons.emoji_events,
+                  text: 'Crea un torneo',
+                  onPressed: () =>
+                      context.push('/teamoverview/$id/addtournamentview'),
+                ),
+                _buildActionButton(
+                  context,
+                  icon: Icons.person_add,
+                  text: 'Agregar jugador',
+                  onPressed: () =>
+                      context.push('/teamoverview/$id/addplayerview'),
+                ),
+                _buildActionButton(
+                  context,
+                  icon: Icons.bar_chart,
+                  text: 'Registra estadísticas',
+                  onPressed: () =>
+                      context.push('/teamoverview/$id/addstatview'),
+                ),
+                _buildActionButton(
+                  context,
+                  icon: Icons.calendar_today,
+                  text: 'Iniciar nueva temporada',
+                  onPressed: () =>
+                      context.push('/teamoverview/$id/addseasonview'),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-    );
+    ));
   }
-}
 
-class AddButton extends StatelessWidget {
-  final void Function() onPressed;
-  final String text;
-  const AddButton({
-    super.key,
-    required this.onPressed,
-    required this.text,
-  });
+  Widget _buildActionButton(
+    BuildContext context, {
+    required IconData icon,
+    required String text,
+    required VoidCallback onPressed,
+  }) {
+    final colors = Theme.of(context).colorScheme;
 
-  @override
-  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(onPressed: (){
-        onPressed();
-        //TODO agregar feedback haptico
-      }, child: Text(text)),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ElevatedButton.icon(
+        onPressed: () {
+          onPressed();
+          //TODO agregar feedback haptico
+        },
+        icon: Icon(icon),
+        label: Text(text),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colors.primary,
+          foregroundColor: colors.onPrimary,
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
     );
   }
 }
