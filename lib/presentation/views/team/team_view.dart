@@ -14,16 +14,94 @@ class TeamView extends ConsumerWidget {
   final String id;
   const TeamView({super.key, required this.id});
 
+  Map<String, int> getPlayerStats(Player player) {
+    int totalGoals = 0;
+    int totalMatches = 0;
+    int totalAssists = 0;
+
+    for (var stat in player.stats) {
+      totalGoals += stat.goals;
+      totalAssists += stat.assists;
+      totalMatches += stat.playedMatches;
+    }
+
+    return {
+      'goals': totalGoals,
+      'matches': totalMatches,
+      'assists': totalAssists,
+    };
+  }
+
+  List<Player> getTopPlayers(List<Player> players, String statType) {
+    players.sort((a, b) {
+      var aStats = getPlayerStats(a);
+      var bStats = getPlayerStats(b);
+      return bStats[statType]!.compareTo(aStats[statType]!);
+    });
+    return players.take(3).toList();
+  }
+
+  Widget buildStatCard(BuildContext context, String title, List<Player> players,
+      String statType) {
+    final colors = Theme.of(context).colorScheme;
+    final textStyles = Theme.of(context).textTheme;
+
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: textStyles.titleMedium),
+            const SizedBox(height: 8),
+            ...players.map((player) {
+              final stats = getPlayerStats(player);
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        player.name,
+                        style: textStyles.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(
+                      '${stats[statType]}',
+                      style: textStyles.bodyMedium?.copyWith(
+                        color: colors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final teamAsync = ref.watch(teamProvider(int.parse(id)));
     final textStyles = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: teamAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
         data: (team) {
+          final players = team.players.toList();
+          final topScorers = getTopPlayers(players, 'goals');
+          final topAssists = getTopPlayers(players, 'assists');
+          final mostPlayed = getTopPlayers(players, 'matches');
+
           return Scaffold(
             floatingActionButton: Stack(
               children: [
@@ -50,9 +128,10 @@ class TeamView extends ConsumerWidget {
                             context.pop();
                           }, () {
                             context.pop();
-                            List<Player> playersToDelete = team.players.toList();
+                            List<Player> playersToDelete =
+                                team.players.toList();
                             List<Stats> statsToDelete = [];
-                            for(Player player in playersToDelete){
+                            for (Player player in playersToDelete) {
                               statsToDelete.addAll(player.stats.toList());
                             }
                             for (Stats stat in statsToDelete) {
@@ -78,25 +157,73 @@ class TeamView extends ConsumerWidget {
                 ),
               ],
             ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Center(child: Text(team.name, style: textStyles.titleLarge)),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  (team.logoURL.isEmpty)
-                      ? const SizedBox()
-                      : SizedBox(
-                          height: 200,
-                          child: Image.file(
-                            File(team.logoURL),
-                            fit: BoxFit.contain,
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(
+                        child: Text(team.name, style: textStyles.titleLarge)),
+                    const SizedBox(height: 10),
+                    if (team.logoURL.isNotEmpty)
+                      SizedBox(
+                        height: 200,
+                        child: Image.file(
+                          File(team.logoURL),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Los mejores',
+                            style: textStyles.titleLarge?.copyWith(
+                                color: colors.primary,
+                                fontWeight: FontWeight.w700),
                           ),
-                        )
-                ],
+                          const SizedBox(height: 16),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: buildStatCard(
+                                  context,
+                                  'Goleadores',
+                                  topScorers,
+                                  'goals',
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: buildStatCard(
+                                  context,
+                                  'Asistencias',
+                                  topAssists,
+                                  'assists',
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          buildStatCard(
+                            context,
+                            'Más Partidos Jugados',
+                            mostPlayed,
+                            'matches',
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 200,
+                    )
+                  ],
+                ),
               ),
             ),
           );
