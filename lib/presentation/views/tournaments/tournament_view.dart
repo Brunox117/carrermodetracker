@@ -16,6 +16,7 @@ class TournamentView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
     final tournamentAsync =
         ref.watch(singleTournamentProvider(int.parse(tournamentID)));
@@ -96,8 +97,9 @@ class TournamentView extends ConsumerWidget {
                             ),
                           ),
                     Text(
-                      "Los mejores",
-                      style: textStyles.titleLarge,
+                      'Los mejores',
+                      style: textStyles.titleLarge?.copyWith(
+                          color: colors.primary, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 16.0),
                     BestStatsCard(
