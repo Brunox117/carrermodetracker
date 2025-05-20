@@ -33,7 +33,8 @@ class TeamView extends ConsumerWidget {
     };
   }
 
-  List<Map<String, dynamic>> getTopPlayers(List<Player> players, String statType) {
+  List<Map<String, dynamic>> getTopPlayers(
+      List<Player> players, String statType) {
     players.sort((a, b) {
       var aStats = getPlayerStats(a);
       var bStats = getPlayerStats(b);
@@ -137,47 +138,52 @@ class TeamView extends ConsumerWidget {
                         ),
                       ),
                     const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Los mejores',
-                            style: textStyles.titleLarge?.copyWith(
-                                color: colors.primary,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          const SizedBox(height: 16),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: BestStatsCard(
-                                  title: 'Goleadores',
-                                  players: topScorers,
-                                  statKey: 'goals',
+                    (topScorers.isEmpty &&
+                            topAssists.isEmpty &&
+                            mostPlayed.isEmpty)
+                        ? const SizedBox()
+                        : Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Los mejores',
+                                  style: textStyles.titleLarge?.copyWith(
+                                      color: colors.primary,
+                                      fontWeight: FontWeight.w700),
                                 ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: BestStatsCard(
-                                  title: 'Asistencias',
-                                  players: topAssists,
-                                  statKey: 'assists',
+                                const SizedBox(height: 16),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: BestStatsCard(
+                                        title: 'Goleadores',
+                                        players: topScorers,
+                                        statKey: 'goals',
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: BestStatsCard(
+                                        title: 'Asistencias',
+                                        players: topAssists,
+                                        statKey: 'assists',
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 12),
+                                BestStatsCard(
+                                  title: 'Más Partidos Jugados',
+                                  players: mostPlayed,
+                                  statKey: 'matches',
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 12),
-                          BestStatsCard(
-                            title: 'Más Partidos Jugados',
-                            players: mostPlayed,
-                            statKey: 'matches',
-                          ),
-                        ],
-                      ),
-                    ),
                     const SizedBox(
                       height: 200,
                     )
