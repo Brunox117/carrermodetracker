@@ -62,7 +62,10 @@ class AddButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(onPressed: onPressed, child: Text(text)),
+      child: ElevatedButton(onPressed: (){
+        onPressed();
+        //TODO agregar feedback haptico
+      }, child: Text(text)),
     );
   }
 }

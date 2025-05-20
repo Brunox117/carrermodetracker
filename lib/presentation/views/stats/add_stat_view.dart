@@ -250,7 +250,10 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                     ],
                   ),
                 ),
-                SaveFormButton(submitForm: submitForm)
+                SaveFormButton(
+                  submitForm: submitForm,
+                  onSaveTextAlert: 'Estadística guardada correctamente!',
+                )
               ],
             ),
           )),

@@ -5,6 +5,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/add_image_widget.da
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
+import 'package:drops/drops.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -190,7 +191,10 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
               const SizedBox(
                 height: 20,
               ),
-              SaveFormButton(submitForm: _submitForm),
+              SaveFormButton(
+                submitForm: _submitForm,
+                onSaveTextAlert: "Jugador guardado exitosamente!",
+              ),
             ],
           )),
     );
