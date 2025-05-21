@@ -109,11 +109,11 @@ Managerstat _managerstatDeserialize(
     goals: reader.readLong(offsets[1]),
     goalsConceded: reader.readLong(offsets[2]),
     goalsScored: reader.readLong(offsets[3]),
-    id: id,
     loses: reader.readLong(offsets[4]),
     playedMatches: reader.readLong(offsets[5]),
     wins: reader.readLong(offsets[6]),
   );
+  object.id = id;
   return object;
 }
 

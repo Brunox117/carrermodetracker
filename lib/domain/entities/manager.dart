@@ -13,7 +13,6 @@ class Manager {
   final managerStats = IsarLink<Managerstat>();
 
   Manager({
-    required this.id,
     required this.name,
     required this.imageUrl,
   });

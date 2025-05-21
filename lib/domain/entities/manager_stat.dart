@@ -17,7 +17,6 @@ class Managerstat {
   final manager = IsarLink<Manager>();
 
   Managerstat({
-    required this.id,
     required this.goals,
     required this.playedMatches,
     required this.wins,

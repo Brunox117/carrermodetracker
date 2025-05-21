@@ -44,6 +44,10 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
   int goals = 0;
   int assists = 0;
   int playedMatches = 0;
+  int avgScore = 0;
+  int cleanSheets = 0;
+  int redCards = 0;
+  int yellowCards = 0;
   int? selectedSeasonID;
   int? selectedPlayerID;
   int? selectedTournamentID;
@@ -89,8 +93,14 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
         final Stats? alreadeSavedStat = await ref
             .read(statsProvider.notifier)
             .getStatByTripleKey(player!.id, tournament!.id, season!.id);
-        final Stats statToSave =
-            Stats(assists: assists, goals: goals, playedMatches: playedMatches);
+        final Stats statToSave = Stats(
+            assists: assists,
+            goals: goals,
+            playedMatches: playedMatches,
+            avgScore: avgScore,
+            cleanSheets: cleanSheets,
+            redCards: redCards,
+            yellowCards: yellowCards);
         statToSave.player.value = player;
         statToSave.tournament.value = tournament;
         statToSave.season.value = season;

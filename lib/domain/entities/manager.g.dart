@@ -78,10 +78,10 @@ Manager _managerDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Manager(
-    id: id,
     imageUrl: reader.readString(offsets[0]),
     name: reader.readString(offsets[1]),
   );
+  object.id = id;
   return object;
 }
 

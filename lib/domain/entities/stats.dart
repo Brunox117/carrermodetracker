@@ -1,7 +1,10 @@
+import 'dart:convert';
+
+import 'package:isar/isar.dart';
+
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
-import 'package:isar/isar.dart';
 
 part 'stats.g.dart';
 
@@ -11,14 +14,22 @@ class Stats {
   int goals;
   int assists;
   int playedMatches;
+  int cleanSheets;
+  int yellowCards;
+  int redCards;
+  int avgScore;
 
   final season = IsarLink<Season>();
   final tournament = IsarLink<Tournament>();
   final player = IsarLink<Player>();
 
   Stats({
-    required this.assists,
     required this.goals,
+    required this.assists,
     required this.playedMatches,
+    required this.cleanSheets,
+    required this.yellowCards,
+    required this.redCards,
+    required this.avgScore,
   });
 }
