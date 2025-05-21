@@ -46,6 +46,13 @@ const TeamSchema = CollectionSchema(
       target: r'Player',
       single: false,
       linkName: r'team',
+    ),
+    r'managerStat': LinkSchema(
+      id: -3348137809560674195,
+      name: r'managerStat',
+      target: r'Managerstat',
+      single: false,
+      linkName: r'team',
     )
   },
   embeddedSchemas: {},
@@ -116,12 +123,14 @@ Id _teamGetId(Team object) {
 }
 
 List<IsarLinkBase<dynamic>> _teamGetLinks(Team object) {
-  return [object.players];
+  return [object.players, object.managerStat];
 }
 
 void _teamAttach(IsarCollection<dynamic> col, Id id, Team object) {
   object.id = id;
   object.players.attach(col, col.isar.collection<Player>(), r'players', id);
+  object.managerStat
+      .attach(col, col.isar.collection<Managerstat>(), r'managerStat', id);
 }
 
 extension TeamQueryWhereSort on QueryBuilder<Team, Team, QWhere> {
@@ -695,6 +704,62 @@ extension TeamQueryLinks on QueryBuilder<Team, Team, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
           r'players', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> managerStat(
+      FilterQuery<Managerstat> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'managerStat');
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> managerStatLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'managerStat', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> managerStatIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'managerStat', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> managerStatIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'managerStat', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> managerStatLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'managerStat', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> managerStatLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'managerStat', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> managerStatLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerStat', lower, includeLower, upper, includeUpper);
     });
   }
 }

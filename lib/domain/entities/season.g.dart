@@ -36,6 +36,13 @@ const SeasonSchema = CollectionSchema(
       target: r'Stats',
       single: false,
       linkName: r'season',
+    ),
+    r'managerStat': LinkSchema(
+      id: 4154512830160100978,
+      name: r'managerStat',
+      target: r'Managerstat',
+      single: true,
+      linkName: r'season',
     )
   },
   embeddedSchemas: {},
@@ -96,12 +103,14 @@ Id _seasonGetId(Season object) {
 }
 
 List<IsarLinkBase<dynamic>> _seasonGetLinks(Season object) {
-  return [object.stats];
+  return [object.stats, object.managerStat];
 }
 
 void _seasonAttach(IsarCollection<dynamic> col, Id id, Season object) {
   object.id = id;
   object.stats.attach(col, col.isar.collection<Stats>(), r'stats', id);
+  object.managerStat
+      .attach(col, col.isar.collection<Managerstat>(), r'managerStat', id);
 }
 
 extension SeasonQueryWhereSort on QueryBuilder<Season, Season, QWhere> {
@@ -419,6 +428,19 @@ extension SeasonQueryLinks on QueryBuilder<Season, Season, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
           r'stats', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<Season, Season, QAfterFilterCondition> managerStat(
+      FilterQuery<Managerstat> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'managerStat');
+    });
+  }
+
+  QueryBuilder<Season, Season, QAfterFilterCondition> managerStatIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'managerStat', 0, true, 0, true);
     });
   }
 }
