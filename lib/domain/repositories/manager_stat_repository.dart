@@ -1,0 +1,24 @@
+import 'package:carrermodetracker/domain/entities/manager_stat.dart';
+import 'package:isar/isar.dart';
+
+abstract class ManagerStatRepository {
+  Future<Managerstat> saveManagerStat(Managerstat managerStat);
+
+  Future<Managerstat> getManagerStat(Id id);
+
+  Future<List<Managerstat>> getManagerStatsByTournament(
+      {int limit = 10, offset = 10, required Id id});
+
+  Future<List<Managerstat>> getManagerStatsBySeason(
+      {int limit = 10, offset = 10, required Id id});
+
+  Future<List<Managerstat>> getManagerStatsByManager(
+      {int limit = 10, offset = 10, required Id id});
+
+  Future<bool> updateManagerStats(Id id);
+
+  Future<bool> deleteManagerStats(Id id);
+
+  Future<Managerstat?> getManagerStatByTripleKey(
+      Id managerId, Id tournamentId, Id seasonId);
+}
