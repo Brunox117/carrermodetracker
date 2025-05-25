@@ -44,7 +44,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
   int goals = 0;
   int assists = 0;
   int playedMatches = 0;
-  int avgScore = 0;
+  double avgScore = 0;
   int cleanSheets = 0;
   int redCards = 0;
   int yellowCards = 0;
@@ -156,7 +156,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                         });
                       },
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     CustomDropdownButtonFormField<int>(
                       labelText: "Selecciona Jugador:",
                       hintText: "Jugador...",
@@ -173,7 +173,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                         });
                       },
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     CustomDropdownButtonFormField<int>(
                       labelText: "Selecciona Torneo:",
                       hintText: "Torneo...",
@@ -194,7 +194,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                   child: Column(
                     children: [
                       CustomNumberFormField(
@@ -257,6 +257,78 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                           }
                         },
                       ),
+                      ExpansionTile(
+                        title: const Text("Información adicional"),
+                        expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                        shape: const Border(),
+                        collapsedShape: const Border(),
+                        children: [
+                          Column(
+                            children: [
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              CustomNumberFormField(
+                                isBottomField: true,
+                                isTopField: true,
+                                label: 'Porterías imbatidas',
+                                hint: '',
+                                onChanged: (value) {
+                                  final number = int.tryParse(value);
+                                  if (number != null) {
+                                    cleanSheets = number;
+                                  }
+                                },
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              CustomNumberFormField(
+                                isBottomField: true,
+                                isTopField: true,
+                                label: 'Tarjetas Amarillas',
+                                hint: '',
+                                onChanged: (value) {
+                                  final number = int.tryParse(value);
+                                  if (number != null) {
+                                    yellowCards = number;
+                                  }
+                                },
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              CustomNumberFormField(
+                                isBottomField: true,
+                                isTopField: true,
+                                label: 'Tarjetas rojas',
+                                hint: '',
+                                onChanged: (value) {
+                                  final number = int.tryParse(value);
+                                  if (number != null) {
+                                    redCards = number;
+                                  }
+                                },
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              CustomNumberFormField(
+                                isBottomField: true,
+                                isTopField: true,
+                                label: 'Calificación',
+                                hint: '',
+                                onChanged: (value) {
+                                  final number = double.tryParse(value);
+                                  if (number != null) {
+                                    avgScore = number;
+                                  }
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ),

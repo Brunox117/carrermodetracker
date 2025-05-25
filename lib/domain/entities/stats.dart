@@ -17,7 +17,7 @@ class Stats {
   int cleanSheets;
   int yellowCards;
   int redCards;
-  int avgScore;
+  double avgScore;
 
   final season = IsarLink<Season>();
   final tournament = IsarLink<Tournament>();

@@ -1,5 +1,8 @@
 import 'package:carrermodetracker/config/helpers/open_db.dart';
 import 'package:carrermodetracker/domain/datasources/team_datasource.dart';
+import 'package:carrermodetracker/domain/entities/manager.dart';
+import 'package:carrermodetracker/domain/entities/manager_stat.dart';
+import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
@@ -15,7 +18,10 @@ class IsarTeamDatasource extends TeamDatasource {
       PlayerSchema,
       StatsSchema,
       SeasonSchema,
-      TournamentSchema
+      TournamentSchema,
+      ManagerSchema,
+      ManagerstatSchema,
+      ManagerTournamentStatSchema
     ]);
   }
 

@@ -25,7 +25,7 @@ const StatsSchema = CollectionSchema(
     r'avgScore': PropertySchema(
       id: 1,
       name: r'avgScore',
-      type: IsarType.long,
+      type: IsarType.double,
     ),
     r'cleanSheets': PropertySchema(
       id: 2,
@@ -102,7 +102,7 @@ void _statsSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.assists);
-  writer.writeLong(offsets[1], object.avgScore);
+  writer.writeDouble(offsets[1], object.avgScore);
   writer.writeLong(offsets[2], object.cleanSheets);
   writer.writeLong(offsets[3], object.goals);
   writer.writeLong(offsets[4], object.playedMatches);
@@ -118,7 +118,7 @@ Stats _statsDeserialize(
 ) {
   final object = Stats(
     assists: reader.readLong(offsets[0]),
-    avgScore: reader.readLong(offsets[1]),
+    avgScore: reader.readDouble(offsets[1]),
     cleanSheets: reader.readLong(offsets[2]),
     goals: reader.readLong(offsets[3]),
     playedMatches: reader.readLong(offsets[4]),
@@ -139,7 +139,7 @@ P _statsDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 2:
       return (reader.readLong(offset)) as P;
     case 3:
@@ -299,46 +299,55 @@ extension StatsQueryFilter on QueryBuilder<Stats, Stats, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stats, Stats, QAfterFilterCondition> avgScoreEqualTo(int value) {
+  QueryBuilder<Stats, Stats, QAfterFilterCondition> avgScoreEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'avgScore',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Stats, Stats, QAfterFilterCondition> avgScoreGreaterThan(
-    int value, {
+    double value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'avgScore',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Stats, Stats, QAfterFilterCondition> avgScoreLessThan(
-    int value, {
+    double value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'avgScore',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Stats, Stats, QAfterFilterCondition> avgScoreBetween(
-    int lower,
-    int upper, {
+    double lower,
+    double upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -347,6 +356,7 @@ extension StatsQueryFilter on QueryBuilder<Stats, Stats, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        epsilon: epsilon,
       ));
     });
   }
@@ -951,7 +961,7 @@ extension StatsQueryProperty on QueryBuilder<Stats, Stats, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Stats, int, QQueryOperations> avgScoreProperty() {
+  QueryBuilder<Stats, double, QQueryOperations> avgScoreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'avgScore');
     });
