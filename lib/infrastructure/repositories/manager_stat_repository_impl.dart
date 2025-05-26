@@ -47,7 +47,7 @@ class ManagerStatRepositoryImpl extends ManagerStatRepository {
   }
 
   @override
-  Future<bool> updateManagerStats(Id id) {
-    return updateManagerStats(id);
+  Future<bool> updateManagerStats(Id id, Managerstat managerStat) {
+    return managerStatRepository.updateManagerStats(id, managerStat);
   }
 }

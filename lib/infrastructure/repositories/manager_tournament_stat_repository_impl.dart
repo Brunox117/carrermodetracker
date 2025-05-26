@@ -56,7 +56,7 @@ class ManagerTournamentStatRepositoryImpl
   }
 
   @override
-  Future<bool> updateManagerTournamentStats(Id id) {
-    return managerTournamentStatRepository.updateManagerTournamentStats(id);
+  Future<bool> updateManagerTournamentStats(Id id, ManagerTournamentStat managerTournamentStat) {
+    return managerTournamentStatRepository.updateManagerTournamentStats(id, managerTournamentStat);
   }
 }

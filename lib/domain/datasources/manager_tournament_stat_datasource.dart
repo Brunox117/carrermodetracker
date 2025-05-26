@@ -16,7 +16,7 @@ abstract class ManagerTournamentStatDatasource {
   Future<List<ManagerTournamentStat>> getManagerTournamentStatsByManager(
       {int limit = 10, offset = 10, required Id id});
 
-  Future<bool> updateManagerTournamentStats(Id id);
+  Future<bool> updateManagerTournamentStats(Id id, ManagerTournamentStat managerTournamentStat);
 
   Future<bool> deleteManagerTournamentStats(Id id);
 

@@ -15,7 +15,7 @@ abstract class ManagerStatRepository {
   Future<List<Managerstat>> getManagerStatsByManager(
       {int limit = 10, offset = 10, required Id id});
 
-  Future<bool> updateManagerStats(Id id);
+  Future<bool> updateManagerStats(Id id, Managerstat managerStat);
 
   Future<bool> deleteManagerStats(Id id);
 
