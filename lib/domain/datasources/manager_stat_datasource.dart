@@ -6,6 +6,8 @@ abstract class ManagerStatDatasource {
 
   Future<Managerstat> getManagerStat(Id id);
 
+  Future<List<Managerstat>> loadNextPage({int limit = 10, offset = 10});
+
   Future<List<Managerstat>> getManagerStatsByTournament(
       {int limit = 10, offset = 10, required Id id});
 

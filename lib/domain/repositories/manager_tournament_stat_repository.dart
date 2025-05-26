@@ -5,6 +5,8 @@ abstract class ManagerTournamentStatRepository {
   Future<ManagerTournamentStat> saveManagerTournamentStat(
       ManagerTournamentStat managerTournamentStat);
 
+  Future<List<ManagerTournamentStat>> loadNextPage({int limit = 10, offset = 10});
+
   Future<ManagerTournamentStat> getManagerTournamentStat(Id id);
 
   Future<List<ManagerTournamentStat>> getManagerTournamentStatsByTournament(

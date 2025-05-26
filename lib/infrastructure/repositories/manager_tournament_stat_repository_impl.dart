@@ -60,4 +60,9 @@ class ManagerTournamentStatRepositoryImpl
   Future<bool> updateManagerTournamentStats(Id id, ManagerTournamentStat managerTournamentStat) {
     return datasource.updateManagerTournamentStats(id, managerTournamentStat);
   }
+  
+  @override
+  Future<List<ManagerTournamentStat>> loadNextPage({int limit = 10, offset = 10}) {
+    return datasource.loadNextPage(limit: limit, offset: offset);
+  }
 }

@@ -109,4 +109,10 @@ class IsarManagerStatDatasource extends ManagerStatDatasource {
     isar.writeTxnSync(() => isar.managerstats.putSync(originalManagerStat));
     return true;
   }
+  
+  @override
+  Future<List<Managerstat>> loadNextPage({int limit = 10, offset = 10}) async {
+    final isar = await db;
+    return isar.managerstats.where().offset(offset).limit(limit).findAll();
+  }
 }

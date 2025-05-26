@@ -108,4 +108,10 @@ class IsarManagerTournamentStatDatasource
         isar.managerTournamentStats.putSync(originalManagerTournamentStat));
     return true;
   }
+  
+  @override
+  Future<List<ManagerTournamentStat>> loadNextPage({int limit = 10, offset = 10}) async {
+    final isar = await db;
+    return isar.managerTournamentStats.where().offset(offset).limit(limit).findAll();
+  }
 }

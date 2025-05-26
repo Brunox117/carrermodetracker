@@ -51,4 +51,9 @@ class ManagerStatRepositoryImpl extends ManagerStatRepository {
   Future<bool> updateManagerStats(Id id, Managerstat managerStat) {
     return datasource.updateManagerStats(id, managerStat);
   }
+  
+  @override
+  Future<List<Managerstat>> loadNextPage({int limit = 10, offset = 10}) {
+    return datasource.loadNextPage(limit: limit, offset: offset);
+  }
 }
