@@ -5,17 +5,20 @@ import 'package:carrermodetracker/presentation/providers/storage/managers_storag
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-final managersProvider = StateNotifierProvider<StorageManagersNotifier, Manager?>(
+final managersProvider =
+    StateNotifierProvider<StorageManagersNotifier, Manager?>(
   (ref) {
     final managerStorageRepository = ref.watch(managersStorageProvider);
-    return StorageManagersNotifier(managerStorageRepository: managerStorageRepository);
+    return StorageManagersNotifier(
+        managerStorageRepository: managerStorageRepository);
   },
 );
 
 class StorageManagersNotifier extends StateNotifier<Manager?> {
   final ManagerRepository managerStorageRepository;
 
-  StorageManagersNotifier({required this.managerStorageRepository}) : super(null);
+  StorageManagersNotifier({required this.managerStorageRepository})
+      : super(null);
 
   Future<void> initialize() async {
     state = null;
@@ -28,8 +31,13 @@ class StorageManagersNotifier extends StateNotifier<Manager?> {
     return manager;
   }
 
-  Future<void> addManager(Manager manager) async {
+  Future<void> addManager(Manager manager, XFile? imageFile) async {
     final newManager = await managerStorageRepository.saveManager(manager);
+    if (imageFile != null) {
+      newManager.imageUrl = await saveImageInLocalStorage(
+          imageFile, 'managers', manager.id.toString());
+      await managerStorageRepository.updateManger(manager.id, manager);
+    }
     state = newManager;
   }
 

@@ -1,5 +1,6 @@
 import 'package:carrermodetracker/presentation/screens/home/home_screen.dart';
 import 'package:carrermodetracker/presentation/views/config/config_view.dart';
+import 'package:carrermodetracker/presentation/views/dt/add_dt_view.dart';
 import 'package:carrermodetracker/presentation/views/dt/dt_general_view.dart';
 import 'package:carrermodetracker/presentation/views/home/add_team_view.dart';
 import 'package:carrermodetracker/presentation/views/home/home_view.dart';
@@ -130,11 +131,27 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
-            path: '/dtview',
-            builder: (context, state) {
-              return const DtGeneralView();
-            },
-          ),
+              path: '/dtview',
+              builder: (context, state) {
+                return const DtGeneralView();
+              },
+              routes: [
+                GoRoute(
+                  path: '/addDt',
+                  builder: (context, state) {
+                    return const AddDtView();
+                  },
+                ),
+                GoRoute(
+                  path: '/editdt/:dtId',
+                  builder: (context, state) {
+                    final dtId = state.pathParameters['dtId'];
+                    return AddDtView(
+                      managerId: dtId,
+                    );
+                  },
+                ),
+              ]),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
