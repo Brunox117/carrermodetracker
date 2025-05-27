@@ -3,14 +3,26 @@ import 'package:carrermodetracker/domain/datasources/manager_stat_datasource.dar
 import 'package:carrermodetracker/domain/entities/manager.dart';
 import 'package:carrermodetracker/domain/entities/manager_stat.dart';
 import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
+import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
+import 'package:carrermodetracker/domain/entities/stats.dart';
+import 'package:carrermodetracker/domain/entities/team.dart';
+import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:isar/isar.dart';
 
 class IsarManagerStatDatasource extends ManagerStatDatasource {
   late Future<Isar> db;
   IsarManagerStatDatasource() {
-    db =
-        openDB([ManagerstatSchema, ManagerTournamentStatSchema, ManagerSchema]);
+    db = openDB([
+      TeamSchema,
+      PlayerSchema,
+      StatsSchema,
+      SeasonSchema,
+      TournamentSchema,
+      ManagerSchema,
+      ManagerTournamentStatSchema,
+      ManagerstatSchema,
+    ]);
   }
 
   @override
@@ -109,7 +121,7 @@ class IsarManagerStatDatasource extends ManagerStatDatasource {
     isar.writeTxnSync(() => isar.managerstats.putSync(originalManagerStat));
     return true;
   }
-  
+
   @override
   Future<List<Managerstat>> loadNextPage({int limit = 10, offset = 10}) async {
     final isar = await db;

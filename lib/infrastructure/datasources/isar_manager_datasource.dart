@@ -3,6 +3,11 @@ import 'package:carrermodetracker/domain/datasources/manager_datasource.dart';
 import 'package:carrermodetracker/domain/entities/manager.dart';
 import 'package:carrermodetracker/domain/entities/manager_stat.dart';
 import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
+import 'package:carrermodetracker/domain/entities/player.dart';
+import 'package:carrermodetracker/domain/entities/season.dart';
+import 'package:carrermodetracker/domain/entities/stats.dart';
+import 'package:carrermodetracker/domain/entities/team.dart';
+import 'package:carrermodetracker/domain/entities/tournament.dart';
 
 import 'package:isar/isar.dart';
 
@@ -10,9 +15,14 @@ class IsarManagerDatasource extends ManagerDatasource {
   late Future<Isar> db;
   IsarManagerDatasource() {
     db = openDB([
+      PlayerSchema,
+      StatsSchema,
+      SeasonSchema,
+      TournamentSchema,
       ManagerSchema,
-      ManagerstatSchema,
       ManagerTournamentStatSchema,
+      ManagerstatSchema,
+      TeamSchema,
     ]);
   }
   @override

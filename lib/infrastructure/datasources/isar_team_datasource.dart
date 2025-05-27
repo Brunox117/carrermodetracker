@@ -14,6 +14,7 @@ class IsarTeamDatasource extends TeamDatasource {
   late Future<Isar> db;
   IsarTeamDatasource() {
     db = openDB([
+      TeamSchema,
       PlayerSchema,
       StatsSchema,
       SeasonSchema,
@@ -21,7 +22,6 @@ class IsarTeamDatasource extends TeamDatasource {
       ManagerSchema,
       ManagerstatSchema,
       ManagerTournamentStatSchema,
-      TeamSchema,
     ]);
   }
 
