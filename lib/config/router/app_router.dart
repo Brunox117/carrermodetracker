@@ -1,5 +1,6 @@
 import 'package:carrermodetracker/presentation/screens/home/home_screen.dart';
 import 'package:carrermodetracker/presentation/views/config/config_view.dart';
+import 'package:carrermodetracker/presentation/views/dt/dt_general_view.dart';
 import 'package:carrermodetracker/presentation/views/home/add_team_view.dart';
 import 'package:carrermodetracker/presentation/views/home/home_view.dart';
 import 'package:carrermodetracker/presentation/views/player/add_player_view.dart';
@@ -126,6 +127,14 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                   },
                 ),
               ])
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '/dtview',
+            builder: (context, state) {
+              return const DtGeneralView();
+            },
+          ),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(

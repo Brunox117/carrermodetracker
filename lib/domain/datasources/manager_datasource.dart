@@ -2,7 +2,7 @@ import 'package:carrermodetracker/domain/entities/manager.dart';
 import 'package:isar/isar.dart';
 
 abstract class ManagerDatasource {
-  Future<Manager> getManager(Id id);
+  Future<Manager?> getManager();
 
   Future<Manager> saveManager(Manager manager);
 

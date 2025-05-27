@@ -27,14 +27,14 @@ class IsarManagerDatasource extends ManagerDatasource {
   }
 
   @override
-  Future<Manager> getManager(Id id) async {
+  Future<Manager?> getManager() async {
     final isar = await db;
     final managers = await isar.managers.where().findAll();
     //Hacemos esto porque de inicio solo se va a crear un manager
     if (managers.isNotEmpty) {
       return managers.first;
     }
-    throw Exception('Manager not found');
+    return null;
   }
 
   @override

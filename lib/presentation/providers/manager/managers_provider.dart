@@ -5,42 +5,37 @@ import 'package:carrermodetracker/presentation/providers/storage/managers_storag
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-final managersProvider =
-    StateNotifierProvider<StorageManagersNotifier, Map<int, Manager>>(
+final managersProvider = StateNotifierProvider<StorageManagersNotifier, Manager?>(
   (ref) {
     final managerStorageRepository = ref.watch(managersStorageProvider);
     return StorageManagersNotifier(managerStorageRepository: managerStorageRepository);
   },
 );
-class StorageManagersNotifier extends StateNotifier<Map<int, Manager>> {
-  int page = 0;
+
+class StorageManagersNotifier extends StateNotifier<Manager?> {
   final ManagerRepository managerStorageRepository;
 
-  StorageManagersNotifier({required this.managerStorageRepository}) : super({});
+  StorageManagersNotifier({required this.managerStorageRepository}) : super(null);
 
   Future<void> initialize() async {
-    page = 0;
-    state = {};
-    await loadNextPage();
+    state = null;
+    await getManager();
   }
 
-  Future<Manager?> loadNextPage() async {
-    final managers = await managerStorageRepository.getManager(1);
-    page++;
-    final tempManagersMap = <int, Manager>{};
-    tempManagersMap[managers.id] = managers;
-    state = {...state, ...tempManagersMap};
-    return managers;
+  Future<Manager?> getManager() async {
+    final manager = await managerStorageRepository.getManager();
+    state = manager;
+    return manager;
   }
 
   Future<void> addManager(Manager manager) async {
     final newManager = await managerStorageRepository.saveManager(manager);
-    state = {...state, newManager.id: newManager};
+    state = newManager;
   }
 
   Future<void> updateManager(int id, Manager manager, XFile? imageFile) async {
-    Manager oldManager = await managerStorageRepository.getManager(id);
-    if (imageFile != null) {
+    Manager? oldManager = state;
+    if (imageFile != null && oldManager != null) {
       if (oldManager.imageUrl.isNotEmpty) {
         await deleteImage(oldManager.imageUrl);
       }
@@ -49,19 +44,19 @@ class StorageManagersNotifier extends StateNotifier<Map<int, Manager>> {
     }
     manager.id = id;
     await managerStorageRepository.updateManger(id, manager);
-    state = {...state, id: manager};
+    state = manager;
   }
 
   Future<void> deleteManager(int id) async {
     Future.delayed(
       const Duration(milliseconds: 350),
       () async {
-        Manager? manager = state[id];
-        if (manager != null && manager.imageUrl != "") {
+        Manager? manager = state;
+        if (manager != null && manager.imageUrl.isNotEmpty) {
           await deleteImage(manager.imageUrl);
         }
         await managerStorageRepository.deleteManager(id);
-        state = {...state}..remove(id);
+        state = null;
       },
     );
   }

@@ -13,6 +13,7 @@ class CustomBottomNavBar extends StatelessWidget {
         onTap: (value) => currentChild.goBranch(value),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'DT'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ajustes'),
         ]);
   }

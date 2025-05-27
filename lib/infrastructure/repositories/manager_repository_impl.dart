@@ -14,8 +14,8 @@ class ManagerRepositoryImpl extends ManagerRepository{
   }
 
   @override
-  Future<Manager> getManager(Id id) {
-    return datasource.getManager(id);
+  Future<Manager?> getManager() {
+    return datasource.getManager();
   }
 
   @override
