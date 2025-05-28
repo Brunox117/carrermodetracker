@@ -119,7 +119,9 @@ class __ManagerFormState extends ConsumerState<_ManagerForm> {
             const SizedBox(height: 20),
             SaveFormButton(
               submitForm: _submitForm,
-              onSaveTextAlert: "DT creado exitosamente!",
+              onSaveTextAlert: (widget.managerId != null)
+                  ? "DT actualizado!"
+                  : "DT creado exitosamente!",
             ),
           ],
         ),

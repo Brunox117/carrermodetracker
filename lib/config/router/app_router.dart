@@ -1,5 +1,6 @@
 import 'package:carrermodetracker/presentation/screens/home/home_screen.dart';
 import 'package:carrermodetracker/presentation/views/config/config_view.dart';
+import 'package:carrermodetracker/presentation/views/dt/add_dt_stats.dart';
 import 'package:carrermodetracker/presentation/views/dt/add_dt_view.dart';
 import 'package:carrermodetracker/presentation/views/dt/dt_general_view.dart';
 import 'package:carrermodetracker/presentation/views/home/add_team_view.dart';
@@ -14,7 +15,7 @@ import 'package:carrermodetracker/presentation/views/tournaments/add_tournament_
 import 'package:carrermodetracker/presentation/views/tournaments/tournament_view.dart';
 import 'package:go_router/go_router.dart';
 
-final appRouter = GoRouter(initialLocation: '/', routes: [
+final appRouter = GoRouter(initialLocation: '/dtview', routes: [
   StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
           HomeScreen(currentChild: navigationShell),
@@ -148,6 +149,15 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
                     final dtId = state.pathParameters['dtId'];
                     return AddDtView(
                       managerId: dtId,
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: '/adddtstats/:dtId',
+                  builder: (context, state) {
+                    final dtId = state.pathParameters['dtId'];
+                    return AddDtStats(
+                      managerId: dtId ?? '',
                     );
                   },
                 ),
