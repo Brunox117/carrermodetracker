@@ -134,6 +134,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
         if (team != null) {
           managerStat.team.value = team;
         }
+        // Save manager stats
+        saveStats(managerStat);
 
         // Save tournament stats
         for (var tournamentStat in tournamentStats) {
@@ -150,12 +152,11 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
             managerTournamentStat.tournament.value = tournament;
             managerTournamentStat.season.value = season;
             managerTournamentStat.manager.value = manager;
+            managerTournamentStat.team.value = team;
 
             saveTournamentStats(managerTournamentStat);
           }
         }
-        // Save manager stats
-        saveStats(managerStat);
       }
     }
   }

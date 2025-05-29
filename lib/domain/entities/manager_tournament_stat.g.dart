@@ -53,6 +53,12 @@ const ManagerTournamentStatSchema = CollectionSchema(
       name: r'tournament',
       target: r'Tournament',
       single: true,
+    ),
+    r'team': LinkSchema(
+      id: -48857465036230804,
+      name: r'team',
+      target: r'Team',
+      single: true,
     )
   },
   embeddedSchemas: {},
@@ -118,7 +124,7 @@ Id _managerTournamentStatGetId(ManagerTournamentStat object) {
 
 List<IsarLinkBase<dynamic>> _managerTournamentStatGetLinks(
     ManagerTournamentStat object) {
-  return [object.manager, object.season, object.tournament];
+  return [object.manager, object.season, object.tournament, object.team];
 }
 
 void _managerTournamentStatAttach(
@@ -128,6 +134,7 @@ void _managerTournamentStatAttach(
   object.season.attach(col, col.isar.collection<Season>(), r'season', id);
   object.tournament
       .attach(col, col.isar.collection<Tournament>(), r'tournament', id);
+  object.team.attach(col, col.isar.collection<Team>(), r'team', id);
 }
 
 extension ManagerTournamentStatQueryWhereSort
@@ -462,6 +469,20 @@ extension ManagerTournamentStatQueryLinks on QueryBuilder<ManagerTournamentStat,
       QAfterFilterCondition> tournamentIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'tournament', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<ManagerTournamentStat, ManagerTournamentStat,
+      QAfterFilterCondition> team(FilterQuery<Team> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'team');
+    });
+  }
+
+  QueryBuilder<ManagerTournamentStat, ManagerTournamentStat,
+      QAfterFilterCondition> teamIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'team', 0, true, 0, true);
     });
   }
 }

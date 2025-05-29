@@ -49,14 +49,13 @@ class IsarManagerStatDatasource extends ManagerStatDatasource {
   }
 
   @override
-  Future<Managerstat?> getManagerStatByTripleKey(
-      Id managerId, Id tournamentId, Id seasonId) async {
+  Future<Managerstat?> getManagerStatByDoubleKey(
+      Id managerId, Id seasonId) async {
     final isar = await db;
     final managerStat = await isar.managerstats
         .filter()
         .manager((q) => q.idEqualTo(managerId))
         .season((q) => q.idEqualTo(seasonId))
-        .tournaments((q) => q.idEqualTo(tournamentId))
         .findFirst();
     if (managerStat != null) {
       return managerStat;
@@ -82,17 +81,6 @@ class IsarManagerStatDatasource extends ManagerStatDatasource {
     final managerStats = await isar.managerstats
         .filter()
         .season((q) => q.idEqualTo(id))
-        .findAll();
-    return managerStats;
-  }
-
-  @override
-  Future<List<Managerstat>> getManagerStatsByTournament(
-      {int limit = 10, offset = 10, required Id id}) async {
-    final isar = await db;
-    final managerStats = await isar.managerstats
-        .filter()
-        .tournaments((q) => q.idEqualTo(id))
         .findAll();
     return managerStats;
   }

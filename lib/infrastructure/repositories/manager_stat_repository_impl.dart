@@ -19,12 +19,6 @@ class ManagerStatRepositoryImpl extends ManagerStatRepository {
   }
 
   @override
-  Future<Managerstat?> getManagerStatByTripleKey(
-      Id managerId, Id tournamentId, Id seasonId) {
-    return datasource.getManagerStatByTripleKey(managerId, tournamentId, seasonId);
-  }
-
-  @override
   Future<List<Managerstat>> getManagerStatsByManager(
       {int limit = 10, offset = 10, required Id id}) {
     return datasource.getManagerStatsByManager(id: id);
@@ -37,12 +31,6 @@ class ManagerStatRepositoryImpl extends ManagerStatRepository {
   }
 
   @override
-  Future<List<Managerstat>> getManagerStatsByTournament(
-      {int limit = 10, offset = 10, required Id id}) {
-    return datasource.getManagerStatsByTournament(id: id);
-  }
-
-  @override
   Future<Managerstat> saveManagerStat(Managerstat managerStat) {
     return datasource.saveManagerStat(managerStat);
   }
@@ -51,9 +39,14 @@ class ManagerStatRepositoryImpl extends ManagerStatRepository {
   Future<bool> updateManagerStats(Id id, Managerstat managerStat) {
     return datasource.updateManagerStats(id, managerStat);
   }
-  
+
   @override
   Future<List<Managerstat>> loadNextPage({int limit = 10, offset = 10}) {
     return datasource.loadNextPage(limit: limit, offset: offset);
+  }
+
+  @override
+  Future<Managerstat?> getManagerStatByDoubleKey(Id managerId, Id seasonId) {
+    return datasource.getManagerStatByDoubleKey(managerId, seasonId);
   }
 }

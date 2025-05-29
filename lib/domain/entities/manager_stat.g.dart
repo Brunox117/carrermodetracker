@@ -72,12 +72,6 @@ const ManagerstatSchema = CollectionSchema(
       name: r'team',
       target: r'Team',
       single: true,
-    ),
-    r'tournaments': LinkSchema(
-      id: -455222470147635911,
-      name: r'tournaments',
-      target: r'ManagerTournamentStat',
-      single: false,
     )
   },
   embeddedSchemas: {},
@@ -157,7 +151,7 @@ Id _managerstatGetId(Managerstat object) {
 }
 
 List<IsarLinkBase<dynamic>> _managerstatGetLinks(Managerstat object) {
-  return [object.manager, object.season, object.team, object.tournaments];
+  return [object.manager, object.season, object.team];
 }
 
 void _managerstatAttach(
@@ -166,8 +160,6 @@ void _managerstatAttach(
   object.manager.attach(col, col.isar.collection<Manager>(), r'manager', id);
   object.season.attach(col, col.isar.collection<Season>(), r'season', id);
   object.team.attach(col, col.isar.collection<Team>(), r'team', id);
-  object.tournaments.attach(
-      col, col.isar.collection<ManagerTournamentStat>(), r'tournaments', id);
 }
 
 extension ManagerstatQueryWhereSort
@@ -675,67 +667,6 @@ extension ManagerstatQueryLinks
   QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition> teamIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'team', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition> tournaments(
-      FilterQuery<ManagerTournamentStat> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'tournaments');
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition>
-      tournamentsLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tournaments', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition>
-      tournamentsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tournaments', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition>
-      tournamentsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tournaments', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition>
-      tournamentsLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tournaments', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition>
-      tournamentsLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tournaments', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition>
-      tournamentsLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'tournaments', lower, includeLower, upper, includeUpper);
     });
   }
 }

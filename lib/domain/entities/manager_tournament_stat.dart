@@ -1,3 +1,4 @@
+import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:isar/isar.dart';
 
 import 'package:carrermodetracker/domain/entities/manager.dart';
@@ -16,6 +17,7 @@ class ManagerTournamentStat {
   final manager = IsarLink<Manager>();
   final season = IsarLink<Season>();
   final tournament = IsarLink<Tournament>();
+  final team = IsarLink<Team>();
 
   ManagerTournamentStat({
     required this.finalPosition,

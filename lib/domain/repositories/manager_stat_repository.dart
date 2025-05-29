@@ -8,8 +8,6 @@ abstract class ManagerStatRepository {
 
   Future<List<Managerstat>> loadNextPage({int limit = 10, offset = 10});
 
-  Future<List<Managerstat>> getManagerStatsByTournament(
-      {int limit = 10, offset = 10, required Id id});
 
   Future<List<Managerstat>> getManagerStatsBySeason(
       {int limit = 10, offset = 10, required Id id});
@@ -21,6 +19,5 @@ abstract class ManagerStatRepository {
 
   Future<bool> deleteManagerStats(Id id);
 
-  Future<Managerstat?> getManagerStatByTripleKey(
-      Id managerId, Id tournamentId, Id seasonId);
+  Future<Managerstat?> getManagerStatByDoubleKey(Id managerId, Id seasonId);
 }
