@@ -22,6 +22,11 @@ const ManagerTournamentStatSchema = CollectionSchema(
       id: 0,
       name: r'finalPosition',
       type: IsarType.string,
+    ),
+    r'isWinner': PropertySchema(
+      id: 1,
+      name: r'isWinner',
+      type: IsarType.bool,
     )
   },
   estimateSize: _managerTournamentStatEstimateSize,
@@ -74,6 +79,7 @@ void _managerTournamentStatSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.finalPosition);
+  writer.writeBool(offsets[1], object.isWinner);
 }
 
 ManagerTournamentStat _managerTournamentStatDeserialize(
@@ -84,6 +90,7 @@ ManagerTournamentStat _managerTournamentStatDeserialize(
 ) {
   final object = ManagerTournamentStat(
     finalPosition: reader.readString(offsets[0]),
+    isWinner: reader.readBool(offsets[1]),
   );
   object.id = id;
   return object;
@@ -98,6 +105,8 @@ P _managerTournamentStatDeserializeProp<P>(
   switch (propertyId) {
     case 0:
       return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readBool(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -397,6 +406,16 @@ extension ManagerTournamentStatQueryFilter on QueryBuilder<
       ));
     });
   }
+
+  QueryBuilder<ManagerTournamentStat, ManagerTournamentStat,
+      QAfterFilterCondition> isWinnerEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isWinner',
+        value: value,
+      ));
+    });
+  }
 }
 
 extension ManagerTournamentStatQueryObject on QueryBuilder<
@@ -462,6 +481,20 @@ extension ManagerTournamentStatQuerySortBy
       return query.addSortBy(r'finalPosition', Sort.desc);
     });
   }
+
+  QueryBuilder<ManagerTournamentStat, ManagerTournamentStat, QAfterSortBy>
+      sortByIsWinner() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isWinner', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ManagerTournamentStat, ManagerTournamentStat, QAfterSortBy>
+      sortByIsWinnerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isWinner', Sort.desc);
+    });
+  }
 }
 
 extension ManagerTournamentStatQuerySortThenBy
@@ -493,6 +526,20 @@ extension ManagerTournamentStatQuerySortThenBy
       return query.addSortBy(r'id', Sort.desc);
     });
   }
+
+  QueryBuilder<ManagerTournamentStat, ManagerTournamentStat, QAfterSortBy>
+      thenByIsWinner() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isWinner', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ManagerTournamentStat, ManagerTournamentStat, QAfterSortBy>
+      thenByIsWinnerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isWinner', Sort.desc);
+    });
+  }
 }
 
 extension ManagerTournamentStatQueryWhereDistinct
@@ -502,6 +549,13 @@ extension ManagerTournamentStatQueryWhereDistinct
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'finalPosition',
           caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ManagerTournamentStat, ManagerTournamentStat, QDistinct>
+      distinctByIsWinner() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isWinner');
     });
   }
 }
@@ -518,6 +572,13 @@ extension ManagerTournamentStatQueryProperty on QueryBuilder<
       finalPositionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'finalPosition');
+    });
+  }
+
+  QueryBuilder<ManagerTournamentStat, bool, QQueryOperations>
+      isWinnerProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isWinner');
     });
   }
 }

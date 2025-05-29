@@ -1,4 +1,3 @@
-import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/presentation/providers/manager/managers_provider.dart';
 import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/infrastructure/datasources/isar_manager_tournament_stat_datasource.dart';
