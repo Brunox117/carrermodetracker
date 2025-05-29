@@ -10,6 +10,7 @@ import 'package:carrermodetracker/presentation/providers/stats/manager_stats_pro
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
 import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
+import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_number_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
@@ -43,7 +44,6 @@ class _ManagerStatsForm extends ConsumerStatefulWidget {
 
 class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   final _formKey = GlobalKey<FormState>();
-  int goals = 0;
   int playedMatches = 0;
   int wins = 0;
   int loses = 0;
@@ -54,6 +54,7 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   int? selectedTeamID;
   Season? season;
   Manager? manager;
+  Team? team;
   List<Map<String, dynamic>> tournamentStats = [];
 
   @override
@@ -62,6 +63,7 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
     ref.read(managersProvider.notifier).getManager();
     ref.read(tournamentsProvider.notifier).loadNextPage();
     ref.read(seasonsProvider.notifier).getSeasons();
+    ref.read(teamsProvider.notifier).loadNextPage();
   }
 
   void addTournamentStat() {
@@ -109,6 +111,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
 
   void submitForm() async {
     if (_formKey.currentState!.validate()) {
+      manager = ref.read(managersProvider);
+      team = await ref.read(teamsProvider.notifier).getTeam(selectedTeamID!);
       if (selectedSeasonID != null) {
         season = await ref
             .read(seasonsProvider.notifier)
@@ -117,7 +121,6 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
 
       if (season != null) {
         final managerStat = Managerstat(
-          goals: goals,
           playedMatches: playedMatches,
           wins: wins,
           loses: loses,
@@ -128,9 +131,9 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
 
         managerStat.season.value = season;
         managerStat.manager.value = manager;
-
-        // Save manager stats
-        saveStats(managerStat);
+        if (team != null) {
+          managerStat.team.value = team;
+        }
 
         // Save tournament stats
         for (var tournamentStat in tournamentStats) {
@@ -151,6 +154,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
             saveTournamentStats(managerTournamentStat);
           }
         }
+        // Save manager stats
+        saveStats(managerStat);
       }
     }
   }
@@ -372,7 +377,7 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        CustomNumberFormField(
+                        CustomFormField(
                           isBottomField: true,
                           isTopField: true,
                           label: 'Posición final',

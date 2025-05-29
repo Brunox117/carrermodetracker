@@ -22,33 +22,28 @@ const ManagerstatSchema = CollectionSchema(
       name: r'draws',
       type: IsarType.long,
     ),
-    r'goals': PropertySchema(
-      id: 1,
-      name: r'goals',
-      type: IsarType.long,
-    ),
     r'goalsConceded': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'goalsConceded',
       type: IsarType.long,
     ),
     r'goalsScored': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'goalsScored',
       type: IsarType.long,
     ),
     r'loses': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'loses',
       type: IsarType.long,
     ),
     r'playedMatches': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'playedMatches',
       type: IsarType.long,
     ),
     r'wins': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'wins',
       type: IsarType.long,
     )
@@ -108,12 +103,11 @@ void _managerstatSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.draws);
-  writer.writeLong(offsets[1], object.goals);
-  writer.writeLong(offsets[2], object.goalsConceded);
-  writer.writeLong(offsets[3], object.goalsScored);
-  writer.writeLong(offsets[4], object.loses);
-  writer.writeLong(offsets[5], object.playedMatches);
-  writer.writeLong(offsets[6], object.wins);
+  writer.writeLong(offsets[1], object.goalsConceded);
+  writer.writeLong(offsets[2], object.goalsScored);
+  writer.writeLong(offsets[3], object.loses);
+  writer.writeLong(offsets[4], object.playedMatches);
+  writer.writeLong(offsets[5], object.wins);
 }
 
 Managerstat _managerstatDeserialize(
@@ -124,12 +118,11 @@ Managerstat _managerstatDeserialize(
 ) {
   final object = Managerstat(
     draws: reader.readLong(offsets[0]),
-    goals: reader.readLong(offsets[1]),
-    goalsConceded: reader.readLong(offsets[2]),
-    goalsScored: reader.readLong(offsets[3]),
-    loses: reader.readLong(offsets[4]),
-    playedMatches: reader.readLong(offsets[5]),
-    wins: reader.readLong(offsets[6]),
+    goalsConceded: reader.readLong(offsets[1]),
+    goalsScored: reader.readLong(offsets[2]),
+    loses: reader.readLong(offsets[3]),
+    playedMatches: reader.readLong(offsets[4]),
+    wins: reader.readLong(offsets[5]),
   );
   object.id = id;
   return object;
@@ -153,8 +146,6 @@ P _managerstatDeserializeProp<P>(
     case 4:
       return (reader.readLong(offset)) as P;
     case 5:
-      return (reader.readLong(offset)) as P;
-    case 6:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -305,60 +296,6 @@ extension ManagerstatQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'draws',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition> goalsEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'goals',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition>
-      goalsGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'goals',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition> goalsLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'goals',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterFilterCondition> goalsBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'goals',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -817,18 +754,6 @@ extension ManagerstatQuerySortBy
     });
   }
 
-  QueryBuilder<Managerstat, Managerstat, QAfterSortBy> sortByGoals() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'goals', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterSortBy> sortByGoalsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'goals', Sort.desc);
-    });
-  }
-
   QueryBuilder<Managerstat, Managerstat, QAfterSortBy> sortByGoalsConceded() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'goalsConceded', Sort.asc);
@@ -903,18 +828,6 @@ extension ManagerstatQuerySortThenBy
   QueryBuilder<Managerstat, Managerstat, QAfterSortBy> thenByDrawsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'draws', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterSortBy> thenByGoals() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'goals', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Managerstat, Managerstat, QAfterSortBy> thenByGoalsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'goals', Sort.desc);
     });
   }
 
@@ -1001,12 +914,6 @@ extension ManagerstatQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Managerstat, Managerstat, QDistinct> distinctByGoals() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'goals');
-    });
-  }
-
   QueryBuilder<Managerstat, Managerstat, QDistinct> distinctByGoalsConceded() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'goalsConceded');
@@ -1049,12 +956,6 @@ extension ManagerstatQueryProperty
   QueryBuilder<Managerstat, int, QQueryOperations> drawsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'draws');
-    });
-  }
-
-  QueryBuilder<Managerstat, int, QQueryOperations> goalsProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'goals');
     });
   }
 

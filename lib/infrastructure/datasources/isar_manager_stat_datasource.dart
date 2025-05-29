@@ -114,7 +114,6 @@ class IsarManagerStatDatasource extends ManagerStatDatasource {
     originalManagerStat.draws = managerStat.draws;
     originalManagerStat.loses = managerStat.loses;
     originalManagerStat.wins = managerStat.wins;
-    originalManagerStat.goals = managerStat.goals;
     originalManagerStat.goalsConceded = managerStat.goalsConceded;
     originalManagerStat.goalsScored = managerStat.goalsScored;
     originalManagerStat.playedMatches = managerStat.playedMatches;

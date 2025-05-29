@@ -9,7 +9,6 @@ part 'manager_stat.g.dart';
 @collection
 class Managerstat {
   Id id = Isar.autoIncrement;
-  int goals;
   int playedMatches;
   int wins;
   int loses;
@@ -23,7 +22,6 @@ class Managerstat {
   final tournaments = IsarLinks<ManagerTournamentStat>();
 
   Managerstat({
-    required this.goals,
     required this.playedMatches,
     required this.wins,
     required this.loses,
