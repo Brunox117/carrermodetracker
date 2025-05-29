@@ -1,8 +1,12 @@
 import 'package:carrermodetracker/domain/entities/manager.dart';
+import 'package:carrermodetracker/domain/entities/manager_stat.dart';
+import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:carrermodetracker/presentation/providers/manager/managers_provider.dart';
 import 'package:carrermodetracker/presentation/providers/seasons/seasons_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,6 +58,27 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
     ref.read(managersProvider.notifier).getManager();
     ref.read(tournamentsProvider.notifier).loadNextPage();
     ref.read(seasonsProvider.notifier).getSeasons();
+  }
+
+  void saveStats(Managerstat managerStat) {
+    ref.read(managerStatsProvider.notifier).addManagerStat(managerStat);
+  }
+
+  void saveTournamentStats(ManagerTournamentStat managerTournamentStat) {
+    ref
+        .read(managerTournamentStatsProvider.notifier)
+        .addManagerTournamentStat(managerTournamentStat);
+  }
+
+  void updateStats(Managerstat managerStat, int id) {
+    ref.read(managerStatsProvider.notifier).updateManagerStat(id, managerStat);
+  }
+
+  void updateTournamentStats(
+      int id, ManagerTournamentStat managerTournamentStat) {
+    ref
+        .read(managerTournamentStatsProvider.notifier)
+        .updateManagerTournamentStat(id, managerTournamentStat);
   }
 
   @override
