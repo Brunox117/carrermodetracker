@@ -53,6 +53,14 @@ class StorageManagerStatsNotifier extends StateNotifier<Map<int, Managerstat>> {
     }
   }
 
+  Future<void> getManagerStatByDoubleKey(int seasonId, int teamId) async {
+    final managerStat = await managerStatsRepository.getManagerStatByDoubleKey(
+        teamId, seasonId);
+    if (managerStat != null) {
+      state = {...state, managerStat.id: managerStat};
+    }
+  }
+
   Future<void> deleteManagerStat(int id) async {
     final deletedManagerStat =
         await managerStatsRepository.deleteManagerStats(id);

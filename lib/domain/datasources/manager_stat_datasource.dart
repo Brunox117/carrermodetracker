@@ -19,5 +19,5 @@ abstract class ManagerStatDatasource {
 
   Future<bool> deleteManagerStats(Id id);
 
-  Future<Managerstat?> getManagerStatByDoubleKey(Id managerId, Id seasonId);
+  Future<Managerstat?> getManagerStatByDoubleKey(Id teamId, Id seasonId);
 }

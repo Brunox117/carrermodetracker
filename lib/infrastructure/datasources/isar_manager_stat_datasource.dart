@@ -54,7 +54,7 @@ class IsarManagerStatDatasource extends ManagerStatDatasource {
     final isar = await db;
     final managerStat = await isar.managerstats
         .filter()
-        .manager((q) => q.idEqualTo(managerId))
+        .team((q) => q.idEqualTo(managerId))
         .season((q) => q.idEqualTo(seasonId))
         .findFirst();
     if (managerStat != null) {

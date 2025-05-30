@@ -112,6 +112,11 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   void submitForm() async {
     if (_formKey.currentState!.validate()) {
       manager = ref.read(managersProvider);
+      if (selectedSeasonID != null && selectedTeamID != null) {
+        ref
+            .read(managerStatsProvider.notifier)
+            .getManagerStatByDoubleKey(selectedSeasonID!, selectedTeamID!);
+      }
       team = await ref.read(teamsProvider.notifier).getTeam(selectedTeamID!);
       if (selectedSeasonID != null) {
         season = await ref
