@@ -1,3 +1,4 @@
+import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/manager.dart';
 import 'package:carrermodetracker/domain/entities/manager_stat.dart';
 import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
@@ -16,6 +17,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.da
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class AddDtStats extends StatelessWidget {
   final String managerId;
@@ -112,11 +114,6 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   void submitForm() async {
     if (_formKey.currentState!.validate()) {
       manager = ref.read(managersProvider);
-      if (selectedSeasonID != null && selectedTeamID != null) {
-        ref
-            .read(managerStatsProvider.notifier)
-            .getManagerStatByDoubleKey(selectedSeasonID!, selectedTeamID!);
-      }
       team = await ref.read(teamsProvider.notifier).getTeam(selectedTeamID!);
       if (selectedSeasonID != null) {
         season = await ref
@@ -139,8 +136,28 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
         if (team != null) {
           managerStat.team.value = team;
         }
-        // Save manager stats
-        saveStats(managerStat);
+        if (selectedSeasonID != null && selectedTeamID != null) {
+          final alreadySavedManagerStat = await ref
+              .read(managerStatsProvider.notifier)
+              .getManagerStatByDoubleKey(selectedSeasonID!, selectedTeamID!);
+          if (alreadySavedManagerStat != null) {
+            showDefaultDialog(
+                // ignore: use_build_context_synchronously
+                context,
+                'Parece que ya guardaste una estadística con estos datos,¿Deseas actualizarla?',
+                'Si, actualizar',
+                'No, cambiar datos', () {
+              context.pop();
+            }, () {
+              updateStats(managerStat, alreadySavedManagerStat.id);
+              context.pop();
+              _formKey.currentState!.reset();
+            });
+          } else {
+            // Save manager stats
+            saveStats(managerStat);
+          }
+        }
 
         // Save tournament stats
         for (var tournamentStat in tournamentStats) {
@@ -425,7 +442,6 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
               const SizedBox(height: 20),
               SaveFormButton(
                 submitForm: submitForm,
-                onSaveTextAlert: 'Estadísticas registradas correctamente!',
               ),
             ],
           ),
