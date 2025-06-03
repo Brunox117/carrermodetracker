@@ -65,4 +65,9 @@ class ManagerTournamentStatRepositoryImpl
   Future<List<ManagerTournamentStat>> loadNextPage({int limit = 10, offset = 10}) {
     return datasource.loadNextPage(limit: limit, offset: offset);
   }
+  
+  @override
+  Future<List<ManagerTournamentStat>> getManagerTournamentStatsByDoubleKey(Id teamId, Id seasonId) {
+    return datasource.getManagerTournamentStatsByDoubleKey(teamId, seasonId);
+  }
 }

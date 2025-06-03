@@ -59,12 +59,27 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   Team? team;
   List<Map<String, dynamic>> tournamentStats = [];
 
-  List<Tournament> getAvailableTournaments(List<Tournament> allTournaments, int? currentTournamentId) {
+  void cleanForm() {
+    playedMatches = 0;
+    wins = 0;
+    loses = 0;
+    draws = 0;
+    goalsScored = 0;
+    goalsConceded = 0;
+    selectedSeasonID = null;
+    selectedTeamID = null;
+    season = null;
+    team = null;
+    tournamentStats = [];
+  }
+
+  List<Tournament> getAvailableTournaments(
+      List<Tournament> allTournaments, int? currentTournamentId) {
     final selectedTournamentIds = tournamentStats
         .map((stat) => stat['tournamentId'] as int?)
         .where((id) => id != null && id != currentTournamentId)
         .toSet();
-    
+
     return allTournaments
         .where((tournament) => !selectedTournamentIds.contains(tournament.id))
         .toList();
@@ -162,35 +177,53 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
             }, () {
               updateStats(managerStat, alreadySavedManagerStat.id);
               context.pop();
-              _formKey.currentState!.reset();
             });
           } else {
             // Save manager stats
             saveStats(managerStat);
           }
         }
+        if (selectedSeasonID != null && selectedTeamID != null) {
+          final alreadySavedManagerTournamentStats = await ref
+              .read(managerTournamentStatsProvider.notifier)
+              .getManagerTournamentStatByDoubleKey(
+                  selectedSeasonID!, selectedTeamID!);
+          // Save tournament stats
+          for (var tournamentStat in tournamentStats) {
+            if (tournamentStat['tournamentId'] != null) {
+              final tournament = await ref
+                  .read(tournamentsProvider.notifier)
+                  .getTournament(tournamentStat['tournamentId']);
 
-        // Save tournament stats
-        for (var tournamentStat in tournamentStats) {
-          if (tournamentStat['tournamentId'] != null) {
-            final tournament = await ref
-                .read(tournamentsProvider.notifier)
-                .getTournament(tournamentStat['tournamentId']);
+              final managerTournamentStat = ManagerTournamentStat(
+                finalPosition: tournamentStat['finalPosition'],
+                isWinner: tournamentStat['isWinner'],
+              );
 
-            final managerTournamentStat = ManagerTournamentStat(
-              finalPosition: tournamentStat['finalPosition'],
-              isWinner: tournamentStat['isWinner'],
-            );
+              managerTournamentStat.tournament.value = tournament;
+              managerTournamentStat.season.value = season;
+              managerTournamentStat.manager.value = manager;
+              managerTournamentStat.team.value = team;
 
-            managerTournamentStat.tournament.value = tournament;
-            managerTournamentStat.season.value = season;
-            managerTournamentStat.manager.value = manager;
-            managerTournamentStat.team.value = team;
+              // Check if tournament stat already exists
+              final existingTournamentStat = alreadySavedManagerTournamentStats
+                  .where((stat) =>
+                      stat.tournament.value?.id ==
+                      tournamentStat['tournamentId'])
+                  .firstOrNull;
 
-            saveTournamentStats(managerTournamentStat);
+              if (existingTournamentStat != null) {
+                updateTournamentStats(
+                    existingTournamentStat.id, managerTournamentStat);
+              } else {
+                saveTournamentStats(managerTournamentStat);
+              }
+            }
           }
         }
       }
+      _formKey.currentState!.reset();
+      cleanForm();
     }
   }
 
@@ -391,7 +424,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                                 labelText: "Torneo",
                                 hintText: "Elige un torneo...",
                                 value: stat['tournamentId'],
-                                items: getAvailableTournaments(savedTournaments, stat['tournamentId'])
+                                items: getAvailableTournaments(
+                                        savedTournaments, stat['tournamentId'])
                                     .map((Tournament tournament) {
                                   return DropdownMenuItem<int>(
                                     value: tournament.id,

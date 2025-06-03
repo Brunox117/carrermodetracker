@@ -31,7 +31,7 @@ class StorageManagerTournamentStatsNotifier
     if (isLoadingNextPage) return;
     isLoadingNextPage = true;
     final tournamentStats = await managerTournamentStatsRepository.loadNextPage(
-        offset: page * 10, limit: 10);
+        offset: page * 10, limit: 30);
     page++;
     final tempTournamentStatsMap = <int, ManagerTournamentStat>{};
     for (final tournamentStat in tournamentStats) {
@@ -39,6 +39,19 @@ class StorageManagerTournamentStatsNotifier
     }
     state = {...state, ...tempTournamentStatsMap};
     isLoadingNextPage = false;
+  }
+
+  Future<List<ManagerTournamentStat>> getManagerTournamentStatByDoubleKey(
+      int seasonId, int teamId) async {
+    final tournamentStatsByDoubleKey = await managerTournamentStatsRepository
+        .getManagerTournamentStatsByDoubleKey(teamId, seasonId);
+    page++;
+    final tempTournamentStatsMap = <int, ManagerTournamentStat>{};
+    for (final tournamentStat in tournamentStatsByDoubleKey) {
+      tempTournamentStatsMap[tournamentStat.id] = tournamentStat;
+    }
+    state = {...state, ...tempTournamentStatsMap};
+    return tournamentStatsByDoubleKey;
   }
 
   Future<void> addManagerTournamentStat(

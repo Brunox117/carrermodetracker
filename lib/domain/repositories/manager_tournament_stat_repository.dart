@@ -25,4 +25,6 @@ abstract class ManagerTournamentStatRepository {
 
   Future<ManagerTournamentStat?> getManagerTournamentStatByTripleKey(
       Id managerId, Id tournamentId, Id seasonId);
+
+      Future<List<ManagerTournamentStat>> getManagerTournamentStatsByDoubleKey(Id teamId, Id seasonId);
 }

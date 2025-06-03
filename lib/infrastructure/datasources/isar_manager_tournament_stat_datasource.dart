@@ -3,6 +3,7 @@ import 'package:carrermodetracker/domain/datasources/manager_tournament_stat_dat
 import 'package:carrermodetracker/domain/entities/manager.dart';
 import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
+import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:isar/isar.dart';
 
@@ -108,10 +109,28 @@ class IsarManagerTournamentStatDatasource
         isar.managerTournamentStats.putSync(originalManagerTournamentStat));
     return true;
   }
-  
+
   @override
-  Future<List<ManagerTournamentStat>> loadNextPage({int limit = 10, offset = 10}) async {
+  Future<List<ManagerTournamentStat>> loadNextPage(
+      {int limit = 10, offset = 10}) async {
     final isar = await db;
-    return isar.managerTournamentStats.where().offset(offset).limit(limit).findAll();
+    return isar.managerTournamentStats
+        .where()
+        .offset(offset)
+        .limit(limit)
+        .findAll();
+  }
+
+  @override
+  Future<List<ManagerTournamentStat>> getManagerTournamentStatsByDoubleKey(
+      Id teamId, Id seasonId) async {
+    final isar = await db;
+    List<ManagerTournamentStat> result = [];
+    result = await isar.managerTournamentStats
+        .filter()
+        .team((q) => q.idEqualTo(teamId))
+        .season((q) => q.idEqualTo(seasonId))
+        .findAll();
+    return result;
   }
 }
