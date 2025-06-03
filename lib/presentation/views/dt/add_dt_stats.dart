@@ -59,6 +59,17 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   Team? team;
   List<Map<String, dynamic>> tournamentStats = [];
 
+  List<Tournament> getAvailableTournaments(List<Tournament> allTournaments, int? currentTournamentId) {
+    final selectedTournamentIds = tournamentStats
+        .map((stat) => stat['tournamentId'] as int?)
+        .where((id) => id != null && id != currentTournamentId)
+        .toSet();
+    
+    return allTournaments
+        .where((tournament) => !selectedTournamentIds.contains(tournament.id))
+        .toList();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -377,10 +388,10 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                           children: [
                             Expanded(
                               child: CustomDropdownButtonFormField<int>(
-                                labelText: "Toreno",
+                                labelText: "Torneo",
                                 hintText: "Elige un torneo...",
                                 value: stat['tournamentId'],
-                                items: savedTournaments
+                                items: getAvailableTournaments(savedTournaments, stat['tournamentId'])
                                     .map((Tournament tournament) {
                                   return DropdownMenuItem<int>(
                                     value: tournament.id,
