@@ -15,6 +15,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.d
 import 'package:carrermodetracker/presentation/widgets/forms/custom_number_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
+import 'package:drops/drops.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -138,93 +139,116 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   }
 
   void submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      manager = ref.read(managersProvider);
-      team = await ref.read(teamsProvider.notifier).getTeam(selectedTeamID!);
-      if (selectedSeasonID != null) {
-        season = await ref
-            .read(seasonsProvider.notifier)
-            .getSeason(selectedSeasonID!);
-      }
+    if (!_formKey.currentState!.validate()) return;
 
-      if (season != null) {
-        final managerStat = Managerstat(
-          playedMatches: playedMatches,
-          wins: wins,
-          loses: loses,
-          draws: draws,
-          goalsScored: goalsScored,
-          goalsConceded: goalsConceded,
+    if (selectedSeasonID == null || selectedTeamID == null) {
+      showDefaultDialog(
+        context,
+        'Por favor selecciona una temporada y un equipo',
+        'Entendido',
+        'Cancelar',
+        () => context.pop(),
+        () => context.pop(),
+      );
+      return;
+    }
+    manager = ref.read(managersProvider);
+    team = await ref.read(teamsProvider.notifier).getTeam(selectedTeamID!);
+    season =
+        await ref.read(seasonsProvider.notifier).getSeason(selectedSeasonID!);
+
+    if (season == null) return;
+
+    // Check if stats already exist
+    final alreadySavedManagerStat = await ref
+        .read(managerStatsProvider.notifier)
+        .getManagerStatByDoubleKey(selectedSeasonID!, selectedTeamID!);
+
+    if (alreadySavedManagerStat != null) {
+      showDefaultDialog(
+        // ignore: use_build_context_synchronously
+        context,
+        'Ya existe una estadística registrada para este equipo en esta temporada. ¿Deseas actualizarla?',
+        'Sí, actualizar',
+        'No, cancelar',
+        () {
+          context.pop();
+        },
+        () async {
+          await _saveOrUpdateStats(alreadySavedManagerStat.id);
+          // ignore: use_build_context_synchronously
+          context.pop();
+        },
+      );
+      return;
+    }
+
+    await _saveOrUpdateStats();
+  }
+
+  Future<void> _saveOrUpdateStats([int? existingStatId]) async {
+    final managerStat = Managerstat(
+      playedMatches: playedMatches,
+      wins: wins,
+      loses: loses,
+      draws: draws,
+      goalsScored: goalsScored,
+      goalsConceded: goalsConceded,
+    );
+
+    managerStat.season.value = season;
+    managerStat.manager.value = manager;
+    managerStat.team.value = team;
+
+    if (existingStatId != null) {
+      updateStats(managerStat, existingStatId);
+    } else {
+      saveStats(managerStat);
+    }
+
+    // Save tournament stats
+    final alreadySavedManagerTournamentStats = await ref
+        .read(managerTournamentStatsProvider.notifier)
+        .getManagerTournamentStatByDoubleKey(
+            selectedSeasonID!, selectedTeamID!);
+
+    for (var tournamentStat in tournamentStats) {
+      if (tournamentStat['tournamentId'] != null) {
+        final tournament = await ref
+            .read(tournamentsProvider.notifier)
+            .getTournament(tournamentStat['tournamentId']);
+
+        final managerTournamentStat = ManagerTournamentStat(
+          finalPosition: tournamentStat['finalPosition'],
+          isWinner: tournamentStat['isWinner'],
         );
 
-        managerStat.season.value = season;
-        managerStat.manager.value = manager;
-        if (team != null) {
-          managerStat.team.value = team;
-        }
-        if (selectedSeasonID != null && selectedTeamID != null) {
-          final alreadySavedManagerStat = await ref
-              .read(managerStatsProvider.notifier)
-              .getManagerStatByDoubleKey(selectedSeasonID!, selectedTeamID!);
-          if (alreadySavedManagerStat != null) {
-            showDefaultDialog(
-                // ignore: use_build_context_synchronously
-                context,
-                'Parece que ya guardaste una estadística con estos datos,¿Deseas actualizarla?',
-                'Si, actualizar',
-                'No, cambiar datos', () {
-              context.pop();
-            }, () {
-              updateStats(managerStat, alreadySavedManagerStat.id);
-              context.pop();
-            });
-          } else {
-            // Save manager stats
-            saveStats(managerStat);
-          }
-        }
-        if (selectedSeasonID != null && selectedTeamID != null) {
-          final alreadySavedManagerTournamentStats = await ref
-              .read(managerTournamentStatsProvider.notifier)
-              .getManagerTournamentStatByDoubleKey(
-                  selectedSeasonID!, selectedTeamID!);
-          // Save tournament stats
-          for (var tournamentStat in tournamentStats) {
-            if (tournamentStat['tournamentId'] != null) {
-              final tournament = await ref
-                  .read(tournamentsProvider.notifier)
-                  .getTournament(tournamentStat['tournamentId']);
+        managerTournamentStat.tournament.value = tournament;
+        managerTournamentStat.season.value = season;
+        managerTournamentStat.manager.value = manager;
+        managerTournamentStat.team.value = team;
 
-              final managerTournamentStat = ManagerTournamentStat(
-                finalPosition: tournamentStat['finalPosition'],
-                isWinner: tournamentStat['isWinner'],
-              );
+        final existingTournamentStat = alreadySavedManagerTournamentStats
+            .where((stat) =>
+                stat.tournament.value?.id == tournamentStat['tournamentId'])
+            .firstOrNull;
 
-              managerTournamentStat.tournament.value = tournament;
-              managerTournamentStat.season.value = season;
-              managerTournamentStat.manager.value = manager;
-              managerTournamentStat.team.value = team;
-
-              // Check if tournament stat already exists
-              final existingTournamentStat = alreadySavedManagerTournamentStats
-                  .where((stat) =>
-                      stat.tournament.value?.id ==
-                      tournamentStat['tournamentId'])
-                  .firstOrNull;
-
-              if (existingTournamentStat != null) {
-                updateTournamentStats(
-                    existingTournamentStat.id, managerTournamentStat);
-              } else {
-                saveTournamentStats(managerTournamentStat);
-              }
-            }
-          }
+        if (existingTournamentStat != null) {
+          updateTournamentStats(
+              existingTournamentStat.id, managerTournamentStat);
+        } else {
+          saveTournamentStats(managerTournamentStat);
         }
       }
-      _formKey.currentState!.reset();
-      cleanForm();
     }
+    Drops.show(
+      shape: DropShape.squared,
+      // ignore: use_build_context_synchronously
+      context,
+      title: "Guardado exitoso!",
+    );
+    _formKey.currentState!.reset();
+    cleanForm();
   }
 
   @override
