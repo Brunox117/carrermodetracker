@@ -3,6 +3,8 @@ import 'package:carrermodetracker/config/theme/app_theme.dart';
 import 'package:carrermodetracker/presentation/providers/config/locale_provider.dart';
 import 'package:carrermodetracker/presentation/providers/config/theme_provider.dart';
 import 'package:carrermodetracker/presentation/providers/manager/managers_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +24,8 @@ class MainApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.read(teamsProvider.notifier).loadNextPage();
     ref.read(managersProvider.notifier).getManager();
+    ref.read(managerStatsProvider.notifier).loadNextPage();
+    ref.read(managerTournamentStatsProvider.notifier).loadNextPage();
     final AppTheme appTheme = ref.watch(themeNotifierProvider);
     final locale = ref.watch(localeProvider);
     return MaterialApp.router(

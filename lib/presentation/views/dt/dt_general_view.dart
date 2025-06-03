@@ -1,24 +1,61 @@
+import 'package:carrermodetracker/domain/entities/manager_stat.dart';
 import 'package:carrermodetracker/presentation/providers/manager/managers_provider.dart';
-import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
-import 'package:carrermodetracker/infrastructure/datasources/isar_manager_tournament_stat_datasource.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
 
-final managerTournamentStatDatasourceProvider = Provider((ref) {
-  return IsarManagerTournamentStatDatasource();
-});
-
-class DtGeneralView extends ConsumerWidget {
+class DtGeneralView extends ConsumerStatefulWidget {
   const DtGeneralView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  DtGeneralViewState createState() => DtGeneralViewState();
+}
+
+class DtGeneralViewState extends ConsumerState<DtGeneralView> {
+  Map<String, int> managerTotalStats = {};
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(managerStatsProvider.notifier).loadNextPage();
+    ref.read(managerTournamentStatsProvider.notifier).loadNextPage();
+  }
+
+  Map<String, int> calculateManagerTotalStats(List<Managerstat> managerStats) {
+    return managerStats.fold<Map<String, int>>(
+      {
+        'playedMatches': 0,
+        'wins': 0,
+        'loses': 0,
+        'draws': 0,
+        'goalsScored': 0,
+        'goalsConceded': 0,
+      },
+      (stats, managerStat) => {
+        'playedMatches': stats['playedMatches']! + managerStat.playedMatches,
+        'wins': stats['wins']! + managerStat.wins,
+        'loses': stats['loses']! + managerStat.loses,
+        'draws': stats['draws']! + managerStat.draws,
+        'goalsScored': stats['goalsScored']! + managerStat.goalsScored,
+        'goalsConceded': stats['goalsConceded']! + managerStat.goalsConceded,
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final manager = ref.watch(managersProvider);
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
+    final managerStats = ref.watch(managerStatsProvider).values.toList();
+    final managerTournamentStats =
+        ref.watch(managerTournamentStatsProvider);
 
+    //Get total stats
+    managerTotalStats = calculateManagerTotalStats(managerStats);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Mi perfil"),
@@ -104,34 +141,39 @@ class DtGeneralView extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              Builder(
-                                builder: (context) {
-                                  final stats = manager.managerStats.value;
-                                  if (stats == null) {
-                                    return const Center(
+                              (managerStats.isEmpty)
+                                  ? const Center(
                                       child: Text(
                                           'No hay estadísticas disponibles'),
-                                    );
-                                  }
-
-                                  return Column(
-                                    children: [
-                                      _buildStatRow('Partidos Jugados',
-                                          stats.playedMatches.toString()),
-                                      _buildStatRow(
-                                          'Victorias', stats.wins.toString()),
-                                      _buildStatRow(
-                                          'Empates', stats.draws.toString()),
-                                      _buildStatRow(
-                                          'Derrotas', stats.loses.toString()),
-                                      _buildStatRow('Goles Marcados',
-                                          stats.goalsScored.toString()),
-                                      _buildStatRow('Goles Recibidos',
-                                          stats.goalsConceded.toString()),
-                                    ],
-                                  );
-                                },
-                              ),
+                                    )
+                                  : Column(
+                                      children: [
+                                        _buildStatRow(
+                                            "Partidos jugados",
+                                            managerTotalStats["playedMatches"]
+                                                .toString()),
+                                        _buildStatRow(
+                                            "Victorias",
+                                            managerTotalStats["wins"]
+                                                .toString()),
+                                        _buildStatRow(
+                                            "Derrotas",
+                                            managerTotalStats["loses"]
+                                                .toString()),
+                                        _buildStatRow(
+                                            "Empates",
+                                            managerTotalStats["draws"]
+                                                .toString()),
+                                        _buildStatRow(
+                                            "Goles anotados",
+                                            managerTotalStats["goalsScored"]
+                                                .toString()),
+                                        _buildStatRow(
+                                            "Goles concedidos",
+                                            managerTotalStats["goalsConceded"]
+                                                .toString())
+                                      ],
+                                    ),
                             ],
                           ),
                         ),
@@ -151,39 +193,12 @@ class DtGeneralView extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              FutureBuilder<List<ManagerTournamentStat>>(
-                                future: ref
-                                    .read(
-                                        managerTournamentStatDatasourceProvider)
-                                    .getManagerTournamentStatsByManager(
-                                        id: manager.id),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
-
-                                  final tournaments = snapshot.data!;
-                                  if (tournaments.isEmpty) {
-                                    return const Center(
-                                      child: Text('No hay torneos disponibles'),
-                                    );
-                                  }
-
-                                  return Column(
-                                    children: tournaments.map((tournament) {
-                                      return ListTile(
-                                        title: Text(
-                                            tournament.tournament.value?.name ??
-                                                ''),
-                                        subtitle: Text(
-                                            'Posición: ${tournament.finalPosition}'),
-                                      );
-                                    }).toList(),
-                                  );
-                                },
-                              ),
+                              (managerTournamentStats.isEmpty)
+                                  ? const Center(
+                                      child: Text(
+                                          'No hay estadísticas disponibles'),
+                                    )
+                                  : const SizedBox()
                             ],
                           ),
                         ),
