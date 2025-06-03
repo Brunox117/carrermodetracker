@@ -161,15 +161,6 @@ final appRouter = GoRouter(initialLocation: '/dtview', routes: [
                     );
                   },
                 ),
-                GoRoute(
-                  path: '/adddtstats/:dtId',
-                  builder: (context, state) {
-                    final dtId = state.pathParameters['dtId'];
-                    return AddDtStats(
-                      managerId: dtId ?? '',
-                    );
-                  },
-                ),
               ]),
         ]),
         StatefulShellBranch(routes: [
