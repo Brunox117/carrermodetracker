@@ -17,7 +17,7 @@ class DtGeneralView extends ConsumerStatefulWidget {
 
 class DtGeneralViewState extends ConsumerState<DtGeneralView> {
   Map<String, int> managerTotalStats = {};
-  Map<String, List<String>> managerTournamentStatsMap = {};
+  Map<String, List<Map<String, dynamic>>> managerTournamentStatsMap = {};
 
   @override
   void initState() {
@@ -33,17 +33,25 @@ class DtGeneralViewState extends ConsumerState<DtGeneralView> {
       if (tournamentStat.tournament.value != null) {
         if (managerTournamentStatsMap[tournamentStat.tournament.value!.name] !=
             null) {
-          managerTournamentStatsMap[tournamentStat.tournament.value!.name]!.add(
-              "${tournamentStat.season.value?.season} ${tournamentStat.finalPosition} ${tournamentStat.team.value?.name}");
+          managerTournamentStatsMap[tournamentStat.tournament.value!.name]!
+              .add({
+            "season": tournamentStat.season.value?.season,
+            "finalPosition": tournamentStat.finalPosition,
+            "team": tournamentStat.team.value?.name,
+            "isWinner": tournamentStat.isWinner,
+          });
         } else {
           managerTournamentStatsMap[tournamentStat.tournament.value!.name] = [
-            "${tournamentStat.season.value?.season} ${tournamentStat.finalPosition} ${tournamentStat.team.value?.name}"
+            {
+              "season": tournamentStat.season.value?.season,
+              "finalPosition": tournamentStat.finalPosition,
+              "team": tournamentStat.team.value?.name,
+              "isWinner": tournamentStat.isWinner,
+            }
           ];
         }
       }
     }
-    print('Acabo el for');
-    print(managerTournamentStatsMap);
   }
 
   Map<String, int> calculateManagerTotalStats(List<Managerstat> managerStats) {
@@ -222,34 +230,11 @@ class DtGeneralViewState extends ConsumerState<DtGeneralView> {
                                       child: Text(
                                           'No hay estadísticas disponibles'),
                                     )
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: managerTournamentStatsMap.length,
-                                      itemBuilder: (context, index) {
-                                        final tournamentName = managerTournamentStatsMap.keys.elementAt(index);
-                                        final tournamentStats = managerTournamentStatsMap[tournamentName]!;
-                                        
-                                        return Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              tournamentName,
-                                              style: textStyles.titleSmall?.copyWith(
-                                                color: colors.primary,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            ...tournamentStats.map((stat) => Padding(
-                                              padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
-                                              child: Text(stat),
-                                            )),
-                                            const SizedBox(height: 16),
-                                          ],
-                                        );
-                                      },
-                                    )
+                                  : _TournamentsGeneralStats(
+                                      managerTournamentStatsMap:
+                                          managerTournamentStatsMap,
+                                      textStyles: textStyles,
+                                      colors: colors)
                             ],
                           ),
                         ),
@@ -275,6 +260,62 @@ class DtGeneralViewState extends ConsumerState<DtGeneralView> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _TournamentsGeneralStats extends StatelessWidget {
+  const _TournamentsGeneralStats({
+    required this.managerTournamentStatsMap,
+    required this.textStyles,
+    required this.colors,
+  });
+
+  final Map<String, List<Map<String, dynamic>>> managerTournamentStatsMap;
+  final TextTheme textStyles;
+  final ColorScheme colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: managerTournamentStatsMap.length,
+      itemBuilder: (context, index) {
+        final tournamentName = managerTournamentStatsMap.keys.elementAt(index);
+        //Stats registradas para el torneo (temporada, posicion, equipo)
+        final tournamentStats = managerTournamentStatsMap[tournamentName]!;
+        final totalWins =
+            tournamentStats.where((stat) => stat["isWinner"] == true).length;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              tournamentName,
+              style: textStyles.titleSmall?.copyWith(
+                color: colors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              "Veces ganado: $totalWins",
+              style: textStyles.bodyMedium?.copyWith(
+                color: colors.secondary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ...tournamentStats.map((stat) {
+              return Padding(
+                padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
+                child: Text(
+                    "${stat["season"]} - ${stat["finalPosition"]}- ${stat["team"]}"),
+              );
+            }),
+            const SizedBox(height: 16),
+          ],
+        );
+      },
     );
   }
 }
