@@ -1,4 +1,5 @@
 import 'package:carrermodetracker/domain/entities/manager_stat.dart';
+import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/presentation/providers/manager/managers_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
@@ -16,12 +17,33 @@ class DtGeneralView extends ConsumerStatefulWidget {
 
 class DtGeneralViewState extends ConsumerState<DtGeneralView> {
   Map<String, int> managerTotalStats = {};
+  Map<String, List<String>> managerTournamentStatsMap = {};
 
   @override
   void initState() {
     super.initState();
     ref.read(managerStatsProvider.notifier).loadNextPage();
     ref.read(managerTournamentStatsProvider.notifier).loadNextPage();
+  }
+
+  calculateManagerTournamentStats(
+      List<ManagerTournamentStat> managerTournamentStatsList) {
+    managerTournamentStatsMap = {};
+    for (ManagerTournamentStat tournamentStat in managerTournamentStatsList) {
+      if (tournamentStat.tournament.value != null) {
+        if (managerTournamentStatsMap[tournamentStat.tournament.value!.name] !=
+            null) {
+          managerTournamentStatsMap[tournamentStat.tournament.value!.name]!.add(
+              "${tournamentStat.season.value?.season} ${tournamentStat.finalPosition} ${tournamentStat.team.value?.name}");
+        } else {
+          managerTournamentStatsMap[tournamentStat.tournament.value!.name] = [
+            "${tournamentStat.season.value?.season} ${tournamentStat.finalPosition} ${tournamentStat.team.value?.name}"
+          ];
+        }
+      }
+    }
+    print('Acabo el for');
+    print(managerTournamentStatsMap);
   }
 
   Map<String, int> calculateManagerTotalStats(List<Managerstat> managerStats) {
@@ -52,10 +74,12 @@ class DtGeneralViewState extends ConsumerState<DtGeneralView> {
     final textStyles = Theme.of(context).textTheme;
     final managerStats = ref.watch(managerStatsProvider).values.toList();
     final managerTournamentStats =
-        ref.watch(managerTournamentStatsProvider);
+        ref.watch(managerTournamentStatsProvider).values.toList();
 
     //Get total stats
     managerTotalStats = calculateManagerTotalStats(managerStats);
+    calculateManagerTournamentStats(managerTournamentStats);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Mi perfil"),
@@ -198,7 +222,34 @@ class DtGeneralViewState extends ConsumerState<DtGeneralView> {
                                       child: Text(
                                           'No hay estadísticas disponibles'),
                                     )
-                                  : const SizedBox()
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: managerTournamentStatsMap.length,
+                                      itemBuilder: (context, index) {
+                                        final tournamentName = managerTournamentStatsMap.keys.elementAt(index);
+                                        final tournamentStats = managerTournamentStatsMap[tournamentName]!;
+                                        
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              tournamentName,
+                                              style: textStyles.titleSmall?.copyWith(
+                                                color: colors.primary,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            ...tournamentStats.map((stat) => Padding(
+                                              padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
+                                              child: Text(stat),
+                                            )),
+                                            const SizedBox(height: 16),
+                                          ],
+                                        );
+                                      },
+                                    )
                             ],
                           ),
                         ),
