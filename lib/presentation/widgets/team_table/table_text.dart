@@ -19,7 +19,7 @@ class TableText extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Text(
         text + suffix,
-        style: isHeader ? textStyles.titleMedium : textStyles.bodyMedium,
+        style: isHeader ? textStyles.titleSmall : textStyles.bodyMedium,
         textAlign: TextAlign.center,
       ),
     );

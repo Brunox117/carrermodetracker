@@ -3,6 +3,7 @@ import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/presentation/providers/manager/managers_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
+import 'package:carrermodetracker/presentation/widgets/team_table/table_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -292,7 +293,7 @@ class _TournamentsGeneralStats extends StatelessWidget {
           children: [
             Text(
               tournamentName,
-              style: textStyles.titleSmall?.copyWith(
+              style: textStyles.titleMedium?.copyWith(
                 color: colors.primary,
                 fontWeight: FontWeight.bold,
               ),
@@ -305,13 +306,48 @@ class _TournamentsGeneralStats extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            ...tournamentStats.map((stat) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
-                child: Text(
-                    "${stat["season"]} - ${stat["finalPosition"]}- ${stat["team"]}"),
-              );
-            }),
+            Table(
+                columnWidths: const {
+                  0: FlexColumnWidth(1), // Temporada
+                  1: FlexColumnWidth(1), // Posicion
+                  2: FlexColumnWidth(1.3), // Equipo
+                },
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                children: [
+                  TableRow(
+                      decoration: BoxDecoration(
+                          color: colors.secondary.withValues(alpha: 0.4),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
+                      children: const [
+                        TableCell(
+                            child: TableText(
+                          'Temporada',
+                          isHeader: true,
+                        )),
+                        TableCell(
+                            child: TableText(
+                          'Posición',
+                          isHeader: true,
+                        )),
+                        TableCell(
+                            child: TableText(
+                          'Equipo',
+                          isHeader: true,
+                        )),
+                      ]),
+                  ...tournamentStats.map((stat) {
+                    return TableRow(
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      children: [
+                        TableCell(child: TableText(stat["season"])),
+                        TableCell(child: TableText(stat["finalPosition"])),
+                        TableCell(child: TableText(stat["team"])),
+                      ],
+                    );
+                  }),
+                ]),
             const SizedBox(height: 16),
           ],
         );
