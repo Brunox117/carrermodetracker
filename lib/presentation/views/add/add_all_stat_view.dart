@@ -7,50 +7,33 @@ class AddAllStatView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyles = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Estadisticas"),
       ),
       body: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Registra partidos, agrega nuevos jugadores e inicia nuevas temporadas',
-                    style: textStyles.bodyLarge?.copyWith(
-                      color: colors.onSurface,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  _buildActionButton(
-                    context,
-                    icon: Icons.emoji_events,
-                    text: 'Crea un torneo',
-                    onPressed: () =>
-                        context.push('/teamoverview/$id/addtournamentview'),
-                  ),
-                  _buildActionButton(
-                    context,
-                    icon: Icons.calendar_today,
-                    text: 'Iniciar nueva temporada',
-                    onPressed: () =>
-                        context.push('/teamoverview/$id/addseasonview'),
-                  ),
-                ],
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Column(
+            children: [
+              _buildActionButton(
+                context,
+                icon: Icons.emoji_events,
+                text: 'Crea un torneo',
+                onPressed: () =>
+                    context.push('/teamoverview/$id/addtournamentview'),
               ),
-            ),
-          ],
-        ),
+              _buildActionButton(
+                context,
+                icon: Icons.calendar_today,
+                text: 'Iniciar nueva temporada',
+                onPressed: () =>
+                    context.push('/teamoverview/$id/addseasonview'),
+              ),
+            ],
+          ),
+        ],
       )),
     );
   }
