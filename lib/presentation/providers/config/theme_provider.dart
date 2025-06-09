@@ -7,15 +7,33 @@ final themeNotifierProvider = StateNotifierProvider<ThemeController, AppTheme>(
 );
 
 class ThemeController extends StateNotifier<AppTheme> {
-  ThemeController() : super(AppTheme());
-
-  void toggleDarkMode() {
-    state = state.copyWith(isDarkMode: !state.isDarkMode);
+  ThemeController() : super(AppTheme()) {
+    initializeTheme();
   }
 
-  void initializeTheme() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool? isDarkMode = prefs.getBool('isDarkMode');
-    state = state.copyWith(isDarkMode: isDarkMode);
+  static const String _themeKey = 'isDarkMode';
+
+  Future<void> toggleDarkMode() async {
+    final newState = state.copyWith(isDarkMode: !state.isDarkMode);
+    state = newState;
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_themeKey, newState.isDarkMode);
+    } catch (e) {
+      state = state.copyWith(isDarkMode: !newState.isDarkMode);
+      rethrow;
+    }
+  }
+
+  Future<void> initializeTheme() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final isDarkMode = prefs.getBool(_themeKey) ?? false;
+      state = state.copyWith(isDarkMode: isDarkMode);
+    } catch (e) {
+      // Si hay un error al leer, mantenemos el tema por defecto
+      state = state.copyWith(isDarkMode: false);
+    }
   }
 }
