@@ -5,6 +5,7 @@ const seedColor = Color.fromARGB(255, 193, 110, 220);
 class AppTheme {
   final bool isDarkMode;
   AppTheme({this.isDarkMode = false});
+  
   ThemeData getTheme() => ThemeData(
         useMaterial3: true,
         colorSchemeSeed: seedColor,

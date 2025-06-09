@@ -2,6 +2,7 @@ import 'package:carrermodetracker/presentation/providers/config/theme_provider.d
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfigView extends ConsumerWidget {
   const ConfigView({super.key});
@@ -25,7 +26,10 @@ class ConfigView extends ConsumerWidget {
               'Modo oscuro',
             ),
             value: isDarkMode,
-            onChanged: (value) {
+            onChanged: (value) async {
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+              prefs.setBool('isDarkMode', value);
               ref.read(themeNotifierProvider.notifier).toggleDarkMode();
             },
           ),
