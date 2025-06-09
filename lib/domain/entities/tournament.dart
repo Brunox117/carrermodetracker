@@ -1,3 +1,4 @@
+import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:isar/isar.dart';
 
@@ -11,6 +12,8 @@ class Tournament {
 
   @Backlink(to: 'tournament')
   final stats = IsarLinks<Stats>();
+  @Backlink(to: 'season')
+  final managerTournamentStats = IsarLinks<ManagerTournamentStat>();
 
   Tournament({
     required this.name,

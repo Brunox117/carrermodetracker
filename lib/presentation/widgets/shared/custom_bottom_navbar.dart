@@ -6,8 +6,9 @@ class CustomBottomNavBar extends StatelessWidget {
   const CustomBottomNavBar({super.key, required this.currentChild});
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.shifting,
         elevation: 0,
         enableFeedback: true,
         selectedItemColor: Colors.white,
@@ -15,26 +16,26 @@ class CustomBottomNavBar extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         currentIndex: currentChild.currentIndex,
         onTap: (value) => currentChild.goBranch(value),
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: const Icon(Icons.home),
             label: 'Inicio',
-            backgroundColor: Colors.blue,
+            backgroundColor: colors.primary,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
             label: 'DT',
-            backgroundColor: Colors.green,
+            backgroundColor: colors.primary,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             label: "Agregar",
-            backgroundColor: Colors.orange,
+            backgroundColor: colors.primary,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             label: 'Ajustes',
-            backgroundColor: Colors.purple,
+            backgroundColor: colors.primary,
           ),
         ]);
   }

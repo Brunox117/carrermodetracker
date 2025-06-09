@@ -41,6 +41,13 @@ const TournamentSchema = CollectionSchema(
       target: r'Stats',
       single: false,
       linkName: r'tournament',
+    ),
+    r'managerTournamentStats': LinkSchema(
+      id: -9193073718390741509,
+      name: r'managerTournamentStats',
+      target: r'ManagerTournamentStat',
+      single: false,
+      linkName: r'season',
     )
   },
   embeddedSchemas: {},
@@ -106,12 +113,17 @@ Id _tournamentGetId(Tournament object) {
 }
 
 List<IsarLinkBase<dynamic>> _tournamentGetLinks(Tournament object) {
-  return [object.stats];
+  return [object.stats, object.managerTournamentStats];
 }
 
 void _tournamentAttach(IsarCollection<dynamic> col, Id id, Tournament object) {
   object.id = id;
   object.stats.attach(col, col.isar.collection<Stats>(), r'stats', id);
+  object.managerTournamentStats.attach(
+      col,
+      col.isar.collection<ManagerTournamentStat>(),
+      r'managerTournamentStats',
+      id);
 }
 
 extension TournamentQueryWhereSort
@@ -571,6 +583,71 @@ extension TournamentQueryLinks
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
           r'stats', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
+      managerTournamentStats(FilterQuery<ManagerTournamentStat> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'managerTournamentStats');
+    });
+  }
+
+  QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
+      managerTournamentStatsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
+      managerTournamentStatsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'managerTournamentStats', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
+      managerTournamentStatsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
+      managerTournamentStatsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
+      managerTournamentStatsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
+      managerTournamentStatsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', lower, includeLower, upper, includeUpper);
     });
   }
 }

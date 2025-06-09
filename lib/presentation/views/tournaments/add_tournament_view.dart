@@ -1,4 +1,7 @@
+import 'package:carrermodetracker/domain/entities/manager_stat.dart';
+import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -213,6 +216,16 @@ class __TournamentFormState extends ConsumerState<_TournamentForm> {
                                                       .read(statsProvider
                                                           .notifier)
                                                       .deleteStats(stat.id);
+                                                }
+                                                for (ManagerTournamentStat mngtStat
+                                                    in tournament
+                                                        .managerTournamentStats) {
+                                                  ref
+                                                      .read(
+                                                          managerTournamentStatsProvider
+                                                              .notifier)
+                                                      .deleteManagerTournamentStat(
+                                                          mngtStat.id);
                                                 }
                                                 ref
                                                     .read(tournamentsProvider

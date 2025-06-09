@@ -1,7 +1,11 @@
 import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
+import 'package:carrermodetracker/domain/entities/manager_stat.dart';
+import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/seasons/seasons_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
@@ -213,6 +217,24 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
                                               ref
                                                   .read(statsProvider.notifier)
                                                   .deleteStats(stat.id);
+                                            }
+                                            for (ManagerTournamentStat mngtStat
+                                                in seasonSaved
+                                                    .managerTournamentStats) {
+                                              ref
+                                                  .read(
+                                                      managerTournamentStatsProvider
+                                                          .notifier)
+                                                  .deleteManagerTournamentStat(
+                                                      mngtStat.id);
+                                            }
+                                            for (Managerstat mngStat
+                                                in seasonSaved.managerStats) {
+                                              ref
+                                                  .read(managerStatsProvider
+                                                      .notifier)
+                                                  .deleteManagerStat(
+                                                      mngStat.id);
                                             }
                                             ref
                                                 .read(seasonsProvider.notifier)
