@@ -1,4 +1,5 @@
 import 'package:carrermodetracker/presentation/screens/home/home_screen.dart';
+import 'package:carrermodetracker/presentation/views/add/add_all_stat_view.dart';
 import 'package:carrermodetracker/presentation/views/config/config_view.dart';
 import 'package:carrermodetracker/presentation/views/dt/add_dt_stats.dart';
 import 'package:carrermodetracker/presentation/views/dt/add_dt_view.dart';
@@ -162,6 +163,16 @@ final appRouter = GoRouter(initialLocation: '/dtview', routes: [
                   },
                 ),
               ]),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '/add-all-stat-view',
+            builder: (context, state) {
+              return const AddAllStatView(
+                id: '1',
+              );
+            },
+          ),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
