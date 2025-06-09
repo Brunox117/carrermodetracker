@@ -26,6 +26,7 @@ class MainApp extends ConsumerWidget {
     ref.read(managersProvider.notifier).getManager();
     ref.read(managerStatsProvider.notifier).loadNextPage();
     ref.read(managerTournamentStatsProvider.notifier).loadNextPage();
+    
     final AppTheme appTheme = ref.watch(themeNotifierProvider);
     final locale = ref.watch(localeProvider);
     return MaterialApp.router(
@@ -41,3 +42,4 @@ class MainApp extends ConsumerWidget {
     );
   }
 }
+
