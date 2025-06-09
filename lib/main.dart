@@ -26,9 +26,11 @@ class MainApp extends ConsumerWidget {
     ref.read(managersProvider.notifier).getManager();
     ref.read(managerStatsProvider.notifier).loadNextPage();
     ref.read(managerTournamentStatsProvider.notifier).loadNextPage();
+    Future.microtask(() => ref.read(themeNotifierProvider.notifier).initializeTheme());
     
     final AppTheme appTheme = ref.watch(themeNotifierProvider);
     final locale = ref.watch(localeProvider);
+    
     return MaterialApp.router(
       locale: locale,
       supportedLocales: const [
