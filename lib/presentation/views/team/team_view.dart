@@ -60,7 +60,11 @@ class TeamView extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
         data: (team) {
-          final players = team.players.toList();
+          final players = ref
+              .watch(playersProvider)
+              .values
+              .where((player) => player.team.value?.id == team.id)
+              .toList();
           final topScorers = getTopPlayers(players, 'goals');
           final topAssists = getTopPlayers(players, 'assists');
           final mostPlayed = getTopPlayers(players, 'matches');

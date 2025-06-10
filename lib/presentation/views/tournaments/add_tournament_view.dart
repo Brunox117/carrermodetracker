@@ -1,4 +1,4 @@
-import 'package:carrermodetracker/domain/entities/manager_stat.dart';
+
 import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';

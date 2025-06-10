@@ -18,11 +18,14 @@ class TeamGeneralWidget extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final colors = Theme.of(context).colorScheme;
     return GestureDetector(
-      onTap: () => context.push('/teamoverview/$id'),
+      onTap: () {
+        context.push('/teamoverview/$id');
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-            color: colors.primary.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(20)),
+            color: colors.primary.withValues(alpha: 0.4),
+            borderRadius: BorderRadius.circular(20)),
         child: Stack(
           children: [
             const SizedBox.expand(),

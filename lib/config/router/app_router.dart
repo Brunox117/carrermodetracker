@@ -48,8 +48,15 @@ final appRouter = GoRouter(initialLocation: '/dtview', routes: [
                       path: '/addstatview',
                       builder: (context, state) {
                         final id = state.pathParameters['id'] ?? '';
+                        final seasonId = state.uri.queryParameters['seasonId'];
+                        final playerId = state.uri.queryParameters['playerId'];
+                        final tournamentId =
+                            state.uri.queryParameters['tournamentId'];
                         return AddStatView(
-                          id: id,
+                          teamId: id,
+                          seasonId: seasonId,
+                          playerId: playerId,
+                          tournamentId: tournamentId,
                         );
                       },
                     ),

@@ -1,11 +1,25 @@
+import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/views/team/register_match_view.dart';
 import 'package:carrermodetracker/presentation/views/team/team_players_overview.dart';
 import 'package:carrermodetracker/presentation/views/team/team_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TeamOverviewView extends StatelessWidget {
+class TeamOverviewView extends ConsumerStatefulWidget {
   final String id;
   const TeamOverviewView({super.key, required this.id});
+
+  @override
+  ConsumerState<TeamOverviewView> createState() => _TeamOverviewViewState();
+}
+
+class _TeamOverviewViewState extends ConsumerState<TeamOverviewView> {
+  @override
+  void initState() {
+    super.initState();
+    // TODO: This is a hack to get the players by team to stay up to date, but it is not the best way to do it
+    ref.read(playersProvider.notifier).getPlayersByTeam(int.parse(widget.id));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +41,9 @@ class TeamOverviewView extends StatelessWidget {
         ),
         body: TabBarView(
           children: <Widget>[
-            TeamPlayersOverview(id: id),
-            TeamView(id: id),
-            RegisterMatchView(id: id),
+            TeamPlayersOverview(id: widget.id),
+            TeamView(id: widget.id),
+            RegisterMatchView(id: widget.id),
           ],
         ),
       ),

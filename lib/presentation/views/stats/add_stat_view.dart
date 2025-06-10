@@ -15,25 +15,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class AddStatView extends StatelessWidget {
-  final String id;
-  const AddStatView({super.key, required this.id});
+  final String teamId;
+  final String? seasonId;
+  final String? playerId;
+  final String? tournamentId;
+  const AddStatView(
+      {super.key,
+      required this.teamId,
+      this.seasonId,
+      this.playerId,
+      this.tournamentId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registra estadísticas'),
-      ),
       body: _StatsForm(
-        teamID: id,
-      ),
+          teamID: teamId,
+          seasonId: seasonId,
+          tournamentId: tournamentId,
+          playerId: playerId),
     );
   }
 }
 
 class _StatsForm extends ConsumerStatefulWidget {
   final String teamID;
-  const _StatsForm({required this.teamID});
+  final String? seasonId;
+  final String? playerId;
+  final String? tournamentId;
+  const _StatsForm(
+      {this.seasonId, this.playerId, this.tournamentId, required this.teamID});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => __StatsFormState();
@@ -54,15 +65,107 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
   Season? season;
   Tournament? tournament;
   Player? player;
+  // Add controllers
+  late TextEditingController goalsController;
+  late TextEditingController assistsController;
+  late TextEditingController playedMatchesController;
+  late TextEditingController avgScoreController;
+  late TextEditingController cleanSheetsController;
+  late TextEditingController redCardsController;
+  late TextEditingController yellowCardsController;
+  bool isEditing = false;
 
   @override
   void initState() {
     super.initState();
+    // Initialize controllers
+    goalsController = TextEditingController(text: goals.toString());
+    assistsController = TextEditingController(text: assists.toString());
+    playedMatchesController =
+        TextEditingController(text: playedMatches.toString());
+    avgScoreController = TextEditingController(text: avgScore.toString());
+    cleanSheetsController = TextEditingController(text: cleanSheets.toString());
+    redCardsController = TextEditingController(text: redCards.toString());
+    yellowCardsController = TextEditingController(text: yellowCards.toString());
+
     ref
         .read(playersProvider.notifier)
         .getPlayersByTeam(int.parse(widget.teamID));
     ref.read(tournamentsProvider.notifier).loadNextPage();
     ref.read(seasonsProvider.notifier).getSeasons();
+    if (widget.seasonId != null &&
+        widget.playerId != null &&
+        widget.tournamentId != null) {
+      populateStats();
+    }
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers
+    goalsController.dispose();
+    assistsController.dispose();
+    playedMatchesController.dispose();
+    avgScoreController.dispose();
+    cleanSheetsController.dispose();
+    redCardsController.dispose();
+    yellowCardsController.dispose();
+    super.dispose();
+  }
+
+  void cleanForm() {
+    goals = 0;
+    assists = 0;
+    playedMatches = 0;
+    avgScore = 0;
+    cleanSheets = 0;
+    redCards = 0;
+    yellowCards = 0;
+    selectedSeasonID = null;
+    selectedPlayerID = null;
+    selectedTournamentID = null;
+    isEditing = false;
+
+    // Reset controllers
+    goalsController.text = '0';
+    assistsController.text = '0';
+    playedMatchesController.text = '0';
+    avgScoreController.text = '0';
+    cleanSheetsController.text = '0';
+    redCardsController.text = '0';
+    yellowCardsController.text = '0';
+  }
+
+  void populateStats() async {
+    selectedPlayerID = int.parse(widget.playerId!);
+    selectedTournamentID = int.parse(widget.tournamentId!);
+    selectedSeasonID = int.parse(widget.seasonId!);
+    final Stats? statFromBackend = await ref
+        .read(statsProvider.notifier)
+        .getStatByTripleKey(
+            selectedPlayerID!, selectedTournamentID!, selectedSeasonID!);
+
+    if (statFromBackend != null) {
+      setState(() {
+        goals = statFromBackend.goals;
+        assists = statFromBackend.assists;
+        playedMatches = statFromBackend.playedMatches;
+        avgScore = statFromBackend.avgScore;
+        cleanSheets = statFromBackend.cleanSheets;
+        redCards = statFromBackend.redCards;
+        yellowCards = statFromBackend.yellowCards;
+        isEditing = true;
+
+        // Update controllers
+        goalsController.text = goals.toString();
+        assistsController.text = assists.toString();
+        playedMatchesController.text = playedMatches.toString();
+        avgScoreController.text = avgScore.toString();
+        cleanSheetsController.text = cleanSheets.toString();
+        redCardsController.text = redCards.toString();
+        yellowCardsController.text = yellowCards.toString();
+      });
+    }
   }
 
   void saveStat(Stats stat) {
@@ -107,7 +210,15 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
         if (alreadeSavedStat == null) {
           _formKey.currentState!.reset();
           saveStat(statToSave);
+          cleanForm();
         } else {
+          statToSave.id = alreadeSavedStat.id;
+          if (isEditing) {
+            updateStat(statToSave, alreadeSavedStat.id);
+            _formKey.currentState!.reset();
+            cleanForm();
+            return;
+          }
           showDefaultDialog(
               // ignore: use_build_context_synchronously
               context,
@@ -119,6 +230,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
             context.pop();
             updateStat(statToSave, alreadeSavedStat.id);
             _formKey.currentState!.reset();
+            cleanForm();
           });
         }
       }
@@ -130,215 +242,235 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
     final savedSeasons = ref.watch(seasonsProvider).values.toList();
     final savedPlayers = ref.watch(playersProvider).values.toList();
     final savedTournaments = ref.watch(tournamentsProvider).values.toList();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomDropdownButtonFormField<int>(
-                      labelText: "Selecciona Temporada:",
-                      hintText: "Temporada...",
-                      value: selectedSeasonID,
-                      items: savedSeasons.map((Season season) {
-                        return DropdownMenuItem<int>(
-                          value: season.id,
-                          child: Text(season.season.toString()),
-                        );
-                      }).toList(),
-                      onChanged: (int? newValue) {
-                        setState(() {
-                          selectedSeasonID = newValue;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    CustomDropdownButtonFormField<int>(
-                      labelText: "Selecciona Jugador:",
-                      hintText: "Jugador...",
-                      value: selectedPlayerID,
-                      items: savedPlayers.map((Player player) {
-                        return DropdownMenuItem<int>(
-                          value: player.id,
-                          child: Text(player.name),
-                        );
-                      }).toList(),
-                      onChanged: (int? newValue) {
-                        setState(() {
-                          selectedPlayerID = newValue;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    CustomDropdownButtonFormField<int>(
-                      labelText: "Selecciona Torneo:",
-                      hintText: "Torneo...",
-                      value: selectedTournamentID,
-                      items: savedTournaments.map((Tournament tournament) {
-                        return DropdownMenuItem<int>(
-                          value: tournament.id,
-                          child: Text(tournament.name),
-                        );
-                      }).toList(),
-                      onChanged: (int? newValue) {
-                        setState(() {
-                          selectedTournamentID = newValue;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+            (!isEditing) ? 'Registra estadísticas' : 'Editando estadísticas'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomNumberFormField(
-                        isBottomField: true,
-                        isTopField: true,
-                        label: 'Goles',
-                        hint: '',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Campo requerido';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          final number = int.tryParse(value);
-                          if (number != null) {
-                            goals = number;
-                          }
+                      CustomDropdownButtonFormField<int>(
+                        labelText: "Selecciona Temporada:",
+                        hintText: "Temporada...",
+                        value: selectedSeasonID,
+                        items: savedSeasons.map((Season season) {
+                          return DropdownMenuItem<int>(
+                            value: season.id,
+                            child: Text(season.season.toString()),
+                          );
+                        }).toList(),
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            selectedSeasonID = newValue;
+                          });
                         },
                       ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      CustomNumberFormField(
-                        isBottomField: true,
-                        isTopField: true,
-                        label: 'Asistencias',
-                        hint: '',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Campo requerido';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          final number = int.tryParse(value);
-                          if (number != null) {
-                            assists = number;
-                          }
+                      const SizedBox(height: 10),
+                      CustomDropdownButtonFormField<int>(
+                        labelText: "Selecciona Jugador:",
+                        hintText: "Jugador...",
+                        value: selectedPlayerID,
+                        items: savedPlayers.map((Player player) {
+                          return DropdownMenuItem<int>(
+                            value: player.id,
+                            child: Text(player.name),
+                          );
+                        }).toList(),
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            selectedPlayerID = newValue;
+                          });
                         },
                       ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      CustomNumberFormField(
-                        isBottomField: true,
-                        isTopField: true,
-                        label: 'Partidos jugados',
-                        hint: '',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Campo requerido';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          final number = int.tryParse(value);
-                          if (number != null) {
-                            playedMatches = number;
-                          }
+                      const SizedBox(height: 10),
+                      CustomDropdownButtonFormField<int>(
+                        labelText: "Selecciona Torneo:",
+                        hintText: "Torneo...",
+                        value: selectedTournamentID,
+                        items: savedTournaments.map((Tournament tournament) {
+                          return DropdownMenuItem<int>(
+                            value: tournament.id,
+                            child: Text(tournament.name),
+                          );
+                        }).toList(),
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            selectedTournamentID = newValue;
+                          });
                         },
                       ),
-                      ExpansionTile(
-                        title: const Text("Información adicional"),
-                        expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                        shape: const Border(),
-                        collapsedShape: const Border(),
-                        children: [
-                          Column(
-                            children: [
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              CustomNumberFormField(
-                                isBottomField: true,
-                                isTopField: true,
-                                label: 'Porterías imbatidas',
-                                hint: '',
-                                onChanged: (value) {
-                                  final number = int.tryParse(value);
-                                  if (number != null) {
-                                    cleanSheets = number;
-                                  }
-                                },
-                              ),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              CustomNumberFormField(
-                                isBottomField: true,
-                                isTopField: true,
-                                label: 'Tarjetas Amarillas',
-                                hint: '',
-                                onChanged: (value) {
-                                  final number = int.tryParse(value);
-                                  if (number != null) {
-                                    yellowCards = number;
-                                  }
-                                },
-                              ),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              CustomNumberFormField(
-                                isBottomField: true,
-                                isTopField: true,
-                                label: 'Tarjetas rojas',
-                                hint: '',
-                                onChanged: (value) {
-                                  final number = int.tryParse(value);
-                                  if (number != null) {
-                                    redCards = number;
-                                  }
-                                },
-                              ),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              CustomNumberFormField(
-                                isBottomField: true,
-                                isTopField: true,
-                                label: 'Calificación',
-                                hint: '',
-                                onChanged: (value) {
-                                  final number = double.tryParse(value);
-                                  if (number != null) {
-                                    avgScore = number;
-                                  }
-                                },
-                              ),
-                            ],
-                          )
-                        ],
-                      )
                     ],
                   ),
-                ),
-                SaveFormButton(
-                  submitForm: submitForm,
-                  onSaveTextAlert: 'Estadística guardada correctamente!',
-                )
-              ],
-            ),
-          )),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 20),
+                    child: Column(
+                      children: [
+                        CustomNumberFormField(
+                          key: const ValueKey('goals_field'),
+                          controller: goalsController,
+                          isBottomField: true,
+                          isTopField: true,
+                          label: 'Goles',
+                          hint: '',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo requerido';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            final number = int.tryParse(value);
+                            if (number != null) {
+                              goals = number;
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        CustomNumberFormField(
+                          key: const ValueKey('assists_field'),
+                          controller: assistsController,
+                          isBottomField: true,
+                          isTopField: true,
+                          label: 'Asistencias',
+                          hint: '',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo requerido';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            final number = int.tryParse(value);
+                            if (number != null) {
+                              assists = number;
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        CustomNumberFormField(
+                          key: const ValueKey('played_matches_field'),
+                          controller: playedMatchesController,
+                          isBottomField: true,
+                          isTopField: true,
+                          label: 'Partidos jugados',
+                          hint: '',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo requerido';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            final number = int.tryParse(value);
+                            if (number != null) {
+                              playedMatches = number;
+                            }
+                          },
+                        ),
+                        ExpansionTile(
+                          title: const Text("Información adicional"),
+                          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                          shape: const Border(),
+                          collapsedShape: const Border(),
+                          children: [
+                            Column(
+                              children: [
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                CustomNumberFormField(
+                                  key: const ValueKey('clean_sheets_field'),
+                                  controller: cleanSheetsController,
+                                  isBottomField: true,
+                                  isTopField: true,
+                                  label: 'Porterías imbatidas',
+                                  hint: '',
+                                  onChanged: (value) {
+                                    final number = int.tryParse(value);
+                                    if (number != null) {
+                                      cleanSheets = number;
+                                    }
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                CustomNumberFormField(
+                                  key: const ValueKey('yellow_cards_field'),
+                                  controller: yellowCardsController,
+                                  isBottomField: true,
+                                  isTopField: true,
+                                  label: 'Tarjetas Amarillas',
+                                  hint: '',
+                                  onChanged: (value) {
+                                    final number = int.tryParse(value);
+                                    if (number != null) {
+                                      yellowCards = number;
+                                    }
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                CustomNumberFormField(
+                                  key: const ValueKey('red_cards_field'),
+                                  controller: redCardsController,
+                                  isBottomField: true,
+                                  isTopField: true,
+                                  label: 'Tarjetas rojas',
+                                  hint: '',
+                                  onChanged: (value) {
+                                    final number = int.tryParse(value);
+                                    if (number != null) {
+                                      redCards = number;
+                                    }
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                CustomNumberFormField(
+                                  key: const ValueKey('avg_score_field'),
+                                  controller: avgScoreController,
+                                  isBottomField: true,
+                                  isTopField: true,
+                                  label: 'Calificación',
+                                  hint: '',
+                                  onChanged: (value) {
+                                    final number = double.tryParse(value);
+                                    if (number != null) {
+                                      avgScore = number;
+                                    }
+                                  },
+                                ),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  SaveFormButton(
+                    submitForm: submitForm,
+                    // onSaveTextAlert: 'Estadística guardada correctamente!',
+                  )
+                ],
+              ),
+            )),
+      ),
     );
   }
 }

@@ -12,6 +12,7 @@ class CustomNumberFormField extends StatelessWidget {
   final bool allowNegative; 
   final int maxLines;
   final String initialValue;
+  final TextEditingController? controller;
   final Function(String)? onChanged;
   final Function(String)? onFieldSubmitted;
   final String? Function(String?)? validator;
@@ -28,6 +29,7 @@ class CustomNumberFormField extends StatelessWidget {
     this.allowNegative = false, 
     this.maxLines = 1, 
     this.initialValue = '',
+    this.controller,
     this.onChanged,
     this.onFieldSubmitted,
     this.validator,
@@ -90,6 +92,7 @@ class CustomNumberFormField extends StatelessWidget {
                   offset: const Offset(0, 3))
           ]),
       child: TextFormField(
+        controller: controller,
         onChanged: onChanged,
         onFieldSubmitted: onFieldSubmitted,
         validator: validator,
@@ -97,7 +100,7 @@ class CustomNumberFormField extends StatelessWidget {
         inputFormatters: inputFormatters,
         style: const TextStyle(fontSize: 15, color: Colors.black54),
         maxLines: maxLines,
-        initialValue: initialValue,
+        initialValue: controller == null ? initialValue : null,
         decoration: InputDecoration(
           floatingLabelBehavior: maxLines > 1
               ? FloatingLabelBehavior.always

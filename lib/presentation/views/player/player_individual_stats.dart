@@ -1,6 +1,7 @@
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class PlayerIndividualStats extends ConsumerWidget {
   final String playerId;
@@ -50,7 +51,11 @@ class PlayerIndividualStats extends ConsumerWidget {
                                 "${stat.season.value!.season.toString()} ${stat.tournament.value!.name}"),
                             const Spacer(),
                             IconButton(
-                                onPressed: () {}, icon: const Icon(Icons.edit)),
+                                onPressed: () {
+                                  context.go(
+                                      '/teamoverview/${stat.player.value?.team.value?.id}/addstatview?seasonId=${stat.season.value?.id}&playerId=${stat.player.value?.id}&tournamentId=${stat.tournament.value?.id}');
+                                },
+                                icon: const Icon(Icons.edit)),
                             IconButton(
                                 onPressed: () {
                                   statsProv.deleteStats(stat.id);

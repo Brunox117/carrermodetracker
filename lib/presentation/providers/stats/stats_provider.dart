@@ -66,12 +66,11 @@ class StorageStatsNotifier extends StateNotifier<Map<int, Stats>> {
 
   Future<void> updateStats(int id, Stats stats) async {
     await statsStorageRepository.updateStats(id, stats);
-    state = {...state, stats.id: stats};
+    state = {...state, id: stats};
   }
 
   Future<Stats?> getStatByTripleKey(
       int playerId, int tournamentId, int seasonId) async {
-
     return await statsStorageRepository.getStatByTripleKey(
         playerId, tournamentId, seasonId);
   }
