@@ -54,18 +54,15 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (widget.playerId != null) {
-        final Team team = ref
-            .read(teamsProvider)
-            .values
-            .firstWhere((element) => element.id == oldPlayer!.team.value!.id);
-        Player player = Player(
-            name: name,
-            number: number,
-            position: position.name.toString().toUpperCase())
-          ..team.value = team;
-        _formKey.currentState!.reset();
-        updatePlayer(player);
-        context.pop();
+        if (oldPlayer != null) {
+          oldPlayer!.name = name;
+          oldPlayer!.number = number;
+          oldPlayer!.position = position.name.toString().toUpperCase();
+
+          _formKey.currentState!.reset();
+          updatePlayer(oldPlayer!);
+          context.pop();
+        }
       } else {
         final Team team = await ref
             .read(teamsProvider.notifier)
