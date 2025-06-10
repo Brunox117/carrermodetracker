@@ -45,12 +45,9 @@ class StorageManagerStatsNotifier extends StateNotifier<Map<int, Managerstat>> {
   }
 
   Future<void> updateManagerStat(int id, Managerstat managerStat) async {
-    final updatedManagerStat =
-        await managerStatsRepository.updateManagerStats(id, managerStat);
-    if (updatedManagerStat) {
-      managerStat.id = id;
-      state = {...state, id: managerStat};
-    }
+    await managerStatsRepository.updateManagerStats(id, managerStat);
+    managerStat.id = id;
+    state = {...state, id: managerStat};
   }
 
   Future<Managerstat?> getManagerStatByDoubleKey(

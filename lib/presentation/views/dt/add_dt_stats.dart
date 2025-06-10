@@ -22,7 +22,10 @@ import 'package:go_router/go_router.dart';
 
 class AddDtStats extends StatelessWidget {
   final String managerId;
-  const AddDtStats({super.key, required this.managerId});
+  final String? seasonId;
+  final String? teamId;
+  const AddDtStats(
+      {super.key, required this.managerId, this.seasonId, this.teamId});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,8 @@ class AddDtStats extends StatelessWidget {
       ),
       body: _ManagerStatsForm(
         managerId: managerId,
+        seasonId: seasonId,
+        teamId: teamId,
       ),
     );
   }
@@ -39,7 +44,10 @@ class AddDtStats extends StatelessWidget {
 
 class _ManagerStatsForm extends ConsumerStatefulWidget {
   final String managerId;
-  const _ManagerStatsForm({required this.managerId});
+  final String? seasonId;
+  final String? teamId;
+  const _ManagerStatsForm(
+      {required this.managerId, this.seasonId, this.teamId});
 
   @override
   ConsumerState<_ManagerStatsForm> createState() => _ManagerStatsFormState();
@@ -93,6 +101,9 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
     ref.read(tournamentsProvider.notifier).loadNextPage();
     ref.read(seasonsProvider.notifier).getSeasons();
     ref.read(teamsProvider.notifier).loadNextPage();
+    if (widget.seasonId != null && widget.teamId != null) {
+      print("Se recibieron los ids ${widget.seasonId} y ${widget.teamId}");
+    }
   }
 
   void addTournamentStat() {

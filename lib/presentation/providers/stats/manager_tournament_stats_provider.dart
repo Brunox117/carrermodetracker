@@ -63,19 +63,15 @@ class StorageManagerTournamentStatsNotifier
 
   Future<void> updateManagerTournamentStat(
       int id, ManagerTournamentStat tournamentStat) async {
-    final updatedTournamentStat = await managerTournamentStatsRepository
-        .updateManagerTournamentStats(id, tournamentStat);
-    if (updatedTournamentStat) {
-      tournamentStat.id = id;
-      state = {...state, id: tournamentStat};
-    }
+    await managerTournamentStatsRepository.updateManagerTournamentStats(
+        id, tournamentStat);
+
+    tournamentStat.id = id;
+    state = {...state, id: tournamentStat};
   }
 
   Future<void> deleteManagerTournamentStat(int id) async {
-    final deletedTournamentStat =
-        await managerTournamentStatsRepository.deleteManagerTournamentStats(id);
-    if (deletedTournamentStat) {
-      state.remove(id);
-    }
+    await managerTournamentStatsRepository.deleteManagerTournamentStats(id);
+    state = {...state}..remove(id);
   }
 }

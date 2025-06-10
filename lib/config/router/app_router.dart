@@ -174,8 +174,12 @@ final appRouter = GoRouter(initialLocation: '/dtview', routes: [
                   path: '/adddtstats/:dtId',
                   builder: (context, state) {
                     final dtId = state.pathParameters['dtId'];
+                    final seasonId = state.uri.queryParameters['seasonId'];
+                    final teamId = state.uri.queryParameters['teamId'];
                     return AddDtStats(
                       managerId: dtId ?? '',
+                      seasonId: seasonId,
+                      teamId: teamId,
                     );
                   },
                 ),

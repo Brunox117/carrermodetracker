@@ -3,6 +3,7 @@ import 'package:carrermodetracker/presentation/providers/stats/manager_stats_pro
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class DtIndividualStats extends ConsumerWidget {
   final String? managerId;
@@ -34,7 +35,8 @@ class DtIndividualStats extends ConsumerWidget {
                         const Spacer(),
                         IconButton(
                             onPressed: () {
-                              //TODO llevar a la pantalla de add con los ids de season y team
+                              context.push(
+                                  '/dtview/adddtstats/$managerId?seasonId=${stat.season.value?.id}&teamId=${stat.team.value?.id}');
                             },
                             icon: const Icon(Icons.edit)),
                         IconButton(
