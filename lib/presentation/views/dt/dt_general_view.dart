@@ -132,6 +132,15 @@ class DtGeneralViewState extends ConsumerState<DtGeneralView> {
                           onPressed: () {
                             context.push('/dtview/adddtstats/${manager.id}');
                           },
+                          icon: const Icon(Icons.add),
+                        ),
+                        const SizedBox(height: 1),
+                        const SizedBox(height: 1),
+                        IconButton.filledTonal(
+                          onPressed: () {
+                            context.push(
+                                '/dtview/dtindividualstats/${manager.id}');
+                          },
                           icon: const Icon(Icons.add_chart_rounded),
                         ),
                         const SizedBox(height: 1),
