@@ -30,9 +30,6 @@ class AddDtStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Agrega estadísticas'),
-      ),
       body: _ManagerStatsForm(
         managerId: managerId,
         seasonId: seasonId,
@@ -67,6 +64,7 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   Manager? manager;
   Team? team;
   List<Map<String, dynamic>> tournamentStats = [];
+  bool isEditing = false;
 
   void cleanForm() {
     playedMatches = 0;
@@ -80,6 +78,7 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
     season = null;
     team = null;
     tournamentStats = [];
+    isEditing = false;
   }
 
   List<Tournament> getAvailableTournaments(
@@ -102,8 +101,22 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
     ref.read(seasonsProvider.notifier).getSeasons();
     ref.read(teamsProvider.notifier).loadNextPage();
     if (widget.seasonId != null && widget.teamId != null) {
-      print("Se recibieron los ids ${widget.seasonId} y ${widget.teamId}");
+      populateStats();
     }
+  }
+
+  void populateStats() async {
+    isEditing = true;
+    selectedSeasonID = int.parse(widget.seasonId!);
+    selectedTeamID = int.parse(widget.teamId!);
+    Managerstat? mngStatFromBackend = await ref
+        .read(managerStatsProvider.notifier)
+        .getManagerStatByDoubleKey(
+            int.parse(widget.seasonId!), int.parse(widget.teamId!));
+    List<ManagerTournamentStat> mgnTournamentStatsFromBackend = await ref
+        .read(managerTournamentStatsProvider.notifier)
+        .getManagerTournamentStatByDoubleKey(
+            int.parse(widget.seasonId!), int.parse(widget.teamId!));
   }
 
   void addTournamentStat() {
@@ -268,262 +281,269 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
     final savedTournaments = ref.watch(tournamentsProvider).values.toList();
     final savedTeams = ref.watch(teamsProvider).values.toList();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomDropdownButtonFormField<int>(
-                    labelText: "Selecciona la temporada:",
-                    hintText: "Temporada...",
-                    value: selectedSeasonID,
-                    items: savedSeasons.map((Season season) {
-                      return DropdownMenuItem<int>(
-                        value: season.id,
-                        child: Text(season.season.toString()),
-                      );
-                    }).toList(),
-                    onChanged: (int? newValue) {
-                      setState(() {
-                        selectedSeasonID = newValue;
-                      });
-                    },
-                  ),
-                  CustomDropdownButtonFormField<int>(
-                    labelText: "Selecciona el equipo:",
-                    hintText: "Equipo...",
-                    value: selectedTeamID,
-                    items: savedTeams.map((Team team) {
-                      return DropdownMenuItem<int>(
-                        value: team.id,
-                        child: Text(team.name.toString()),
-                      );
-                    }).toList(),
-                    onChanged: (int? newValue) {
-                      setState(() {
-                        selectedTeamID = newValue;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Estadísticas globales',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Agrega estadísticas'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomDropdownButtonFormField<int>(
+                      labelText: "Selecciona la temporada:",
+                      hintText: "Temporada...",
+                      value: selectedSeasonID,
+                      items: savedSeasons.map((Season season) {
+                        return DropdownMenuItem<int>(
+                          value: season.id,
+                          child: Text(season.season.toString()),
+                        );
+                      }).toList(),
+                      onChanged: (int? newValue) {
+                        setState(() {
+                          selectedSeasonID = newValue;
+                        });
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  CustomNumberFormField(
-                    isBottomField: true,
-                    isTopField: true,
-                    label: 'Partidos jugados',
-                    hint: '',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'El campo es requerido';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      final number = int.tryParse(value);
-                      if (number != null) {
-                        playedMatches = number;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  CustomNumberFormField(
-                    isBottomField: true,
-                    isTopField: true,
-                    label: 'Victorias',
-                    hint: '',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'El campo es requerido';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      final number = int.tryParse(value);
-                      if (number != null) {
-                        wins = number;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  CustomNumberFormField(
-                    isBottomField: true,
-                    isTopField: true,
-                    label: 'Empates',
-                    hint: '',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'El campo es requerido';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      final number = int.tryParse(value);
-                      if (number != null) {
-                        draws = number;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  CustomNumberFormField(
-                    isBottomField: true,
-                    isTopField: true,
-                    label: 'Derrotas',
-                    hint: '',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'El campo es requerido';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      final number = int.tryParse(value);
-                      if (number != null) {
-                        loses = number;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  CustomNumberFormField(
-                    isBottomField: true,
-                    isTopField: true,
-                    label: 'Goles anotados',
-                    hint: '',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'El campo es requerido';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      final number = int.tryParse(value);
-                      if (number != null) {
-                        goalsScored = number;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  CustomNumberFormField(
-                    isBottomField: true,
-                    isTopField: true,
-                    label: 'Goles recibidos',
-                    hint: '',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'El campo es requerido';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      final number = int.tryParse(value);
-                      if (number != null) {
-                        goalsConceded = number;
-                      }
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Torneos disputados',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                    CustomDropdownButtonFormField<int>(
+                      labelText: "Selecciona el equipo:",
+                      hintText: "Equipo...",
+                      value: selectedTeamID,
+                      items: savedTeams.map((Team team) {
+                        return DropdownMenuItem<int>(
+                          value: team.id,
+                          child: Text(team.name.toString()),
+                        );
+                      }).toList(),
+                      onChanged: (int? newValue) {
+                        setState(() {
+                          selectedTeamID = newValue;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Estadísticas globales',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    CustomNumberFormField(
+                      isBottomField: true,
+                      isTopField: true,
+                      label: 'Partidos jugados',
+                      hint: '',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El campo es requerido';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        final number = int.tryParse(value);
+                        if (number != null) {
+                          playedMatches = number;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    CustomNumberFormField(
+                      isBottomField: true,
+                      isTopField: true,
+                      label: 'Victorias',
+                      hint: '',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El campo es requerido';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        final number = int.tryParse(value);
+                        if (number != null) {
+                          wins = number;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    CustomNumberFormField(
+                      isBottomField: true,
+                      isTopField: true,
+                      label: 'Empates',
+                      hint: '',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El campo es requerido';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        final number = int.tryParse(value);
+                        if (number != null) {
+                          draws = number;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    CustomNumberFormField(
+                      isBottomField: true,
+                      isTopField: true,
+                      label: 'Derrotas',
+                      hint: '',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El campo es requerido';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        final number = int.tryParse(value);
+                        if (number != null) {
+                          loses = number;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    CustomNumberFormField(
+                      isBottomField: true,
+                      isTopField: true,
+                      label: 'Goles anotados',
+                      hint: '',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El campo es requerido';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        final number = int.tryParse(value);
+                        if (number != null) {
+                          goalsScored = number;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    CustomNumberFormField(
+                      isBottomField: true,
+                      isTopField: true,
+                      label: 'Goles recibidos',
+                      hint: '',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El campo es requerido';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        final number = int.tryParse(value);
+                        if (number != null) {
+                          goalsConceded = number;
+                        }
+                      },
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 10),
-              ...tournamentStats.asMap().entries.map((entry) {
-                final index = entry.key;
-                final stat = entry.value;
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomDropdownButtonFormField<int>(
-                                labelText: "Torneo",
-                                hintText: "Elige un torneo...",
-                                value: stat['tournamentId'],
-                                items: getAvailableTournaments(
-                                        savedTournaments, stat['tournamentId'])
-                                    .map((Tournament tournament) {
-                                  return DropdownMenuItem<int>(
-                                    value: tournament.id,
-                                    child: Text(tournament.name),
-                                  );
-                                }).toList(),
-                                onChanged: (int? newValue) {
+                const SizedBox(height: 20),
+                const Text(
+                  'Torneos disputados',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ...tournamentStats.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final stat = entry.value;
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomDropdownButtonFormField<int>(
+                                  labelText: "Torneo",
+                                  hintText: "Elige un torneo...",
+                                  value: stat['tournamentId'],
+                                  items: getAvailableTournaments(
+                                          savedTournaments,
+                                          stat['tournamentId'])
+                                      .map((Tournament tournament) {
+                                    return DropdownMenuItem<int>(
+                                      value: tournament.id,
+                                      child: Text(tournament.name),
+                                    );
+                                  }).toList(),
+                                  onChanged: (int? newValue) {
+                                    updateTournamentStat(
+                                        index, 'tournamentId', newValue);
+                                  },
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () => removeTournamentStat(index),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          CustomFormField(
+                            isBottomField: true,
+                            isTopField: true,
+                            label: 'Posición final',
+                            hint: '',
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'La posición es requerida';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              updateTournamentStat(
+                                  index, 'finalPosition', value);
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: stat['isWinner'],
+                                onChanged: (bool? value) {
                                   updateTournamentStat(
-                                      index, 'tournamentId', newValue);
+                                      index, 'isWinner', value ?? false);
                                 },
                               ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () => removeTournamentStat(index),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        CustomFormField(
-                          isBottomField: true,
-                          isTopField: true,
-                          label: 'Posición final',
-                          hint: '',
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'La posición es requerida';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            updateTournamentStat(index, 'finalPosition', value);
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: stat['isWinner'],
-                              onChanged: (bool? value) {
-                                updateTournamentStat(
-                                    index, 'isWinner', value ?? false);
-                              },
-                            ),
-                            const Text('Campeón'),
-                          ],
-                        ),
-                      ],
+                              const Text('Campeón'),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }),
-              const SizedBox(height: 10),
-              ElevatedButton.icon(
-                onPressed: addTournamentStat,
-                icon: const Icon(Icons.add),
-                label: const Text('Agrega un torneo'),
-              ),
-              const SizedBox(height: 20),
-              SaveFormButton(
-                submitForm: submitForm,
-              ),
-            ],
+                  );
+                }),
+                const SizedBox(height: 10),
+                ElevatedButton.icon(
+                  onPressed: addTournamentStat,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Agrega un torneo'),
+                ),
+                const SizedBox(height: 20),
+                SaveFormButton(
+                  submitForm: submitForm,
+                ),
+              ],
+            ),
           ),
         ),
       ),
