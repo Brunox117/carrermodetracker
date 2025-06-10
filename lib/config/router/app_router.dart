@@ -4,6 +4,7 @@ import 'package:carrermodetracker/presentation/views/config/config_view.dart';
 import 'package:carrermodetracker/presentation/views/dt/add_dt_stats.dart';
 import 'package:carrermodetracker/presentation/views/dt/add_dt_view.dart';
 import 'package:carrermodetracker/presentation/views/dt/dt_general_view.dart';
+import 'package:carrermodetracker/presentation/views/dt/dt_individual_stats.dart';
 import 'package:carrermodetracker/presentation/views/home/add_team_view.dart';
 import 'package:carrermodetracker/presentation/views/home/home_view.dart';
 import 'package:carrermodetracker/presentation/views/player/add_player_view.dart';
@@ -156,6 +157,15 @@ final appRouter = GoRouter(initialLocation: '/dtview', routes: [
                   builder: (context, state) {
                     final dtId = state.pathParameters['dtId'];
                     return AddDtView(
+                      managerId: dtId,
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: '/dtindividualstats/:dtId',
+                  builder: (context, state) {
+                    final dtId = state.pathParameters['dtId'];
+                    return DtIndividualStats(
                       managerId: dtId,
                     );
                   },
