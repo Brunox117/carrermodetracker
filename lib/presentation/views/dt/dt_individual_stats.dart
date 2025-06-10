@@ -1,4 +1,6 @@
+import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -36,11 +38,25 @@ class DtIndividualStats extends ConsumerWidget {
                             },
                             icon: const Icon(Icons.edit)),
                         IconButton(
-                            onPressed: () {
+                            onPressed: () async {
                               ref
                                   .read(managerStatsProvider.notifier)
-                                  .deleteManagerStat(index);
-                              //TODO borrar tambien los tournament manager stats
+                                  .deleteManagerStat(stat.id);
+                              List<ManagerTournamentStat>
+                                  managerTournamentStatsToDelete = await ref
+                                      .read(managerTournamentStatsProvider
+                                          .notifier)
+                                      .getManagerTournamentStatByDoubleKey(
+                                          stat.season.value!.id,
+                                          stat.team.value!.id);
+                              for (ManagerTournamentStat mngTournamentStat
+                                  in managerTournamentStatsToDelete) {
+                                ref
+                                    .read(
+                                        managerTournamentStatsProvider.notifier)
+                                    .deleteManagerTournamentStat(
+                                        mngTournamentStat.id);
+                              }
                             },
                             icon: const Icon(Icons.delete)),
                       ],

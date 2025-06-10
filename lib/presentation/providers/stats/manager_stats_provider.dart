@@ -53,7 +53,8 @@ class StorageManagerStatsNotifier extends StateNotifier<Map<int, Managerstat>> {
     }
   }
 
-  Future<Managerstat?> getManagerStatByDoubleKey(int seasonId, int teamId) async {
+  Future<Managerstat?> getManagerStatByDoubleKey(
+      int seasonId, int teamId) async {
     final managerStat = await managerStatsRepository.getManagerStatByDoubleKey(
         teamId, seasonId);
     if (managerStat != null) {
@@ -63,10 +64,7 @@ class StorageManagerStatsNotifier extends StateNotifier<Map<int, Managerstat>> {
   }
 
   Future<void> deleteManagerStat(int id) async {
-    final deletedManagerStat =
-        await managerStatsRepository.deleteManagerStats(id);
-    if (deletedManagerStat) {
-      state.remove(id);
-    }
+    await managerStatsRepository.deleteManagerStats(id);
+    state = {...state}..remove(id);
   }
 }
