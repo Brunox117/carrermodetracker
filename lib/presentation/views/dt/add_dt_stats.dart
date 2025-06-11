@@ -66,6 +66,50 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   List<Map<String, dynamic>> tournamentStats = [];
   bool isEditing = false;
 
+  // Add controllers
+  late TextEditingController playedMatchesController;
+  late TextEditingController winsController;
+  late TextEditingController losesController;
+  late TextEditingController drawsController;
+  late TextEditingController goalsScoredController;
+  late TextEditingController goalsConcededController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers
+    playedMatchesController = TextEditingController(text: playedMatches.toString());
+    winsController = TextEditingController(text: wins.toString());
+    losesController = TextEditingController(text: loses.toString());
+    drawsController = TextEditingController(text: draws.toString());
+    goalsScoredController = TextEditingController(text: goalsScored.toString());
+    goalsConcededController = TextEditingController(text: goalsConceded.toString());
+
+    ref.read(managersProvider.notifier).getManager();
+    ref.read(tournamentsProvider.notifier).loadNextPage();
+    ref.read(seasonsProvider.notifier).getSeasons();
+    ref.read(teamsProvider.notifier).loadNextPage();
+    if (widget.seasonId != null && widget.teamId != null) {
+      populateStats();
+    }
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers
+    playedMatchesController.dispose();
+    winsController.dispose();
+    losesController.dispose();
+    drawsController.dispose();
+    goalsScoredController.dispose();
+    goalsConcededController.dispose();
+    // Dispose tournament controllers
+    for (var stat in tournamentStats) {
+      stat['finalPositionController'].dispose();
+    }
+    super.dispose();
+  }
+
   void cleanForm() {
     playedMatches = 0;
     wins = 0;
@@ -77,8 +121,21 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
     selectedTeamID = null;
     season = null;
     team = null;
+    
+    // Dispose and clear tournament controllers
+    for (var stat in tournamentStats) {
+      stat['finalPositionController'].dispose();
+    }
     tournamentStats = [];
     isEditing = false;
+
+    // Reset controllers
+    playedMatchesController.text = '0';
+    winsController.text = '0';
+    losesController.text = '0';
+    drawsController.text = '0';
+    goalsScoredController.text = '0';
+    goalsConcededController.text = '0';
   }
 
   List<Tournament> getAvailableTournaments(
@@ -93,18 +150,6 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
         .toList();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    ref.read(managersProvider.notifier).getManager();
-    ref.read(tournamentsProvider.notifier).loadNextPage();
-    ref.read(seasonsProvider.notifier).getSeasons();
-    ref.read(teamsProvider.notifier).loadNextPage();
-    if (widget.seasonId != null && widget.teamId != null) {
-      populateStats();
-    }
-  }
-
   void populateStats() async {
     isEditing = true;
     selectedSeasonID = int.parse(widget.seasonId!);
@@ -117,6 +162,37 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
         .read(managerTournamentStatsProvider.notifier)
         .getManagerTournamentStatByDoubleKey(
             int.parse(widget.seasonId!), int.parse(widget.teamId!));
+
+    if (mngStatFromBackend != null) {
+      setState(() {
+        playedMatches = mngStatFromBackend.playedMatches;
+        wins = mngStatFromBackend.wins;
+        loses = mngStatFromBackend.loses;
+        draws = mngStatFromBackend.draws;
+        goalsScored = mngStatFromBackend.goalsScored;
+        goalsConceded = mngStatFromBackend.goalsConceded;
+
+        // Update controllers
+        playedMatchesController.text = playedMatches.toString();
+        winsController.text = wins.toString();
+        losesController.text = loses.toString();
+        drawsController.text = draws.toString();
+        goalsScoredController.text = goalsScored.toString();
+        goalsConcededController.text = goalsConceded.toString();
+      });
+    }
+
+    if (mgnTournamentStatsFromBackend.isNotEmpty) {
+      setState(() {
+        tournamentStats = mgnTournamentStatsFromBackend.map((stat) {
+          return {
+            'tournamentId': stat.tournament.value?.id,
+            'finalPosition': stat.finalPosition,
+            'isWinner': stat.isWinner,
+          };
+        }).toList();
+      });
+    }
   }
 
   void addTournamentStat() {
@@ -283,7 +359,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agrega estadísticas'),
+        title:
+            Text((isEditing) ? 'Editando estadísticas' : 'Agrega estadísticas'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -337,6 +414,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                     ),
                     const SizedBox(height: 10),
                     CustomNumberFormField(
+                      key: const ValueKey('played_matches_field'),
+                      controller: playedMatchesController,
                       isBottomField: true,
                       isTopField: true,
                       label: 'Partidos jugados',
@@ -356,6 +435,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                     ),
                     const SizedBox(height: 12),
                     CustomNumberFormField(
+                      key: const ValueKey('wins_field'),
+                      controller: winsController,
                       isBottomField: true,
                       isTopField: true,
                       label: 'Victorias',
@@ -375,6 +456,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                     ),
                     const SizedBox(height: 12),
                     CustomNumberFormField(
+                      key: const ValueKey('draws_field'),
+                      controller: drawsController,
                       isBottomField: true,
                       isTopField: true,
                       label: 'Empates',
@@ -394,6 +477,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                     ),
                     const SizedBox(height: 12),
                     CustomNumberFormField(
+                      key: const ValueKey('loses_field'),
+                      controller: losesController,
                       isBottomField: true,
                       isTopField: true,
                       label: 'Derrotas',
@@ -413,6 +498,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                     ),
                     const SizedBox(height: 12),
                     CustomNumberFormField(
+                      key: const ValueKey('goals_scored_field'),
+                      controller: goalsScoredController,
                       isBottomField: true,
                       isTopField: true,
                       label: 'Goles anotados',
@@ -432,6 +519,8 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                     ),
                     const SizedBox(height: 12),
                     CustomNumberFormField(
+                      key: const ValueKey('goals_conceded_field'),
+                      controller: goalsConcededController,
                       isBottomField: true,
                       isTopField: true,
                       label: 'Goles recibidos',
@@ -503,6 +592,7 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
                             isTopField: true,
                             label: 'Posición final',
                             hint: '',
+                            initialValue: stat['finalPosition'],
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'La posición es requerida';
