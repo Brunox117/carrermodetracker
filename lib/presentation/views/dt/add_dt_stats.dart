@@ -256,13 +256,16 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
         await ref.read(seasonsProvider.notifier).getSeason(selectedSeasonID!);
 
     if (season == null) return;
-
     // Check if stats already exist
     final alreadySavedManagerStat = await ref
         .read(managerStatsProvider.notifier)
         .getManagerStatByDoubleKey(selectedSeasonID!, selectedTeamID!);
 
     if (alreadySavedManagerStat != null) {
+      if (isEditing) {
+        await _saveOrUpdateStats(alreadySavedManagerStat.id);
+        return;
+      }
       showDefaultDialog(
         // ignore: use_build_context_synchronously
         context,
