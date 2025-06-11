@@ -49,7 +49,7 @@ class CustomMultiDropdownButton<T> extends StatelessWidget {
             child: DropdownButtonHideUnderline(
               child: DropdownButton<T>(
                 isExpanded: true,
-                value: selectedValues.isNotEmpty ? selectedValues.first : null,
+                value: null,
                 hint: Text(selectedValues.isEmpty
                     ? (hintText ?? '')
                     : '${selectedValues.length} seleccionados'),
