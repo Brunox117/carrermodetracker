@@ -78,12 +78,14 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
   void initState() {
     super.initState();
     // Initialize controllers
-    playedMatchesController = TextEditingController(text: playedMatches.toString());
+    playedMatchesController =
+        TextEditingController(text: playedMatches.toString());
     winsController = TextEditingController(text: wins.toString());
     losesController = TextEditingController(text: loses.toString());
     drawsController = TextEditingController(text: draws.toString());
     goalsScoredController = TextEditingController(text: goalsScored.toString());
-    goalsConcededController = TextEditingController(text: goalsConceded.toString());
+    goalsConcededController =
+        TextEditingController(text: goalsConceded.toString());
 
     ref.read(managersProvider.notifier).getManager();
     ref.read(tournamentsProvider.notifier).loadNextPage();
@@ -103,10 +105,6 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
     drawsController.dispose();
     goalsScoredController.dispose();
     goalsConcededController.dispose();
-    // Dispose tournament controllers
-    for (var stat in tournamentStats) {
-      stat['finalPositionController'].dispose();
-    }
     super.dispose();
   }
 
@@ -121,7 +119,7 @@ class _ManagerStatsFormState extends ConsumerState<_ManagerStatsForm> {
     selectedTeamID = null;
     season = null;
     team = null;
-    
+
     // Dispose and clear tournament controllers
     for (var stat in tournamentStats) {
       stat['finalPositionController'].dispose();
