@@ -110,8 +110,8 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
         .watch(playersProvider)
         .values
         .where((player) =>
-            player.team.value != null &&
-            player.team.value!.id == int.parse(widget.id))
+            player.teams.isNotEmpty &&
+            player.teams.any((team) => team.id == int.parse(widget.id)))
         .toList();
 
     if (currentSortColumn.isNotEmpty) {

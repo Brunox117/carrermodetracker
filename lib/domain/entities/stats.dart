@@ -1,3 +1,4 @@
+import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:isar/isar.dart';
 
 import 'package:carrermodetracker/domain/entities/player.dart';
@@ -20,6 +21,7 @@ class Stats {
   final season = IsarLink<Season>();
   final tournament = IsarLink<Tournament>();
   final player = IsarLink<Player>();
+  final team = IsarLink<Team>();
 
   Stats({
     required this.goals,

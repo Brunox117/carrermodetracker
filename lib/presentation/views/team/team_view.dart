@@ -63,7 +63,7 @@ class TeamView extends ConsumerWidget {
           final players = ref
               .watch(playersProvider)
               .values
-              .where((player) => player.team.value?.id == team.id)
+              .where((player) => player.teams.any((t) => t.id == team.id))
               .toList();
           final topScorers = getTopPlayers(players, 'goals');
           final topAssists = getTopPlayers(players, 'assists');
@@ -89,7 +89,7 @@ class TeamView extends ConsumerWidget {
                         onPressed: () {
                           showDefaultDialog(
                               context,
-                              "¿Estás seguro de que deseas borrar el equipo? Esto borrara a los jugadores del equipo y sus estadísticas",
+                              "¿Estás seguro de que deseas borrar el equipo? Esto borrara todas las estadísticas relacionadas al equipo",
                               "Aceptar",
                               'Cancelar', () {
                             context.pop();
@@ -106,11 +106,11 @@ class TeamView extends ConsumerWidget {
                                   .read(statsProvider.notifier)
                                   .deleteStats(stat.id);
                             }
-                            for (Player player in playersToDelete) {
-                              ref
-                                  .read(playersProvider.notifier)
-                                  .deletePlayer(player.id);
-                            }
+                            // for (Player player in playersToDelete) {
+                            //   ref
+                            //       .read(playersProvider.notifier)
+                            //       .deletePlayer(player.id);
+                            // }
                             ref
                                 .read(teamsProvider.notifier)
                                 .deleteTeam(team.id);

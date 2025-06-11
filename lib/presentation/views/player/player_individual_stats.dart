@@ -52,8 +52,9 @@ class PlayerIndividualStats extends ConsumerWidget {
                             const Spacer(),
                             IconButton(
                                 onPressed: () {
+                                  //TODO obtener el id del equipo desde stat
                                   context.go(
-                                      '/teamoverview/${stat.player.value?.team.value?.id}/addstatview?seasonId=${stat.season.value?.id}&playerId=${stat.player.value?.id}&tournamentId=${stat.tournament.value?.id}');
+                                      '/teamoverview/${stat.player.value?.teams.first.id}/addstatview?seasonId=${stat.season.value?.id}&playerId=${stat.player.value?.id}&tournamentId=${stat.tournament.value?.id}');
                                 },
                                 icon: const Icon(Icons.edit)),
                             IconButton(
