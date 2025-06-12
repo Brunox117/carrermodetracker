@@ -40,6 +40,7 @@ class IsarStatsDatasource extends StatsDatasource {
         await stats.player.save();
         await stats.season.save();
         await stats.tournament.save();
+        await stats.team.save();
       },
     );
     stats.id = newID;
