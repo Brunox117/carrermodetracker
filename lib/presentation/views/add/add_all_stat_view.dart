@@ -31,6 +31,13 @@ class AddAllStatView extends StatelessWidget {
                 onPressed: () =>
                     context.push('/teamoverview/$id/addseasonview'),
               ),
+              _buildActionButton(
+                context,
+                icon: Icons.shield_outlined,
+                text: 'Crea un equipo',
+                onPressed: () =>
+                    context.push('/addteam'),
+              ),
             ],
           ),
         ],
