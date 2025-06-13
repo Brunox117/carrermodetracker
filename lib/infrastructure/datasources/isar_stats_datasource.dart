@@ -115,4 +115,16 @@ class IsarStatsDatasource extends StatsDatasource {
         .tournament((q) => q.idEqualTo(tournamentId))
         .findFirst();
   }
+
+  @override
+  Future<List<Stats>> getStatsByTeam(
+      {int limit = 10, offset = 0, required Id id}) async {
+    final isar = await db;
+    return await isar.stats
+        .filter()
+        .team(
+          (q) => q.idEqualTo(id),
+        )
+        .findAll();
+  }
 }

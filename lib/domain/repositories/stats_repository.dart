@@ -15,6 +15,9 @@ abstract class StatsRepository {
   Future<List<Stats>> getStatsByPlayer(
       {int limit = 10, offset = 0, required Id id});
 
+  Future<List<Stats>> getStatsByTeam(
+      {int limit = 10, offset = 0, required Id id});
+
   Future<bool> deleteStats(Id id);
 
   Future<bool> updateStats(Id id, Stats stats);

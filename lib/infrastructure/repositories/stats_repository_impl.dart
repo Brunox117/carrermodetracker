@@ -57,4 +57,10 @@ class StatsRepositoryImpl extends StatsRepository {
     return datasource.getStatByQuadrupleKey(
         playerId, tournamentId, seasonId, teamId);
   }
+
+  @override
+  Future<List<Stats>> getStatsByTeam(
+      {int limit = 10, offset = 0, required Id id}) {
+    return datasource.getStatsByTeam(id: id, limit: limit, offset: offset);
+  }
 }
