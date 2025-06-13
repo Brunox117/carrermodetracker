@@ -3,6 +3,7 @@ import 'package:carrermodetracker/domain/datasources/stats_datasource.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
+import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:isar/isar.dart';
 
@@ -98,6 +99,19 @@ class IsarStatsDatasource extends StatsDatasource {
         .filter()
         .player((q) => q.idEqualTo(playerId))
         .season((q) => q.idEqualTo(seasonId))
+        .tournament((q) => q.idEqualTo(tournamentId))
+        .findFirst();
+  }
+
+  @override
+  Future<Stats?> getStatByQuadrupleKey(
+      Id playerId, Id tournamentId, Id seasonId, Id teamId) async {
+    final isar = await db;
+    return await isar.stats
+        .filter()
+        .player((q) => q.idEqualTo(playerId))
+        .season((q) => q.idEqualTo(seasonId))
+        .team((q) => q.idEqualTo(teamId))
         .tournament((q) => q.idEqualTo(tournamentId))
         .findFirst();
   }

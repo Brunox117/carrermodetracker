@@ -74,4 +74,10 @@ class StorageStatsNotifier extends StateNotifier<Map<int, Stats>> {
     return await statsStorageRepository.getStatByTripleKey(
         playerId, tournamentId, seasonId);
   }
+
+  Future<Stats?> getStatByQuadrupleKey(
+      int playerId, int tournamentId, int seasonId, int teamId) async {
+    return await statsStorageRepository.getStatByQuadrupleKey(
+        playerId, tournamentId, seasonId, teamId);
+  }
 }

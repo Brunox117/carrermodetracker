@@ -217,7 +217,8 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
           team != null) {
         final Stats? alreadeSavedStat = await ref
             .read(statsProvider.notifier)
-            .getStatByTripleKey(player!.id, tournament!.id, season!.id);
+            .getStatByQuadrupleKey(
+                player!.id, tournament!.id, season!.id, team!.id);
         final Stats statToSave = Stats(
             assists: assists,
             goals: goals,
