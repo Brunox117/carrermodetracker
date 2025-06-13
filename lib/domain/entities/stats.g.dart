@@ -77,6 +77,12 @@ const StatsSchema = CollectionSchema(
       name: r'player',
       target: r'Player',
       single: true,
+    ),
+    r'team': LinkSchema(
+      id: 8108567235750698218,
+      name: r'team',
+      target: r'Team',
+      single: true,
     )
   },
   embeddedSchemas: {},
@@ -160,7 +166,7 @@ Id _statsGetId(Stats object) {
 }
 
 List<IsarLinkBase<dynamic>> _statsGetLinks(Stats object) {
-  return [object.season, object.tournament, object.player];
+  return [object.season, object.tournament, object.player, object.team];
 }
 
 void _statsAttach(IsarCollection<dynamic> col, Id id, Stats object) {
@@ -169,6 +175,7 @@ void _statsAttach(IsarCollection<dynamic> col, Id id, Stats object) {
   object.tournament
       .attach(col, col.isar.collection<Tournament>(), r'tournament', id);
   object.player.attach(col, col.isar.collection<Player>(), r'player', id);
+  object.team.attach(col, col.isar.collection<Team>(), r'team', id);
 }
 
 extension StatsQueryWhereSort on QueryBuilder<Stats, Stats, QWhere> {
@@ -716,6 +723,18 @@ extension StatsQueryLinks on QueryBuilder<Stats, Stats, QFilterCondition> {
   QueryBuilder<Stats, Stats, QAfterFilterCondition> playerIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'player', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Stats, Stats, QAfterFilterCondition> team(FilterQuery<Team> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'team');
+    });
+  }
+
+  QueryBuilder<Stats, Stats, QAfterFilterCondition> teamIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'team', 0, true, 0, true);
     });
   }
 }

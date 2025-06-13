@@ -45,11 +45,11 @@ const PlayerSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {
-    r'team': LinkSchema(
-      id: -6277550702287653068,
-      name: r'team',
+    r'teams': LinkSchema(
+      id: -5489662263992391992,
+      name: r'teams',
       target: r'Team',
-      single: true,
+      single: false,
     ),
     r'stats': LinkSchema(
       id: 7246260294797136728,
@@ -132,12 +132,12 @@ Id _playerGetId(Player object) {
 }
 
 List<IsarLinkBase<dynamic>> _playerGetLinks(Player object) {
-  return [object.team, object.stats];
+  return [object.teams, object.stats];
 }
 
 void _playerAttach(IsarCollection<dynamic> col, Id id, Player object) {
   object.id = id;
-  object.team.attach(col, col.isar.collection<Team>(), r'team', id);
+  object.teams.attach(col, col.isar.collection<Team>(), r'teams', id);
   object.stats.attach(col, col.isar.collection<Stats>(), r'stats', id);
 }
 
@@ -792,16 +792,59 @@ extension PlayerQueryFilter on QueryBuilder<Player, Player, QFilterCondition> {
 extension PlayerQueryObject on QueryBuilder<Player, Player, QFilterCondition> {}
 
 extension PlayerQueryLinks on QueryBuilder<Player, Player, QFilterCondition> {
-  QueryBuilder<Player, Player, QAfterFilterCondition> team(
+  QueryBuilder<Player, Player, QAfterFilterCondition> teams(
       FilterQuery<Team> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'team');
+      return query.link(q, r'teams');
     });
   }
 
-  QueryBuilder<Player, Player, QAfterFilterCondition> teamIsNull() {
+  QueryBuilder<Player, Player, QAfterFilterCondition> teamsLengthEqualTo(
+      int length) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'team', 0, true, 0, true);
+      return query.linkLength(r'teams', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> teamsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'teams', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> teamsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'teams', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> teamsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'teams', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> teamsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'teams', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> teamsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'teams', lower, includeLower, upper, includeUpper);
     });
   }
 

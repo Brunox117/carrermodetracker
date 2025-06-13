@@ -49,8 +49,10 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
       bool tournamentMatch = selectedTournamentIDs.isEmpty ||
           (element.tournament.value != null &&
               selectedTournamentIDs.contains(element.tournament.value!.id));
+      bool teamMatch = element.team.value != null &&
+          element.team.value!.id.toString() == widget.id;
 
-      if (seasonMatch && tournamentMatch) {
+      if (seasonMatch && tournamentMatch && teamMatch) {
         totalGoals += element.goals;
         totalAssists += element.assists;
         totalMatches += element.playedMatches;
@@ -110,10 +112,9 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
         .watch(playersProvider)
         .values
         .where((player) =>
-            player.team.value != null &&
-            player.team.value!.id == int.parse(widget.id))
+            player.teams.isNotEmpty &&
+            player.teams.any((team) => team.id == int.parse(widget.id)))
         .toList();
-
     if (currentSortColumn.isNotEmpty) {
       players.sort((a, b) {
         var aStats = getFilteredStats(a);
@@ -253,8 +254,8 @@ class _TeamPlayersOverviewState extends ConsumerState<TeamPlayersOverview> {
                                     : '',
                               ))),
                     ]),
-                ...players.map((player) => buildTableRow(
-                    context, player, selectedSeasonIDs, selectedTournamentIDs)),
+                ...players.map((player) => buildTableRow(context, player,
+                    selectedSeasonIDs, selectedTournamentIDs, widget.id)),
               ],
             ),
           ],

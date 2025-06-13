@@ -3,6 +3,7 @@ import 'package:carrermodetracker/domain/datasources/stats_datasource.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
+import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:isar/isar.dart';
 
@@ -40,6 +41,7 @@ class IsarStatsDatasource extends StatsDatasource {
         await stats.player.save();
         await stats.season.save();
         await stats.tournament.save();
+        await stats.team.save();
       },
     );
     stats.id = newID;
@@ -99,5 +101,30 @@ class IsarStatsDatasource extends StatsDatasource {
         .season((q) => q.idEqualTo(seasonId))
         .tournament((q) => q.idEqualTo(tournamentId))
         .findFirst();
+  }
+
+  @override
+  Future<Stats?> getStatByQuadrupleKey(
+      Id playerId, Id tournamentId, Id seasonId, Id teamId) async {
+    final isar = await db;
+    return await isar.stats
+        .filter()
+        .player((q) => q.idEqualTo(playerId))
+        .season((q) => q.idEqualTo(seasonId))
+        .team((q) => q.idEqualTo(teamId))
+        .tournament((q) => q.idEqualTo(tournamentId))
+        .findFirst();
+  }
+
+  @override
+  Future<List<Stats>> getStatsByTeam(
+      {int limit = 10, offset = 0, required Id id}) async {
+    final isar = await db;
+    return await isar.stats
+        .filter()
+        .team(
+          (q) => q.idEqualTo(id),
+        )
+        .findAll();
   }
 }

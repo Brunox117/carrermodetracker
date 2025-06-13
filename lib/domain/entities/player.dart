@@ -12,7 +12,7 @@ class Player {
   String position;
   String imageURL;
 
-  final team = IsarLink<Team>();
+  final teams = IsarLinks<Team>();
   @Backlink(to: 'player')
   final stats = IsarLinks<Stats>();
 

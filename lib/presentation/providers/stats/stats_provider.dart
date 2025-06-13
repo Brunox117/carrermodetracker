@@ -41,6 +41,15 @@ class StorageStatsNotifier extends StateNotifier<Map<int, Stats>> {
     return listStats;
   }
 
+  Future<List<Stats>> getStatsByTeam({required int id}) async {
+    List<Stats> listStats =
+        await statsStorageRepository.getStatsByTournament(id: id);
+    final newStats = {for (var stat in listStats) stat.id: stat};
+    state = {...state, ...newStats};
+
+    return listStats;
+  }
+
   Future<List<Stats>> getStatsBySeason({required int id}) async {
     List<Stats> listStats =
         await statsStorageRepository.getStatsBySeason(id: id);
@@ -73,5 +82,11 @@ class StorageStatsNotifier extends StateNotifier<Map<int, Stats>> {
       int playerId, int tournamentId, int seasonId) async {
     return await statsStorageRepository.getStatByTripleKey(
         playerId, tournamentId, seasonId);
+  }
+
+  Future<Stats?> getStatByQuadrupleKey(
+      int playerId, int tournamentId, int seasonId, int teamId) async {
+    return await statsStorageRepository.getStatByQuadrupleKey(
+        playerId, tournamentId, seasonId, teamId);
   }
 }

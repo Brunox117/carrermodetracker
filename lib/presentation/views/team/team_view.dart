@@ -15,12 +15,15 @@ class TeamView extends ConsumerWidget {
   final String id;
   const TeamView({super.key, required this.id});
 
-  Map<String, int> getPlayerStats(Player player) {
+  Map<String, int> getPlayerStats(Player player, List<Stats> teamStats) {
     int totalGoals = 0;
     int totalMatches = 0;
     int totalAssists = 0;
 
-    for (var stat in player.stats) {
+    final playerStats =
+        teamStats.where((stat) => stat.player.value?.id == player.id).toList();
+
+    for (var stat in playerStats) {
       totalGoals += stat.goals;
       totalAssists += stat.assists;
       totalMatches += stat.playedMatches;
@@ -34,14 +37,14 @@ class TeamView extends ConsumerWidget {
   }
 
   List<Map<String, dynamic>> getTopPlayers(
-      List<Player> players, String statType) {
+      List<Player> players, List<Stats> teamStats, String statType) {
     players.sort((a, b) {
-      var aStats = getPlayerStats(a);
-      var bStats = getPlayerStats(b);
+      var aStats = getPlayerStats(a, teamStats);
+      var bStats = getPlayerStats(b, teamStats);
       return bStats[statType]!.compareTo(aStats[statType]!);
     });
     return players.take(3).map((player) {
-      final stats = getPlayerStats(player);
+      final stats = getPlayerStats(player, teamStats);
       return {
         'name': player.name,
         statType: stats[statType],
@@ -63,11 +66,16 @@ class TeamView extends ConsumerWidget {
           final players = ref
               .watch(playersProvider)
               .values
-              .where((player) => player.team.value?.id == team.id)
+              .where((player) => player.teams.any((t) => t.id == team.id))
               .toList();
-          final topScorers = getTopPlayers(players, 'goals');
-          final topAssists = getTopPlayers(players, 'assists');
-          final mostPlayed = getTopPlayers(players, 'matches');
+          final statsOfPlayers = ref
+              .watch(statsProvider)
+              .values
+              .where((stat) => stat.team.value!.id == team.id)
+              .toList();
+          final topScorers = getTopPlayers(players, statsOfPlayers, 'goals');
+          final topAssists = getTopPlayers(players, statsOfPlayers, 'assists');
+          final mostPlayed = getTopPlayers(players, statsOfPlayers, 'matches');
 
           return Scaffold(
             floatingActionButton: Stack(
@@ -89,7 +97,7 @@ class TeamView extends ConsumerWidget {
                         onPressed: () {
                           showDefaultDialog(
                               context,
-                              "¿Estás seguro de que deseas borrar el equipo? Esto borrara a los jugadores del equipo y sus estadísticas",
+                              "¿Estás seguro de que deseas borrar el equipo? Esto borrara todas las estadísticas relacionadas al equipo",
                               "Aceptar",
                               'Cancelar', () {
                             context.pop();
@@ -106,11 +114,11 @@ class TeamView extends ConsumerWidget {
                                   .read(statsProvider.notifier)
                                   .deleteStats(stat.id);
                             }
-                            for (Player player in playersToDelete) {
-                              ref
-                                  .read(playersProvider.notifier)
-                                  .deletePlayer(player.id);
-                            }
+                            // for (Player player in playersToDelete) {
+                            //   ref
+                            //       .read(playersProvider.notifier)
+                            //       .deletePlayer(player.id);
+                            // }
                             ref
                                 .read(teamsProvider.notifier)
                                 .deleteTeam(team.id);

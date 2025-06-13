@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 
 //NOT A WIDGET
 TableRow buildTableRow(BuildContext context, Player player,
-    List<int> selectedSeasonIDs, List<int> selectedTournamentIDs) {
+    List<int> selectedSeasonIDs, List<int> selectedTournamentIDs, String teamId) {
   final textStyles = Theme.of(context).textTheme;
   int totalGoals = 0;
   int totalMatches = 0;
@@ -19,8 +19,10 @@ TableRow buildTableRow(BuildContext context, Player player,
     bool tournamentMatch = selectedTournamentIDs.isEmpty ||
         (element.tournament.value != null &&
             selectedTournamentIDs.contains(element.tournament.value!.id));
+    bool teamMatch = element.team.value != null &&
+        element.team.value!.id.toString() == teamId;
 
-    if (seasonMatch && tournamentMatch) {
+    if (seasonMatch && tournamentMatch && teamMatch) {
       totalGoals += element.goals;
       totalAssist += element.assists;
       totalMatches += element.playedMatches;

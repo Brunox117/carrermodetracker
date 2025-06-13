@@ -5,6 +5,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/add_image_widget.da
 import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
+import 'package:carrermodetracker/presentation/widgets/shared/custom_multi_dropdown_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -58,21 +59,19 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
           oldPlayer!.name = name;
           oldPlayer!.number = number;
           oldPlayer!.position = position.name.toString().toUpperCase();
+          oldPlayer!.teams.clear();
+          oldPlayer!.teams.addAll(selectedTeams);
 
           _formKey.currentState!.reset();
           updatePlayer(oldPlayer!);
           context.pop();
         }
       } else {
-        final Team team = await ref
-            .read(teamsProvider.notifier)
-            .getTeam(int.parse(widget.teamId));
-
         Player player = Player(
             name: name,
             number: number,
             position: position.name.toString().toUpperCase())
-          ..team.value = team;
+          ..teams.addAll(selectedTeams);
         if (imageURL.isNotEmpty) {
           player.imageURL = imageURL;
         }
@@ -94,6 +93,7 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
         (element) =>
             element.name.toString().toUpperCase() == oldPlayer!.position,
       );
+      selectedTeams = oldPlayer!.teams.toList();
     });
   }
 
@@ -102,6 +102,14 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
     super.initState();
     if (widget.playerId != null) {
       getOldPlayerInfo();
+    } else {
+      // Pre-select the team from teamId if provided
+      final teams = ref.read(teamsProvider).values;
+      final team = teams.firstWhere(
+        (element) => element.id == int.parse(widget.teamId),
+        orElse: () => teams.first,
+      );
+      selectedTeams = [team];
     }
   }
 
@@ -113,9 +121,11 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
   String imageURL = '';
   XFile? imageFile;
   Player? oldPlayer;
+  List<Team> selectedTeams = [];
 
   @override
   Widget build(BuildContext context) {
+    final teamsList = ref.watch(teamsProvider).values.toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Form(
@@ -170,6 +180,26 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
                       position = value;
                     });
                   }
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomMultiDropdownButton<Team>(
+                items: teamsList.map((team) {
+                  return DropdownMenuItem<Team>(
+                    value: team,
+                    child: Text(team.name),
+                  );
+                }).toList(),
+                selectedValues: selectedTeams,
+                hintText: 'Selecciona los equipos',
+                labelText: 'Equipos',
+                equals: (team1, team2) => team1.id == team2.id,
+                onChanged: (teams) {
+                  setState(() {
+                    selectedTeams = teams;
+                  });
                 },
               ),
               const SizedBox(

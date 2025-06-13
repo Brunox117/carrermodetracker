@@ -41,16 +41,30 @@ const TeamSchema = CollectionSchema(
   indexes: {},
   links: {
     r'players': LinkSchema(
-      id: 5142083483174173681,
+      id: -5474993273451099136,
       name: r'players',
       target: r'Player',
       single: false,
-      linkName: r'team',
+      linkName: r'teams',
     ),
     r'managerStat': LinkSchema(
       id: -3348137809560674195,
       name: r'managerStat',
       target: r'Managerstat',
+      single: false,
+      linkName: r'team',
+    ),
+    r'stat': LinkSchema(
+      id: 7363696047140554778,
+      name: r'stat',
+      target: r'Stats',
+      single: false,
+      linkName: r'team',
+    ),
+    r'managerTournamentStats': LinkSchema(
+      id: -1416245987226186172,
+      name: r'managerTournamentStats',
+      target: r'ManagerTournamentStat',
       single: false,
       linkName: r'team',
     )
@@ -123,7 +137,12 @@ Id _teamGetId(Team object) {
 }
 
 List<IsarLinkBase<dynamic>> _teamGetLinks(Team object) {
-  return [object.players, object.managerStat];
+  return [
+    object.players,
+    object.managerStat,
+    object.stat,
+    object.managerTournamentStats
+  ];
 }
 
 void _teamAttach(IsarCollection<dynamic> col, Id id, Team object) {
@@ -131,6 +150,12 @@ void _teamAttach(IsarCollection<dynamic> col, Id id, Team object) {
   object.players.attach(col, col.isar.collection<Player>(), r'players', id);
   object.managerStat
       .attach(col, col.isar.collection<Managerstat>(), r'managerStat', id);
+  object.stat.attach(col, col.isar.collection<Stats>(), r'stat', id);
+  object.managerTournamentStats.attach(
+      col,
+      col.isar.collection<ManagerTournamentStat>(),
+      r'managerTournamentStats',
+      id);
 }
 
 extension TeamQueryWhereSort on QueryBuilder<Team, Team, QWhere> {
@@ -760,6 +785,126 @@ extension TeamQueryLinks on QueryBuilder<Team, Team, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
           r'managerStat', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> stat(FilterQuery<Stats> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'stat');
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> statLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stat', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> statIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stat', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> statIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stat', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> statLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stat', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> statLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'stat', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> statLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'stat', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition> managerTournamentStats(
+      FilterQuery<ManagerTournamentStat> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'managerTournamentStats');
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition>
+      managerTournamentStatsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition>
+      managerTournamentStatsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'managerTournamentStats', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition>
+      managerTournamentStatsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition>
+      managerTournamentStatsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition>
+      managerTournamentStatsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Team, Team, QAfterFilterCondition>
+      managerTournamentStatsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'managerTournamentStats', lower, includeLower, upper, includeUpper);
     });
   }
 }

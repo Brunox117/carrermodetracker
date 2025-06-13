@@ -2,10 +2,12 @@ import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/season.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
+import 'package:carrermodetracker/domain/entities/team.dart';
 import 'package:carrermodetracker/domain/entities/tournament.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/providers/seasons/seasons_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
+import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
 import 'package:carrermodetracker/presentation/providers/tournaments/tournaments_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_number_form_field.dart';
@@ -19,11 +21,13 @@ class AddStatView extends StatelessWidget {
   final String? seasonId;
   final String? playerId;
   final String? tournamentId;
+  final String? pastTeamStat;
   const AddStatView(
       {super.key,
       required this.teamId,
       this.seasonId,
       this.playerId,
+      this.pastTeamStat,
       this.tournamentId});
 
   @override
@@ -33,6 +37,7 @@ class AddStatView extends StatelessWidget {
           teamID: teamId,
           seasonId: seasonId,
           tournamentId: tournamentId,
+          pastTeamStat: pastTeamStat,
           playerId: playerId),
     );
   }
@@ -43,8 +48,13 @@ class _StatsForm extends ConsumerStatefulWidget {
   final String? seasonId;
   final String? playerId;
   final String? tournamentId;
+  final String? pastTeamStat;
   const _StatsForm(
-      {this.seasonId, this.playerId, this.tournamentId, required this.teamID});
+      {this.seasonId,
+      this.playerId,
+      this.pastTeamStat,
+      this.tournamentId,
+      required this.teamID});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => __StatsFormState();
@@ -62,8 +72,10 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
   int? selectedSeasonID;
   int? selectedPlayerID;
   int? selectedTournamentID;
+  int? selectedTeamID;
   Season? season;
   Tournament? tournament;
+  Team? team;
   Player? player;
   // Add controllers
   late TextEditingController goalsController;
@@ -93,8 +105,10 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
         .getPlayersByTeam(int.parse(widget.teamID));
     ref.read(tournamentsProvider.notifier).loadNextPage();
     ref.read(seasonsProvider.notifier).getSeasons();
+    ref.read(teamsProvider.notifier).loadNextPage();
     if (widget.seasonId != null &&
         widget.playerId != null &&
+        widget.pastTeamStat != null &&
         widget.tournamentId != null) {
       populateStats();
     }
@@ -124,6 +138,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
     selectedSeasonID = null;
     selectedPlayerID = null;
     selectedTournamentID = null;
+    selectedTeamID = null;
     isEditing = false;
 
     // Reset controllers
@@ -140,6 +155,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
     selectedPlayerID = int.parse(widget.playerId!);
     selectedTournamentID = int.parse(widget.tournamentId!);
     selectedSeasonID = int.parse(widget.seasonId!);
+    selectedTeamID = int.parse(widget.pastTeamStat!);
     final Stats? statFromBackend = await ref
         .read(statsProvider.notifier)
         .getStatByTripleKey(
@@ -192,10 +208,17 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
             .read(tournamentsProvider.notifier)
             .getTournament(selectedTournamentID!);
       }
-      if (season != null && tournament != null && player != null) {
+      if (selectedTeamID != null) {
+        team = await ref.read(teamsProvider.notifier).getTeam(selectedTeamID!);
+      }
+      if (season != null &&
+          tournament != null &&
+          player != null &&
+          team != null) {
         final Stats? alreadeSavedStat = await ref
             .read(statsProvider.notifier)
-            .getStatByTripleKey(player!.id, tournament!.id, season!.id);
+            .getStatByQuadrupleKey(
+                player!.id, tournament!.id, season!.id, team!.id);
         final Stats statToSave = Stats(
             assists: assists,
             goals: goals,
@@ -207,6 +230,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
         statToSave.player.value = player;
         statToSave.tournament.value = tournament;
         statToSave.season.value = season;
+        statToSave.team.value = team;
         if (alreadeSavedStat == null) {
           _formKey.currentState!.reset();
           saveStat(statToSave);
@@ -242,6 +266,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
     final savedSeasons = ref.watch(seasonsProvider).values.toList();
     final savedPlayers = ref.watch(playersProvider).values.toList();
     final savedTournaments = ref.watch(tournamentsProvider).values.toList();
+    final savedTeams = ref.watch(teamsProvider).values.toList();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -287,6 +312,22 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                         onChanged: (int? newValue) {
                           setState(() {
                             selectedPlayerID = newValue;
+                          });
+                        },
+                      ),
+                      CustomDropdownButtonFormField<int>(
+                        labelText: "Selecciona equipo:",
+                        hintText: "Equipo...",
+                        value: selectedTeamID,
+                        items: savedTeams.map((Team team) {
+                          return DropdownMenuItem<int>(
+                            value: team.id,
+                            child: Text(team.name),
+                          );
+                        }).toList(),
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            selectedTeamID = newValue;
                           });
                         },
                       ),

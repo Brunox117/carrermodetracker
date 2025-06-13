@@ -53,7 +53,7 @@ class PlayerIndividualStats extends ConsumerWidget {
                             IconButton(
                                 onPressed: () {
                                   context.go(
-                                      '/teamoverview/${stat.player.value?.team.value?.id}/addstatview?seasonId=${stat.season.value?.id}&playerId=${stat.player.value?.id}&tournamentId=${stat.tournament.value?.id}');
+                                      '/teamoverview/${stat.team.value?.id}/addstatview?seasonId=${stat.season.value?.id}&playerId=${stat.player.value?.id}&tournamentId=${stat.tournament.value?.id}&pastTeamId=${stat.team.value?.id}');
                                 },
                                 icon: const Icon(Icons.edit)),
                             IconButton(
