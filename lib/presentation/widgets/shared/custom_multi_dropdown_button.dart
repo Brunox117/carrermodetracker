@@ -1,130 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:carrermodetracker/domain/entities/team.dart';
 
-class CustomMultiDropdownButton<T> extends StatelessWidget {
-  final List<DropdownMenuItem<T>> items;
-  final List<T> selectedValues;
-  final String? hintText;
-  final String? labelText;
-  final void Function(List<T>)? onChanged;
-  final bool Function(T, T)? equals;
+class CustomMultiDropdownButton extends StatelessWidget {
+  final List<Team> items;
+  final List<Team> selectedItems;
+  final Function(List<Team>) onChanged;
+  final String hint;
 
   const CustomMultiDropdownButton({
     super.key,
     required this.items,
-    required this.selectedValues,
-    this.hintText,
-    this.labelText,
+    required this.selectedItems,
     required this.onChanged,
-    this.equals,
+    this.hint = 'Selecciona los equipos',
   });
-
-  bool _isValueSelected(T value) {
-    if (equals != null) {
-      return selectedValues.any((element) => equals!(element, value));
-    }
-    return selectedValues.contains(value);
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (labelText != null)
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(
-            labelText!,
-            style: Theme.of(context).textTheme.titleMedium,
+            hint,
+            style: const TextStyle(fontSize: 16),
           ),
-        const SizedBox(height: 8),
-        InputDecorator(
-          decoration: InputDecoration(
-            hintText: hintText,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-          ),
-          child: ButtonTheme(
-            alignedDropdown: true,
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<T>(
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: [
+              ...selectedItems.map((team) => Chip(
+                    label: Text(team.name),
+                    onDeleted: () {
+                      final newSelection = List<Team>.from(selectedItems)
+                        ..remove(team);
+                      onChanged(newSelection);
+                    },
+                  )),
+              DropdownButton<Team>(
                 isExpanded: true,
-                value: null,
-                hint: Text(selectedValues.isEmpty
-                    ? (hintText ?? '')
-                    : '${selectedValues.length} seleccionados'),
-                items: items.map((item) {
-                  return DropdownMenuItem<T>(
-                    value: item.value,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: _isValueSelected(item.value as T),
-                          onChanged: (bool? value) {
-                            if (value == true) {
-                              onChanged?.call([...selectedValues, item.value as T]);
-                            } else {
-                              if (equals != null) {
-                                onChanged?.call(
-                                  selectedValues
-                                      .where((v) => !equals!(v, item.value as T))
-                                      .toList(),
-                                );
-                              } else {
-                                onChanged?.call(
-                                  selectedValues
-                                      .where((v) => v != item.value)
-                                      .toList(),
-                                );
-                              }
-                            }
-                          },
-                        ),
-                        Expanded(child: item.child),
-                      ],
-                    ),
-                  );
-                }).toList(),
-                onChanged: (T? value) {
-                  if (value != null) {
-                    if (!_isValueSelected(value)) {
-                      onChanged?.call([...selectedValues, value]);
-                    } else {
-                      if (equals != null) {
-                        onChanged?.call(
-                          selectedValues
-                              .where((v) => !equals!(v, value))
-                              .toList(),
-                        );
-                      } else {
-                        onChanged?.call(
-                          selectedValues.where((v) => v != value).toList(),
-                        );
-                      }
-                    }
+                hint: const Text('Agregar equipo'),
+                items: items
+                    .where((team) => !selectedItems.contains(team))
+                    .map((team) => DropdownMenuItem<Team>(
+                          value: team,
+                          child: Text(team.name),
+                        ))
+                    .toList(),
+                onChanged: (Team? newValue) {
+                  if (newValue != null) {
+                    final newSelection = List<Team>.from(selectedItems)
+                      ..add(newValue);
+                    onChanged(newSelection);
                   }
                 },
-                enableFeedback: true,
-                borderRadius: BorderRadius.circular(10),
-                icon: const Icon(Icons.arrow_drop_down),
-                selectedItemBuilder: (BuildContext context) {
-                  return items.map((item) {
-                    return Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        selectedValues.isEmpty
-                            ? (hintText ?? '')
-                            : '${selectedValues.length} seleccionados',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    );
-                  }).toList();
-                },
               ),
-            ),
+            ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

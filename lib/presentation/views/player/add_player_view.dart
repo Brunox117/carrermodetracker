@@ -187,20 +187,12 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
               const SizedBox(
                 height: 10,
               ),
-              CustomMultiDropdownButton<Team>(
-                items: teamsList.map((team) {
-                  return DropdownMenuItem<Team>(
-                    value: team,
-                    child: Text(team.name),
-                  );
-                }).toList(),
-                selectedValues: selectedTeams,
-                hintText: 'Selecciona los equipos',
-                labelText: 'Equipos',
-                equals: (team1, team2) => team1.id == team2.id,
-                onChanged: (teams) {
+              CustomMultiDropdownButton(
+                items: teamsList,
+                selectedItems: selectedTeams,
+                onChanged: (newSelection) {
                   setState(() {
-                    selectedTeams = teams;
+                    selectedTeams = newSelection;
                   });
                 },
               ),
