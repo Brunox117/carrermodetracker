@@ -1,5 +1,6 @@
 import 'package:drops/drops.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SaveFormButton extends StatelessWidget {
   final void Function() submitForm;
@@ -16,6 +17,7 @@ class SaveFormButton extends StatelessWidget {
     return Center(
       child: IconButton(
         onPressed: () {
+          HapticFeedback.mediumImpact();
           submitForm();
           if (onSaveTextAlert != null) {
             Drops.show(

@@ -77,7 +77,6 @@ class RegisterMatchView extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: () {
           onPressed();
-          //TODO agregar feedback haptico
         },
         icon: Icon(icon),
         label: Text(text),

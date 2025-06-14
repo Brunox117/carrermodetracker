@@ -19,10 +19,16 @@ class AddAllStatView extends StatelessWidget {
             children: [
               _buildActionButton(
                 context,
-                icon: Icons.emoji_events,
+                icon: Icons.emoji_events_outlined,
                 text: 'Crea un torneo',
                 onPressed: () =>
                     context.push('/teamoverview/$id/addtournamentview'),
+              ),
+              _buildActionButton(
+                context,
+                icon: Icons.shield_outlined,
+                text: 'Crea un equipo',
+                onPressed: () => context.push('/addteam'),
               ),
               _buildActionButton(
                 context,
@@ -30,13 +36,6 @@ class AddAllStatView extends StatelessWidget {
                 text: 'Iniciar nueva temporada',
                 onPressed: () =>
                     context.push('/teamoverview/$id/addseasonview'),
-              ),
-              _buildActionButton(
-                context,
-                icon: Icons.shield_outlined,
-                text: 'Crea un equipo',
-                onPressed: () =>
-                    context.push('/addteam'),
               ),
             ],
           ),
@@ -58,7 +57,6 @@ class AddAllStatView extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: () {
           onPressed();
-          //TODO agregar feedback haptico
         },
         icon: Icon(icon),
         label: Text(text),

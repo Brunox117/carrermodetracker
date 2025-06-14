@@ -1,18 +1,23 @@
+import 'package:carrermodetracker/config/theme/app_theme.dart';
+import 'package:carrermodetracker/presentation/providers/config/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class CustomBottomNavBar extends StatelessWidget {
+class CustomBottomNavBar extends ConsumerWidget {
   final StatefulNavigationShell currentChild;
   const CustomBottomNavBar({super.key, required this.currentChild});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppTheme appTheme = ref.watch(themeNotifierProvider);
+    final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Container(
         height: 65,
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
+          color: (appTheme.isDarkMode) ? colors.primary.withValues(alpha: 0.7) : colors.primary,
           borderRadius: BorderRadius.circular(35),
           boxShadow: [
             BoxShadow(
@@ -126,7 +131,9 @@ class _NavBarItemState extends State<_NavBarItem>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) => _controller.forward(),
+      onTapDown: (_) {
+        _controller.forward();
+      },
       onTapUp: (_) {
         _controller.reverse();
         widget.onTap();

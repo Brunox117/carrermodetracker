@@ -29,7 +29,6 @@ class MainApp extends ConsumerWidget {
     
     final AppTheme appTheme = ref.watch(themeNotifierProvider);
     final locale = ref.watch(localeProvider);
-    
     return MaterialApp.router(
       locale: locale,
       supportedLocales: const [
