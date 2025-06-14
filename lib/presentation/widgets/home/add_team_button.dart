@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 class AddTeamButton extends StatelessWidget {
@@ -6,25 +7,30 @@ class AddTeamButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return GestureDetector(
-      onTap: () => context.push('/addteam'),
+      onTap: () {
+        HapticFeedback.mediumImpact();
+        context.push('/addteam');
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-        child: const Stack(
+        child: Stack(
           children: [
-            SizedBox.expand(),
+            const SizedBox.expand(),
             Positioned(
               left: 0,
               right: 0,
               top: 0,
               bottom: 30,
               child: Icon(
+                color: colors.primary,
                 size: 100,
-                Icons.add_circle_outline_rounded,
+                Icons.add_circle_outlined,
               ),
             ),
-            Positioned(
+            const Positioned(
                 left: 0,
                 right: 0,
                 bottom: 20,

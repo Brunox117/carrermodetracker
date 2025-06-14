@@ -44,7 +44,7 @@ class TeamGeneralWidget extends ConsumerWidget {
                     )
                   : const Icon(
                       size: 100,
-                      Icons.circle,
+                      Icons.shield_outlined,
                     ),
             ),
             Positioned(
