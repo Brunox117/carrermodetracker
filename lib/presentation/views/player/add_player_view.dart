@@ -15,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 
 class AddPlayerView extends StatelessWidget {
   final String? playerId;
-  final String teamId;
+  final String? teamId;
   const AddPlayerView({super.key, required this.teamId, this.playerId});
 
   @override
@@ -33,7 +33,7 @@ class AddPlayerView extends StatelessWidget {
 }
 
 class _PlayerForm extends ConsumerStatefulWidget {
-  final String teamId;
+  final String? teamId;
   final String? playerId;
   const _PlayerForm({required this.teamId, this.playerId});
 
@@ -103,13 +103,15 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
     if (widget.playerId != null) {
       getOldPlayerInfo();
     } else {
-      // Pre-select the team from teamId if provided
-      final teams = ref.read(teamsProvider).values;
-      final team = teams.firstWhere(
-        (element) => element.id == int.parse(widget.teamId),
-        orElse: () => teams.first,
-      );
-      selectedTeams = [team];
+      if (widget.teamId != null) {
+        // Pre-select the team from teamId if provided
+        final teams = ref.read(teamsProvider).values;
+        final team = teams.firstWhere(
+          (element) => element.id == int.parse(widget.teamId!),
+          orElse: () => teams.first,
+        );
+        selectedTeams = [team];
+      }
     }
   }
 

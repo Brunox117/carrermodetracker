@@ -32,6 +32,13 @@ class AddAllStatView extends StatelessWidget {
               ),
               _buildActionButton(
                 context,
+                icon: Icons.person_add,
+                text: 'Agrega un jugador',
+                onPressed: () =>
+                    context.push('/add-all-stat-view/addplayerview'),
+              ),
+              _buildActionButton(
+                context,
                 icon: Icons.calendar_today,
                 text: 'Iniciar nueva temporada',
                 onPressed: () =>

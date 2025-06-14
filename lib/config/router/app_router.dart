@@ -190,13 +190,22 @@ final appRouter = GoRouter(initialLocation: '/dtview', routes: [
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
-            path: '/add-all-stat-view',
-            builder: (context, state) {
-              return const AddAllStatView(
-                id: '1',
-              );
-            },
-          ),
+              path: '/add-all-stat-view',
+              builder: (context, state) {
+                return const AddAllStatView(
+                  id: '1',
+                );
+              },
+              routes: [
+                GoRoute(
+                  path: '/addplayerview',
+                  builder: (context, state) {
+                    return const AddPlayerView(
+                      teamId: null,
+                    );
+                  },
+                ),
+              ]),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
