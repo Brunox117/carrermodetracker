@@ -7,7 +7,6 @@ import 'package:carrermodetracker/presentation/providers/seasons/seasons_provide
 import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
-import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +21,8 @@ class AddSeasonView extends ConsumerStatefulWidget {
 
 class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
   final _formKey = GlobalKey<FormState>();
-  String season = '';
+  int? startYear;
+  int? endYear;
   List<Season> savedSeasons = [];
   bool updatingSeason = false;
   int? updateSeasonId;
@@ -37,21 +37,22 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      final seasonValue = '$startYear-$endYear';
       if (updatingSeason) {
-        Season seasonToUpdate = Season(season: season);
+        Season seasonToUpdate = Season(season: seasonValue);
         bool seasonExists = savedSeasons.any(
             (s) => s.season == seasonToUpdate.season && s.id != updateSeasonId);
         if (seasonExists) {
           repeatedSeasonDialog(
               'Ya tienes al menos una temporada con este nombre. ¿Estas seguro de que deseas guardar otra con el mismo nombre?',
               () {
-            Season seasonToUpdate = Season(season: season);
             updateSeason(updateSeasonId!, seasonToUpdate);
             _formKey.currentState!.reset();
             setState(() {
               updatingSeason = false;
               updateSeasonId = null;
-              season = '';
+              startYear = null;
+              endYear = null;
             });
           });
         } else {
@@ -60,11 +61,12 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
           setState(() {
             updatingSeason = false;
             updateSeasonId = null;
-            season = '';
+            startYear = null;
+            endYear = null;
           });
         }
       } else {
-        final Season seasonToSave = Season(season: season);
+        final Season seasonToSave = Season(season: seasonValue);
         bool seasonExists =
             savedSeasons.any((s) => s.season == seasonToSave.season);
         if (seasonExists) {
@@ -75,14 +77,16 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
             _formKey.currentState!.reset();
             context.pop();
             setState(() {
-              season = '';
+              startYear = null;
+              endYear = null;
             });
           });
         } else {
           submitSeason(seasonToSave);
           _formKey.currentState!.reset();
           setState(() {
-            season = '';
+            startYear = null;
+            endYear = null;
           });
         }
       }
@@ -115,12 +119,19 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
     ref.read(seasonsProvider.notifier).getSeasons();
   }
 
+  List<int> _getYearOptions() {
+    final now = DateTime.now();
+    final currentYear = now.year;
+    return List.generate(25, (index) => currentYear - 1 + index);
+  }
+
   @override
   void initState() {
     super.initState();
     final now = DateTime.now();
     final currentYear = now.month > 6 ? now.year : now.year - 1;
-    season = '$currentYear-${currentYear + 1}';
+    startYear = currentYear;
+    endYear = currentYear + 1;
     getSeasons();
   }
 
@@ -129,6 +140,8 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
     final textStyles = Theme.of(context).textTheme;
     final seasonsMap = ref.watch(seasonsProvider);
     savedSeasons = seasonsMap.values.toList();
+    final yearOptions = _getYearOptions();
+
     return Scaffold(
         appBar: AppBar(
           title: Text((updatingSeason)
@@ -148,26 +161,124 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
                               setState(() {
                                 updatingSeason = false;
                                 updateSeasonId = null;
-                                season = '';
+                                startYear = null;
+                                endYear = null;
                               });
                             },
                             child: const Text('Cancelar edición'))
                         : SizedBox(
                             height: MediaQuery.of(context).size.width * 0.1),
-                    CustomFormField(
-                      key: ValueKey(season),
-                      initialValue: season,
-                      isTopField: true,
-                      isBottomField: true,
-                      hint: 'Agrega la temporada (2024-2025)',
-                      onChanged: (value) => season = value,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Debes asignar un valor a la temporada';
-                        }
-                        return null;
-                      },
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<int>(
+                            value: startYear,
+                            dropdownColor:
+                                Theme.of(context).colorScheme.surface,
+                            menuMaxHeight: 300,
+                            borderRadius: BorderRadius.circular(12),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                            items: yearOptions
+                                .map((year) => DropdownMenuItem(
+                                      value: year,
+                                      child: Text(year.toString()),
+                                    ))
+                                .toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  startYear = value;
+                                  final lastYear = yearOptions.last;
+                                  endYear = value + 1 > lastYear
+                                      ? lastYear
+                                      : value + 1;
+                                });
+                              }
+                            },
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Debes seleccionar un año inicial';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Text(
+                          '-',
+                          style: TextStyle(fontSize: 40),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: DropdownButtonFormField<int>(
+                            value: endYear,
+                            dropdownColor:
+                                Theme.of(context).colorScheme.surface,
+                            menuMaxHeight: 300,
+                            borderRadius: BorderRadius.circular(12),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                            items: yearOptions
+                                .map((year) => DropdownMenuItem(
+                                      value: year,
+                                      child: Text(year.toString()),
+                                    ))
+                                .toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  endYear = value;
+                                  final firstYear = yearOptions.first;
+                                  startYear = value - 1 < firstYear
+                                      ? firstYear
+                                      : value - 1;
+                                });
+                              }
+                            },
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Debes seleccionar un año final';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 20),
                     SaveFormButton(
                       submitForm: () {
                         _submitForm();
@@ -196,7 +307,10 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
                                         setState(() {
                                           updatingSeason = true;
                                           updateSeasonId = seasonSaved.id;
-                                          season = seasonSaved.season;
+                                          startYear = int.parse(
+                                              seasonSaved.season.split('-')[0]);
+                                          endYear = int.parse(
+                                              seasonSaved.season.split('-')[1]);
                                         });
                                       },
                                       icon: const Icon(

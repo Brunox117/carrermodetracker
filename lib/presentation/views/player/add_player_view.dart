@@ -77,6 +77,7 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
         }
         _formKey.currentState!.reset();
         submitPlayer(player);
+        cleanForm();
       }
     }
   }
@@ -113,6 +114,18 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
         selectedTeams = [team];
       }
     }
+  }
+
+  void cleanForm() {
+    setState(() {
+      name = '';
+      number = '';
+      position = Positions.dc;
+      imageURL = '';
+    });
+    imageFile = null;
+    oldPlayer = null;
+    selectedTeams = [];
   }
 
   final _formKey = GlobalKey<FormState>();
