@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomFormField extends StatelessWidget {
-  final bool isTopField; 
+  final bool isTopField;
   final bool isBottomField;
   final String? label;
   final String? hint;
@@ -46,7 +46,7 @@ class CustomFormField extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-          color: bakcGroundColor,
+          color: colors.surfaceContainer,
           borderRadius: BorderRadius.only(
             topLeft: isTopField ? borderRadius : Radius.zero,
             topRight: isTopField ? borderRadius : Radius.zero,
@@ -66,7 +66,7 @@ class CustomFormField extends StatelessWidget {
         validator: validator,
         obscureText: obscureText,
         keyboardType: keyboardType,
-        style: const TextStyle(fontSize: 15, color: Colors.black54),
+        style: const TextStyle(fontSize: 15),
         maxLines: maxLines,
         initialValue: initialValue,
         decoration: InputDecoration(

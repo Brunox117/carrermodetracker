@@ -6,6 +6,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/custom_form_field.d
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/custom_multi_dropdown_button.dart';
+import 'package:drops/drops.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -64,6 +65,11 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
 
           _formKey.currentState!.reset();
           updatePlayer(oldPlayer!);
+          Drops.show(
+            shape: DropShape.squared,
+            context,
+            title: "Jugador actualizado correctamente!",
+          );
           context.pop();
         }
       } else {
@@ -77,6 +83,11 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
         }
         _formKey.currentState!.reset();
         submitPlayer(player);
+        Drops.show(
+          shape: DropShape.squared,
+          context,
+          title: "Jugador creado correctamente!",
+        );
         cleanForm();
       }
     }

@@ -12,6 +12,7 @@ import 'package:carrermodetracker/presentation/providers/tournaments/tournaments
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/custom_number_form_field.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
+import 'package:drops/drops.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -240,6 +241,12 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
           statToSave.id = alreadeSavedStat.id;
           if (isEditing) {
             updateStat(statToSave, alreadeSavedStat.id);
+            Drops.show(
+              shape: DropShape.squared,
+              // ignore: use_build_context_synchronously
+              context,
+              title: "Estadística registrada correctamente!",
+            );
             _formKey.currentState!.reset();
             cleanForm();
             return;
@@ -254,6 +261,12 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
           }, () {
             context.pop();
             updateStat(statToSave, alreadeSavedStat.id);
+            Drops.show(
+              shape: DropShape.squared,
+              // ignore: use_build_context_synchronously
+              context,
+              title: "Estadística actualizada correctamente!",
+            );
             _formKey.currentState!.reset();
             cleanForm();
           });

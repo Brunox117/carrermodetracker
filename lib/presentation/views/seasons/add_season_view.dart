@@ -8,6 +8,7 @@ import 'package:carrermodetracker/presentation/providers/stats/manager_stats_pro
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
+import 'package:drops/drops.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -47,6 +48,11 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
               'Ya tienes al menos una temporada con este nombre. ¿Estas seguro de que deseas guardar otra con el mismo nombre?',
               () {
             updateSeason(updateSeasonId!, seasonToUpdate);
+            Drops.show(
+              shape: DropShape.squared,
+              context,
+              title: "Estadística actualizada correctamente!",
+            );
             _formKey.currentState!.reset();
             setState(() {
               updatingSeason = false;
@@ -57,6 +63,11 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
           });
         } else {
           updateSeason(updateSeasonId!, seasonToUpdate);
+          Drops.show(
+            shape: DropShape.squared,
+            context,
+            title: "Estadística actualizada correctamente!",
+          );
           _formKey.currentState!.reset();
           setState(() {
             updatingSeason = false;
@@ -74,6 +85,11 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
               'Ya tienes al menos una temporada con este nombre. ¿Estas seguro de que deseas guardar otra con el mismo nombre?',
               () {
             submitSeason(seasonToSave);
+            Drops.show(
+              shape: DropShape.squared,
+              context,
+              title: "Estadística guardada correctamente!",
+            );
             _formKey.currentState!.reset();
             context.pop();
             setState(() {
@@ -83,6 +99,11 @@ class _AddSeasonViewState extends ConsumerState<AddSeasonView> {
           });
         } else {
           submitSeason(seasonToSave);
+          Drops.show(
+            shape: DropShape.squared,
+            context,
+            title: "Estadística guardada correctamente!",
+          );
           _formKey.currentState!.reset();
           setState(() {
             startYear = null;

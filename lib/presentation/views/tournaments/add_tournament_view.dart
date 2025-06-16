@@ -1,8 +1,8 @@
-
 import 'package:carrermodetracker/domain/entities/manager_tournament_stat.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
+import 'package:drops/drops.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -62,6 +62,11 @@ class __TournamentFormState extends ConsumerState<_TournamentForm> {
         Tournament tournamentToUpdate =
             Tournament(name: name, logoURL: logoURL);
         updateTournament(tournamentToUpdate);
+        Drops.show(
+          shape: DropShape.squared,
+          context,
+          title: "Torneo actualizado correctamente!",
+        );
         _formKey.currentState!.reset();
         setState(() {
           updatingTournament = false;
@@ -73,6 +78,11 @@ class __TournamentFormState extends ConsumerState<_TournamentForm> {
       } else {
         final tournament = Tournament(name: name, logoURL: logoURL);
         submitTournament(tournament);
+        Drops.show(
+          shape: DropShape.squared,
+          context,
+          title: "Torneo creado correctamente!",
+        );
         _formKey.currentState!.reset();
         setState(() {
           name = '';
