@@ -205,6 +205,24 @@ final appRouter = GoRouter(initialLocation: '/dtview', routes: [
                     );
                   },
                 ),
+                GoRoute(
+                  path: '/addstatview',
+                  builder: (context, state) {
+                    final id = state.pathParameters['id'] ?? '';
+                    final seasonId = state.uri.queryParameters['seasonId'];
+                    final playerId = state.uri.queryParameters['playerId'];
+                    final pastTeamId = state.uri.queryParameters['pastTeamId'];
+                    final tournamentId =
+                        state.uri.queryParameters['tournamentId'];
+                    return AddStatView(
+                      teamId: id,
+                      seasonId: seasonId,
+                      playerId: playerId,
+                      tournamentId: tournamentId,
+                      pastTeamStat: pastTeamId,
+                    );
+                  },
+                ),
               ]),
         ]),
         StatefulShellBranch(routes: [

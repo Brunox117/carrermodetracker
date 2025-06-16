@@ -27,7 +27,7 @@ class _TeamOverviewViewState extends ConsumerState<TeamOverviewView> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       initialIndex: 1,
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('General'),
@@ -37,7 +37,7 @@ class _TeamOverviewViewState extends ConsumerState<TeamOverviewView> {
               Tab(
                 icon: Icon(Icons.auto_stories_sharp),
               ),
-              Tab(icon: Icon(Icons.add_circle_outline_sharp)),
+              //Tab(icon: Icon(Icons.add_circle_outline_sharp)),
             ],
           ),
         ),
@@ -45,7 +45,7 @@ class _TeamOverviewViewState extends ConsumerState<TeamOverviewView> {
           children: <Widget>[
             TeamPlayersOverview(id: widget.id),
             TeamView(id: widget.id),
-            RegisterMatchView(id: widget.id),
+            //RegisterMatchView(id: widget.id),
           ],
         ),
       ),

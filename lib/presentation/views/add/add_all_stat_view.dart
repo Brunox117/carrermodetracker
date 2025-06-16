@@ -39,6 +39,12 @@ class AddAllStatView extends StatelessWidget {
               ),
               _buildActionButton(
                 context,
+                icon: Icons.bar_chart_rounded,
+                text: 'Registra estadísticas',
+                onPressed: () => context.push('/add-all-stat-view/addstatview'),
+              ),
+              _buildActionButton(
+                context,
                 icon: Icons.calendar_today,
                 text: 'Iniciar nueva temporada',
                 onPressed: () =>
@@ -61,18 +67,22 @@ class AddAllStatView extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ElevatedButton.icon(
-        onPressed: () {
-          onPressed();
-        },
-        icon: Icon(icon),
-        label: Text(text),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: colors.primary,
-          foregroundColor: colors.onPrimary,
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.7,
+        child: ElevatedButton.icon(
+          onPressed: () {
+            onPressed();
+          },
+          icon: Icon(icon),
+          label: Text(text),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: colors.primary,
+            foregroundColor: colors.onPrimary,
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
           ),
         ),
       ),

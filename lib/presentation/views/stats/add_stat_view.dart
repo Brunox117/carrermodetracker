@@ -17,7 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class AddStatView extends StatelessWidget {
-  final String teamId;
+  final String? teamId;
   final String? seasonId;
   final String? playerId;
   final String? tournamentId;
@@ -44,7 +44,7 @@ class AddStatView extends StatelessWidget {
 }
 
 class _StatsForm extends ConsumerStatefulWidget {
-  final String teamID;
+  final String? teamID;
   final String? seasonId;
   final String? playerId;
   final String? tournamentId;
@@ -99,10 +99,11 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
     cleanSheetsController = TextEditingController(text: cleanSheets.toString());
     redCardsController = TextEditingController(text: redCards.toString());
     yellowCardsController = TextEditingController(text: yellowCards.toString());
-
-    ref
-        .read(playersProvider.notifier)
-        .getPlayersByTeam(int.parse(widget.teamID));
+    if (widget.teamID != null && widget.teamID != '') {
+      ref
+          .read(playersProvider.notifier)
+          .getPlayersByTeam(int.parse(widget.teamID!));
+    }
     ref.read(tournamentsProvider.notifier).loadNextPage();
     ref.read(seasonsProvider.notifier).getSeasons();
     ref.read(teamsProvider.notifier).loadNextPage();

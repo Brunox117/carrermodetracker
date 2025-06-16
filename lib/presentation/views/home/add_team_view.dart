@@ -1,4 +1,5 @@
 import 'package:carrermodetracker/presentation/widgets/forms/add_image_widget.dart';
+import 'package:drops/drops.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -78,9 +79,19 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
       _formKey.currentState!.reset();
       if (widget.teamid == null) {
         submitTeam(team);
+        Drops.show(
+          shape: DropShape.squared,
+          context,
+          title: "Equipo creado correctamente!",
+        );
         context.go('/');
       } else {
         updateTeam(team);
+        Drops.show(
+          shape: DropShape.squared,
+          context,
+          title: "Equipo actualizado correctamente!",
+        );
         context.pop();
       }
     }
