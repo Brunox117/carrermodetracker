@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carrermodetracker/config/helpers/check_if_file_exists.dart';
 import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
@@ -34,6 +35,8 @@ class TournamentView extends ConsumerWidget {
               getTopAssists(statsByTournament.values.toList());
           List<Map<String, dynamic>> top5PPlayedMatches =
               getTopPlayedMatches(statsByTournament.values.toList());
+
+          File? imageFile = checkIfFileExists(tournament.logoURL);
 
           return Scaffold(
             floatingActionButton: Stack(
@@ -87,12 +90,12 @@ class TournamentView extends ConsumerWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    (tournament.logoURL.isEmpty)
+                    (imageFile == null)
                         ? const SizedBox()
                         : SizedBox(
                             height: 200,
                             child: Image.file(
-                              File(tournament.logoURL),
+                              imageFile,
                               fit: BoxFit.contain,
                             ),
                           ),
