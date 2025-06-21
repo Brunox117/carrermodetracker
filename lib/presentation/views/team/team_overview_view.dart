@@ -1,6 +1,5 @@
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
-import 'package:carrermodetracker/presentation/views/team/register_match_view.dart';
 import 'package:carrermodetracker/presentation/views/team/team_players_overview.dart';
 import 'package:carrermodetracker/presentation/views/team/team_view.dart';
 import 'package:flutter/material.dart';

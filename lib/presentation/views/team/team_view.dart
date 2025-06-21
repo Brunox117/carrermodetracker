@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carrermodetracker/config/helpers/check_if_file_exists.dart';
 import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
@@ -76,6 +77,7 @@ class TeamView extends ConsumerWidget {
           final topScorers = getTopPlayers(players, statsOfPlayers, 'goals');
           final topAssists = getTopPlayers(players, statsOfPlayers, 'assists');
           final mostPlayed = getTopPlayers(players, statsOfPlayers, 'matches');
+          final File? imageFile = checkIfFileExists(team.logoURL);
 
           return Scaffold(
             floatingActionButton: Stack(
@@ -141,11 +143,11 @@ class TeamView extends ConsumerWidget {
                     Center(
                         child: Text(team.name, style: textStyles.titleLarge)),
                     const SizedBox(height: 10),
-                    if (team.logoURL.isNotEmpty)
+                    if (imageFile != null)
                       SizedBox(
                         height: 200,
                         child: Image.file(
-                          File(team.logoURL),
+                          imageFile,
                           fit: BoxFit.contain,
                         ),
                       ),

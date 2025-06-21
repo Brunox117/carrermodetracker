@@ -82,6 +82,7 @@ class StorageTeamsNotifier extends StateNotifier<Map<int, Team>> {
       team.logoURL =
           await saveImageInLocalStorage(imageFile, 'teams', id.toString());
     }
+    team.id = id;
     await teamStorageRepository.updateTeam(id, team);
     state = {...state, id: team};
   }

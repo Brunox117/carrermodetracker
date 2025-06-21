@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carrermodetracker/config/helpers/check_if_file_exists.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,8 @@ class TeamGeneralWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final colors = Theme.of(context).colorScheme;
+    File? imageFile = checkIfFileExists(logoURL);
+
     return GestureDetector(
       onTap: () {
         context.push('/teamoverview/$id');
@@ -34,11 +37,11 @@ class TeamGeneralWidget extends ConsumerWidget {
               right: 0,
               top: 10,
               bottom: 30,
-              child: (logoURL.isNotEmpty)
+              child: (imageFile != null)
                   ? SizedBox(
                       height: 100,
                       child: Image.file(
-                        File(logoURL),
+                        imageFile,
                         fit: BoxFit.contain,
                       ),
                     )

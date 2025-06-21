@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:carrermodetracker/config/helpers/check_if_file_exists.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -34,7 +35,9 @@ class _AddImageWidgetState extends State<AddImageWidget> {
   @override
   void initState() {
     super.initState();
-    imageURL = widget.imageURLFromFather;
+    if (checkIfFileExists(widget.imageURLFromFather) != null) {
+      imageURL = widget.imageURLFromFather;
+    }
   }
 
   @override

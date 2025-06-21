@@ -32,7 +32,7 @@ final appRouter = GoRouter(initialLocation: '/dtview', routes: [
                 GoRoute(
                   routes: [
                     GoRoute(
-                      path: '/addplayerview',
+                      path: '/addplayconfierview',
                       builder: (context, state) {
                         final id = state.pathParameters['id'] ?? '';
                         return AddPlayerView(teamId: id);
