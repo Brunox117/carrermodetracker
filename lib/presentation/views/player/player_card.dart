@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:carrermodetracker/config/helpers/check_if_file_exists.dart';
 import 'package:flutter/material.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 
@@ -18,10 +19,7 @@ class PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    File? imageFile = (player.imageURL == "") ? null : File(player.imageURL);
-    if (imageFile != null && !imageFile.existsSync()) {
-      imageFile = null;
-    }
+    File? imageFile = checkIfFileExists(player.imageURL);
 
     return Card(
       child: Column(
