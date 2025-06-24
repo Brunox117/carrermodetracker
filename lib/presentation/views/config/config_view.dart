@@ -11,7 +11,10 @@ class ConfigView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final appLocalizations = AppLocalizations.of(context)!;
-    bool isDarkMode = ref.watch(themeNotifierProvider).isDarkMode;
+    final themeState = ref.watch(themeNotifierProvider);
+    bool isDarkMode = themeState.isDarkMode;
+    Color selectedColor = themeState.seedColor;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(appLocalizations.config_view_title),
@@ -36,8 +39,28 @@ class ConfigView extends ConsumerWidget {
             },
           ),
           ListTile(
-            title: const Text(
-              'Cambiar color',
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Cambiar color',
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: selectedColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.grey.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
             onTap: () {
               colorPickerDialog(context, ref);
@@ -51,15 +74,17 @@ class ConfigView extends ConsumerWidget {
 
 Future colorPickerDialog(BuildContext context, WidgetRef ref) {
   final colors = Theme.of(context).colorScheme;
+  final currentColor = ref.read(themeNotifierProvider).seedColor;
+
   const availableColors = [
     Color(0xff29B6F6),
     Color(0xff4CAF50),
     Color(0xffF57F17),
     Color(0xffD50000),
     Color.fromARGB(255, 193, 110, 220),
-    Color(0xff9C27B0), 
-    Color.fromARGB(255, 11, 0, 212), 
-    Color.fromARGB(255, 255, 251, 0), 
+    Color.fromARGB(255, 176, 123, 39),
+    Color.fromARGB(255, 11, 0, 212),
+    Color.fromARGB(255, 255, 251, 0),
   ];
 
   return showDialog(
@@ -82,10 +107,13 @@ Future colorPickerDialog(BuildContext context, WidgetRef ref) {
             runSpacing: 12,
             alignment: WrapAlignment.center,
             children: availableColors.map((color) {
-              final isSelected = color == colors.primary;
+              final isSelected = color == currentColor;
               return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop(color);
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  await ref
+                      .read(themeNotifierProvider.notifier)
+                      .changeSeedColor(color);
                 },
                 child: Container(
                   width: 50,

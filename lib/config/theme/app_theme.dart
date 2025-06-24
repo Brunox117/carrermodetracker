@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
-const seedColor = Color.fromARGB(255, 193, 110, 220);
+const defaultSeedColor = Color.fromARGB(255, 193, 110, 220);
 
 class AppTheme {
   final bool isDarkMode;
-  AppTheme({this.isDarkMode = false});
+  final Color seedColor;
+  
+  AppTheme({
+    this.isDarkMode = false,
+    this.seedColor = defaultSeedColor,
+  });
   
   ThemeData getTheme() => ThemeData(
         useMaterial3: true,
@@ -13,8 +18,14 @@ class AppTheme {
         textTheme: _buildCustomTextTheme(isDarkMode),
       );
 
-  AppTheme copyWith({bool? isDarkMode}) =>
-      AppTheme(isDarkMode: isDarkMode ?? this.isDarkMode);
+  AppTheme copyWith({
+    bool? isDarkMode,
+    Color? seedColor,
+  }) =>
+      AppTheme(
+        isDarkMode: isDarkMode ?? this.isDarkMode,
+        seedColor: seedColor ?? this.seedColor,
+      );
 }
 
 TextTheme _buildCustomTextTheme(bool isDarkMode) {
