@@ -34,7 +34,7 @@ class ThemeController extends StateNotifier<AppTheme> {
     
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(_colorKey, color.value);
+      await prefs.setInt(_colorKey, color.toARGB32());
     } catch (e) {
       state = state.copyWith(seedColor: state.seedColor);
       rethrow;
