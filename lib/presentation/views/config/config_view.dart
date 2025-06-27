@@ -1,3 +1,5 @@
+import 'package:carrermodetracker/presentation/providers/ads/admob_providers.dart';
+import 'package:carrermodetracker/presentation/providers/ads/show_ads_provider.dart';
 import 'package:carrermodetracker/presentation/providers/config/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +14,7 @@ class ConfigView extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final appLocalizations = AppLocalizations.of(context)!;
     final themeState = ref.watch(themeNotifierProvider);
+    bool shouldShowAds = ref.watch(showAdsProvider);
     bool isDarkMode = themeState.isDarkMode;
     Color selectedColor = themeState.seedColor;
 
@@ -22,6 +25,16 @@ class ConfigView extends ConsumerWidget {
       body: ListView(
         physics: const ClampingScrollPhysics(),
         children: [
+          SwitchListTile(
+            title: const Text(
+              'Mostrar anuncios',
+            ),
+            value: shouldShowAds,
+            onChanged: (value) async {
+              HapticFeedback.lightImpact();
+              ref.read(showAdsProvider.notifier).toggleAds();
+            },
+          ),
           const SizedBox(
             height: 5,
           ),
