@@ -1,9 +1,10 @@
 import 'package:carrermodetracker/config/router/app_router.dart';
 import 'package:carrermodetracker/config/theme/app_theme.dart';
 import 'package:carrermodetracker/plugins/admob_plugin.dart';
+import 'package:carrermodetracker/presentation/providers/ads/admob_providers.dart';
+import 'package:carrermodetracker/presentation/providers/ads/show_ads_provider.dart';
 import 'package:carrermodetracker/presentation/providers/config/locale_provider.dart';
 import 'package:carrermodetracker/presentation/providers/config/theme_provider.dart';
-import 'package:carrermodetracker/presentation/providers/config/timer_provider.dart';
 import 'package:carrermodetracker/presentation/providers/manager/managers_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
@@ -32,17 +33,60 @@ class _MainAppState extends ConsumerState<MainApp> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(timerProvider.notifier).startTimer(
-            duration: const Duration(seconds: 5),
-            onTick: () {
-              print("Hola mundo desde el provider!");
-            },
-          );
+      _initializeInterstitialAdsTimer();
     });
+  }
+
+  void _initializeInterstitialAdsTimer() async {
+    final showAds = ref.read(showAdsProvider);
+    final intervalMinutes = await ref.read(adsIntervalProvider.future);
+
+    ref.read(interstitialAdsTimerProvider.notifier).startInterstitialTimer(
+          intervalMinutes: intervalMinutes,
+          showAds: showAds,
+          onShowAd: () async {
+            try {
+              final ad = await ref.read(adInterstitialProvider.future);
+              await ad.show();
+            } catch (e) {
+              debugPrint('Error showing interstitial ad: $e');
+            }
+          },
+        );
+  }
+
+  void _restartInterstitialTimer() async {
+    final showAds = ref.read(showAdsProvider);
+    final intervalMinutes = await ref.read(adsIntervalProvider.future);
+
+    ref.read(interstitialAdsTimerProvider.notifier).startInterstitialTimer(
+          intervalMinutes: intervalMinutes,
+          showAds: showAds,
+          onShowAd: () async {
+            try {
+              final ad = await ref.read(adInterstitialProvider.future);
+              await ad.show();
+            } catch (e) {
+              debugPrint('Error showing interstitial ad: $e');
+            }
+          },
+        );
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(showAdsProvider, (previous, next) {
+      if (previous != next) {
+        _restartInterstitialTimer();
+      }
+    });
+
+    ref.listen(adsIntervalProvider, (previous, next) {
+      if (previous != next) {
+        _restartInterstitialTimer();
+      }
+    });
+
     ref.read(teamsProvider.notifier).loadNextPage();
     ref.read(managersProvider.notifier).getManager();
     ref.read(managerStatsProvider.notifier).loadNextPage();

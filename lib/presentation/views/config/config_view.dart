@@ -1,10 +1,10 @@
-import 'package:carrermodetracker/presentation/providers/ads/admob_providers.dart';
 import 'package:carrermodetracker/presentation/providers/ads/show_ads_provider.dart';
 import 'package:carrermodetracker/presentation/providers/config/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfigView extends ConsumerWidget {
@@ -14,7 +14,9 @@ class ConfigView extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final appLocalizations = AppLocalizations.of(context)!;
     final themeState = ref.watch(themeNotifierProvider);
-    bool shouldShowAds = ref.watch(showAdsProvider);
+    final showAds = ref.watch(showAdsProvider);
+    final adsInterval = ref.watch(adsIntervalProvider);
+
     bool isDarkMode = themeState.isDarkMode;
     Color selectedColor = themeState.seedColor;
 
@@ -25,16 +27,6 @@ class ConfigView extends ConsumerWidget {
       body: ListView(
         physics: const ClampingScrollPhysics(),
         children: [
-          SwitchListTile(
-            title: const Text(
-              'Mostrar anuncios',
-            ),
-            value: shouldShowAds,
-            onChanged: (value) async {
-              HapticFeedback.lightImpact();
-              ref.read(showAdsProvider.notifier).toggleAds();
-            },
-          ),
           const SizedBox(
             height: 5,
           ),
@@ -78,7 +70,100 @@ class ConfigView extends ConsumerWidget {
             onTap: () {
               colorPickerDialog(context, ref);
             },
-          )
+          ),
+          const Divider(),
+          SwitchListTile(
+            title: const Text(
+              'Mostrar anuncios',
+            ),
+            value: showAds,
+            onChanged: (value) {
+              HapticFeedback.lightImpact();
+              if (value) {
+                ref.read(showAdsProvider.notifier).showAds();
+              } else {
+                ref.read(showAdsProvider.notifier).removeAds();
+              }
+            },
+          ),
+          adsInterval.when(
+            data: (interval) => Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                      'Selecciona cada cuántos minutos mostrar anuncios:'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '$interval minutos',
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      title: const Text(
+                                          "Sobre el temporizador de anuncios"),
+                                      content: const Text(
+                                        'Los anuncios ayudan a mantener la app gratuita y con actualizaciones constantes. Puedes desactivarlos con una suscripción mensual o configurar su frecuencia. Si eliges menor frecuencia de anuncios, la app mostrará siempre un anuncio al iniciar.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              context.pop();
+                                            },
+                                            child: const Text("Entendido")),
+                                        // FilledButton(
+                                        //     onPressed: () {
+                                        //       context.pop();
+                                        //     },
+                                        //     child: const Text("Suscribirse"))
+                                      ],
+                                    ));
+                          },
+                          icon: const Icon(Icons.info))
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Column(
+                      children: [
+                        Slider(
+                          value: interval.toDouble(),
+                          min: 5,
+                          max: 15,
+                          divisions: 1,
+                          onChanged: (value) async {
+                            final newInterval = value.toInt();
+                            await ShowAdsNotifier.setAdsInterval(newInterval);
+                            ref.invalidate(adsIntervalProvider);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('5 min'),
+                            Text('15 min'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            loading: () => const ListTile(
+              title: Text('Cargando configuración...'),
+            ),
+            error: (error, stack) => ListTile(
+              title: Text('Error: $error'),
+            ),
+          ),
         ],
       ),
     );

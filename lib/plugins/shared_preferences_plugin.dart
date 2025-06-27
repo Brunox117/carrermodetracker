@@ -14,4 +14,14 @@ class SharePreferencesPlugin {
     final prefs = await _getPrefs();
     return prefs.getBool(key);
   }
+
+  static Future<void> setInt(String key, int value) async {
+    final prefs = await _getPrefs();
+    await prefs.setInt(key, value);
+  }
+
+  static Future<int?> getInt(String key) async {
+    final prefs = await _getPrefs();
+    return prefs.getInt(key);
+  }
 }
