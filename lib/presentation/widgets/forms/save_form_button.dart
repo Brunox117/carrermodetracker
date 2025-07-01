@@ -6,10 +6,12 @@ import 'package:flutter/services.dart';
 class SaveFormButton extends StatelessWidget {
   final void Function() submitForm;
   final String? onSaveTextAlert;
+  final double? probability;
   const SaveFormButton({
     super.key,
     required this.submitForm,
     this.onSaveTextAlert,
+    this.probability,
   });
 
   @override
@@ -28,7 +30,7 @@ class SaveFormButton extends StatelessWidget {
             );
           }
           await InterstitialAdsService.showInterstitialAdIfNeeded(
-              probability: 0.7);
+              probability: probability);
         },
         icon: Icon(
           Icons.save,
