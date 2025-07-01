@@ -1,4 +1,3 @@
-import 'package:carrermodetracker/presentation/providers/ads/admob_providers.dart';
 import 'package:carrermodetracker/presentation/providers/ads/show_ads_provider.dart';
 import 'package:carrermodetracker/presentation/providers/config/theme_provider.dart';
 import 'package:flutter/material.dart';

@@ -370,6 +370,29 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                     child: Column(
                       children: [
                         CustomNumberFormField(
+                          key: const ValueKey('played_matches_field'),
+                          controller: playedMatchesController,
+                          isBottomField: true,
+                          isTopField: true,
+                          label: 'Partidos jugados',
+                          hint: '',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo requerido';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            final number = int.tryParse(value);
+                            if (number != null) {
+                              playedMatches = number;
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        CustomNumberFormField(
                           key: const ValueKey('goals_field'),
                           controller: goalsController,
                           isBottomField: true,
@@ -414,26 +437,6 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                         ),
                         const SizedBox(
                           height: 12,
-                        ),
-                        CustomNumberFormField(
-                          key: const ValueKey('played_matches_field'),
-                          controller: playedMatchesController,
-                          isBottomField: true,
-                          isTopField: true,
-                          label: 'Partidos jugados',
-                          hint: '',
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Campo requerido';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            final number = int.tryParse(value);
-                            if (number != null) {
-                              playedMatches = number;
-                            }
-                          },
                         ),
                         ExpansionTile(
                           title: const Text("Información adicional"),

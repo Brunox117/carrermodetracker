@@ -191,7 +191,7 @@ class DtGeneralViewState extends ConsumerState<DtGeneralView> {
                                   : Column(
                                       children: [
                                         _buildStatRow(
-                                            "Partidos jugados",
+                                            "Partidos dirigidos",
                                             managerTotalStats["playedMatches"]
                                                 .toString()),
                                         _buildStatRow(

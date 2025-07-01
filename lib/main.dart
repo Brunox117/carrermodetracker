@@ -3,7 +3,6 @@ import 'package:carrermodetracker/config/theme/app_theme.dart';
 import 'package:carrermodetracker/plugins/admob_plugin.dart';
 import 'package:carrermodetracker/presentation/providers/config/locale_provider.dart';
 import 'package:carrermodetracker/presentation/providers/config/theme_provider.dart';
-import 'package:carrermodetracker/presentation/providers/config/timer_provider.dart';
 import 'package:carrermodetracker/presentation/providers/manager/managers_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
@@ -31,14 +30,6 @@ class _MainAppState extends ConsumerState<MainApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(timerProvider.notifier).startTimer(
-            duration: const Duration(seconds: 5),
-            onTick: () {
-              print("Hola mundo desde el provider!");
-            },
-          );
-    });
   }
 
   @override
