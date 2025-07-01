@@ -1,4 +1,5 @@
 import 'package:carrermodetracker/presentation/widgets/forms/add_image_widget.dart';
+import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.dart';
 import 'package:drops/drops.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -150,18 +151,7 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
               const SizedBox(
                 height: 20,
               ),
-              Center(
-                child: IconButton(
-                  onPressed: () {
-                    _submitForm();
-                  },
-                  icon: Icon(
-                    Icons.save,
-                    size: 70,
-                    color: colors.secondary,
-                  ),
-                ),
-              ),
+              SaveFormButton(submitForm: _submitForm),
             ],
           )),
     );

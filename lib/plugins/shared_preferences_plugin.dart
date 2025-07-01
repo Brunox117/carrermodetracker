@@ -14,4 +14,14 @@ class SharePreferencesPlugin {
     final prefs = await _getPrefs();
     return prefs.getBool(key);
   }
+
+  static Future<void> setDouble(String key, double value) async {
+    final prefs = await _getPrefs();
+    await prefs.setDouble(key, value);
+  }
+
+  static Future<double?> getDouble(String key) async {
+    final prefs = await _getPrefs();
+    return prefs.getDouble(key);
+  }
 }

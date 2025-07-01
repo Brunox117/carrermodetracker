@@ -13,6 +13,8 @@ class ConfigView extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final appLocalizations = AppLocalizations.of(context)!;
     final themeState = ref.watch(themeNotifierProvider);
+    bool shouldShowAds = ref.watch(showAdsProvider);
+    double adsProbability = ref.watch(adsProbabilityProvider);
     bool isDarkMode = themeState.isDarkMode;
     Color selectedColor = themeState.seedColor;
 
@@ -23,6 +25,19 @@ class ConfigView extends ConsumerWidget {
       body: ListView(
         physics: const ClampingScrollPhysics(),
         children: [
+          SwitchListTile(
+            title: const Text(
+              'Mostrar anuncios',
+            ),
+            value: shouldShowAds,
+            onChanged: (value) async {
+              HapticFeedback.lightImpact();
+              ref.read(showAdsProvider.notifier).toggleAds();
+            },
+          ),
+          const SizedBox(
+            height: 5,
+          ),
           SwitchListTile(
             title: const Text(
               'Modo oscuro',
