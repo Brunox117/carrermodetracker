@@ -10,6 +10,7 @@ class CustomFormField extends StatelessWidget {
   final bool obscureText;
   final TextInputType? keyboardType;
   final int maxLines;
+  final int? maxLength;
   final String initialValue;
   final Function(String)? onChanged;
   final Function(String)? onFieldSubmitted;
@@ -31,7 +32,8 @@ class CustomFormField extends StatelessWidget {
       this.onFieldSubmitted,
       this.validator,
       this.hintStyle,
-      this.bakcGroundColor = const Color.fromARGB(255, 238, 238, 255)});
+      this.bakcGroundColor = const Color.fromARGB(255, 238, 238, 255),
+      this.maxLength});
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +63,8 @@ class CustomFormField extends StatelessWidget {
                   offset: const Offset(0, 3))
           ]),
       child: TextFormField(
+        onTapOutside: (event) => FocusScope.of(context).unfocus(),
+        maxLength: maxLength,
         onChanged: onChanged,
         onFieldSubmitted: onFieldSubmitted,
         validator: validator,

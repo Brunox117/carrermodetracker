@@ -7,6 +7,7 @@ import 'package:carrermodetracker/presentation/widgets/forms/save_form_button.da
 import 'package:carrermodetracker/presentation/widgets/shared/custom_dropdown_button.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/custom_multi_dropdown_button.dart';
 import 'package:drops/drops.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -176,6 +177,7 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
                 height: 15,
               ),
               CustomFormField(
+                maxLength: 2,
                 isTopField: true,
                 key: ValueKey(number),
                 initialValue: number,
@@ -236,8 +238,20 @@ class __PlayerFormState extends ConsumerState<_PlayerForm> {
                 height: 20,
               ),
               SaveFormButton(
-                submitForm: _submitForm,
-                onSaveTextAlert: "Jugador guardado exitosamente!",
+                submitForm: () {
+                  if (selectedTeams.isEmpty) {
+                    Drops.show(
+                      shape: DropShape.squared,
+                      context,
+                      titleMaxLines: 2,
+                      title: "Debes seleccionar al menos un equipo",
+                      isDestructive: true,
+                      icon: Icons.dangerous_outlined,
+                    );
+                  } else {
+                    _submitForm();
+                  }
+                },
               ),
             ],
           )),
