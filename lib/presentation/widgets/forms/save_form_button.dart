@@ -27,7 +27,8 @@ class SaveFormButton extends StatelessWidget {
               title: onSaveTextAlert!,
             );
           }
-          await InterstitialAdsService.showInterstitialAdIfNeeded();
+          await InterstitialAdsService.showInterstitialAdIfNeeded(
+              probability: 0.7);
         },
         icon: Icon(
           Icons.save,
