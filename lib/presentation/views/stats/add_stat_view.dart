@@ -236,6 +236,12 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
         if (alreadeSavedStat == null) {
           _formKey.currentState!.reset();
           saveStat(statToSave);
+          Drops.show(
+            shape: DropShape.squared,
+            // ignore: use_build_context_synchronously
+            context,
+            title: "Estadística creada correctamente!",
+          );
           cleanForm();
         } else {
           statToSave.id = alreadeSavedStat.id;
@@ -316,6 +322,7 @@ class __StatsFormState extends ConsumerState<_StatsForm> {
                       CustomDropdownButtonFormField<int>(
                         labelText: "Selecciona Jugador:",
                         hintText: "Jugador...",
+                        searchEnabled: true,
                         value: selectedPlayerID,
                         items: savedPlayers.map((Player player) {
                           return DropdownMenuItem<int>(
