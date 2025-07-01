@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:carrermodetracker/config/helpers/check_if_file_exists.dart';
+import 'package:carrermodetracker/presentation/widgets/players/player_shirt_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 
@@ -24,18 +25,19 @@ class PlayerCard extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          if (imageFile != null)
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
-              ),
-              child: Image.file(
-                imageFile,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.contain,
-              ),
-            ),
+          (imageFile != null)
+              ? ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: Image.file(
+                    imageFile,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              : PlayerShirtWidget(player: player),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
