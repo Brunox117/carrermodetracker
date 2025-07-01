@@ -100,7 +100,6 @@ class __TeamFormState extends ConsumerState<_TeamForm> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Form(

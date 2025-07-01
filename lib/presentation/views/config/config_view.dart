@@ -14,7 +14,6 @@ class ConfigView extends ConsumerWidget {
     final appLocalizations = AppLocalizations.of(context)!;
     final themeState = ref.watch(themeNotifierProvider);
     bool shouldShowAds = ref.watch(showAdsProvider);
-    double adsProbability = ref.watch(adsProbabilityProvider);
     bool isDarkMode = themeState.isDarkMode;
     Color selectedColor = themeState.seedColor;
 
