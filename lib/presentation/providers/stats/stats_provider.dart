@@ -42,8 +42,7 @@ class StorageStatsNotifier extends StateNotifier<Map<int, Stats>> {
   }
 
   Future<List<Stats>> getStatsByTeam({required int id}) async {
-    List<Stats> listStats =
-        await statsStorageRepository.getStatsByTournament(id: id);
+    List<Stats> listStats = await statsStorageRepository.getStatsByTeam(id: id);
     final newStats = {for (var stat in listStats) stat.id: stat};
     state = {...state, ...newStats};
 
