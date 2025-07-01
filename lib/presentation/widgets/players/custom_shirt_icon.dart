@@ -33,33 +33,55 @@ class ShirtPainter extends CustomPainter {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 2.0
+      // Estas propiedades hacen que las uniones y los finales de línea sean redondeados,
+      // lo que da un aspecto más suave.
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round;
 
     final path = Path();
 
-    // Dibujar una playera simple
     final width = size.width;
     final height = size.height;
 
-    // Cuerpo de la playera
-    path.moveTo(width * 0.3, height * 0.2); // Cuello izquierdo
-    path.lineTo(width * 0.2, height * 0.3); // Hombro izquierdo
-    path.lineTo(width * 0.2, height * 0.8); // Lado izquierdo
-    path.lineTo(width * 0.8, height * 0.8); // Lado derecho
-    path.lineTo(width * 0.8, height * 0.3); // Hombro derecho
-    path.lineTo(width * 0.7, height * 0.2); // Cuello derecho
-    path.close();
+    // Se dibuja la playera como un único contorno continuo para evitar
+    // que las líneas del cuerpo atraviesen las mangas.
 
-    // Mangas
-    path.moveTo(width * 0.2, height * 0.3);
-    path.lineTo(width * 0.1, height * 0.4);
-    path.lineTo(width * 0.15, height * 0.5);
+    // Empezar en la parte inferior izquierda del cuerpo
+    path.moveTo(width * 0.25, height * 0.8);
+
+    // Lado izquierdo del cuerpo hasta la axila
     path.lineTo(width * 0.25, height * 0.4);
 
-    path.moveTo(width * 0.8, height * 0.3);
-    path.lineTo(width * 0.9, height * 0.4);
-    path.lineTo(width * 0.85, height * 0.5);
-    path.lineTo(width * 0.75, height * 0.4);
+    // Dibujar la manga izquierda desde la axila
+    path.lineTo(
+        width * 0.15, height * 0.5); // Parte inferior externa de la manga
+    path.lineTo(
+        width * 0.1, height * 0.4); // Parte superior externa de la manga
+    path.lineTo(width * 0.2, height * 0.3); // Hombro
+
+    // Dibujar el cuello
+    path.lineTo(width * 0.3, height * 0.2); // Lado izquierdo del cuello
+
+    // Usamos una curva de Bézier para un cuello más natural
+    path.quadraticBezierTo(
+        width * 0.5, height * 0.15, width * 0.7, height * 0.2);
+
+    // Hombro derecho
+    path.lineTo(width * 0.8, height * 0.3);
+
+    // Dibujar la manga derecha
+    path.lineTo(
+        width * 0.9, height * 0.4); // Parte superior externa de la manga
+    path.lineTo(
+        width * 0.85, height * 0.5); // Parte inferior externa de la manga
+    path.lineTo(width * 0.75, height * 0.4); // Axila
+
+    // Lado derecho del cuerpo hasta la parte inferior
+    path.lineTo(width * 0.75, height * 0.8);
+
+    // Cerrar el camino dibujará la línea inferior de la playera
+    path.close();
 
     canvas.drawPath(path, paint);
   }
