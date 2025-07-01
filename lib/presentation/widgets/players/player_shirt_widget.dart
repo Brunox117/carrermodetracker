@@ -13,6 +13,8 @@ class PlayerShirtWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
+    final number = player.number;
+    double positionR = (number.length > 1) ? 69 : 80;
     return SizedBox(
       height: 200,
       width: 200,
@@ -25,7 +27,7 @@ class PlayerShirtWidget extends StatelessWidget {
           ),
           Positioned(
               top: 70,
-              right: 70,
+              right: positionR,
               child: Text(
                 player.number,
                 style: textStyles.displayLarge,
