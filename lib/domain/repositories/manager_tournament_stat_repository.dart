@@ -5,7 +5,8 @@ abstract class ManagerTournamentStatRepository {
   Future<ManagerTournamentStat> saveManagerTournamentStat(
       ManagerTournamentStat managerTournamentStat);
 
-  Future<List<ManagerTournamentStat>> loadNextPage({int limit = 10, offset = 10});
+  Future<List<ManagerTournamentStat>> loadNextPage(
+      {int limit = 10, offset = 10});
 
   Future<ManagerTournamentStat> getManagerTournamentStat(Id id);
 
@@ -18,6 +19,9 @@ abstract class ManagerTournamentStatRepository {
   Future<List<ManagerTournamentStat>> getManagerTournamentStatsByManager(
       {int limit = 10, offset = 10, required Id id});
 
+  Future<List<ManagerTournamentStat>> getManagerTournamentStatsByTeam(
+      {int limit = 10, offset = 10, required Id id});
+
   Future<bool> updateManagerTournamentStats(
       Id id, ManagerTournamentStat managerTournamentStat);
 
@@ -26,5 +30,6 @@ abstract class ManagerTournamentStatRepository {
   Future<ManagerTournamentStat?> getManagerTournamentStatByTripleKey(
       Id managerId, Id tournamentId, Id seasonId);
 
-      Future<List<ManagerTournamentStat>> getManagerTournamentStatsByDoubleKey(Id teamId, Id seasonId);
+  Future<List<ManagerTournamentStat>> getManagerTournamentStatsByDoubleKey(
+      Id teamId, Id seasonId);
 }

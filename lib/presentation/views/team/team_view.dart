@@ -5,6 +5,7 @@ import 'package:carrermodetracker/config/helpers/show_default_dialog.dart';
 import 'package:carrermodetracker/domain/entities/player.dart';
 import 'package:carrermodetracker/domain/entities/stats.dart';
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/best_stats_card.dart';
@@ -74,6 +75,10 @@ class TeamView extends ConsumerWidget {
               .values
               .where((stat) => stat.team.value!.id == team.id)
               .toList();
+          final tournaments =
+              ref.watch(managerTournamentStatsProvider).values.where(
+                    (tournament) => tournament.team.value?.id == team.id,
+                  );
           final topScorers = getTopPlayers(players, statsOfPlayers, 'goals');
           final topAssists = getTopPlayers(players, statsOfPlayers, 'assists');
           final mostPlayed = getTopPlayers(players, statsOfPlayers, 'matches');

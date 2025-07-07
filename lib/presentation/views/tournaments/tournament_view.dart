@@ -91,9 +91,12 @@ class TournamentView extends ConsumerWidget {
                 child: Column(
                   children: [
                     (imageFile == null)
-                        ? const SizedBox()
+                        ? const Icon(
+                            Icons.emoji_events,
+                            size: 180,
+                          )
                         : SizedBox(
-                            height: 200,
+                            height: 180,
                             child: Image.file(
                               imageFile,
                               fit: BoxFit.contain,

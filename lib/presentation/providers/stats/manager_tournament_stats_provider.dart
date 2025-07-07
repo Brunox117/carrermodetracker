@@ -54,6 +54,19 @@ class StorageManagerTournamentStatsNotifier
     return tournamentStatsByDoubleKey;
   }
 
+  Future<List<ManagerTournamentStat>> getManagerTournamentStatByTeam(
+      {required int teamId}) async {
+    final tournamentStatsByTeam = await managerTournamentStatsRepository
+        .getManagerTournamentStatsByTeam(id: teamId);
+    page++;
+    final tempTournamentStatsMap = <int, ManagerTournamentStat>{};
+    for (final tournamentStat in tournamentStatsByTeam) {
+      tempTournamentStatsMap[tournamentStat.id] = tournamentStat;
+    }
+    state = {...state, ...tempTournamentStatsMap};
+    return tournamentStatsByTeam;
+  }
+
   Future<void> addManagerTournamentStat(
       ManagerTournamentStat tournamentStat) async {
     final newTournamentStat = await managerTournamentStatsRepository

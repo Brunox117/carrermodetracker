@@ -145,4 +145,15 @@ class IsarManagerTournamentStatDatasource
         .findAll();
     return result;
   }
+
+  @override
+  Future<List<ManagerTournamentStat>> getManagerTournamentStatsByTeam(
+      {int limit = 10, offset = 10, required Id id}) async {
+    final isar = await db;
+    final managerTournamentStats = await isar.managerTournamentStats
+        .filter()
+        .team((q) => q.idEqualTo(id))
+        .findAll();
+    return managerTournamentStats;
+  }
 }

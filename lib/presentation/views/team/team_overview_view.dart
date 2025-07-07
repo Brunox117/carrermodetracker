@@ -1,4 +1,5 @@
 import 'package:carrermodetracker/presentation/providers/players/players_provider.dart';
+import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/views/team/team_players_overview.dart';
 import 'package:carrermodetracker/presentation/views/team/team_view.dart';
@@ -20,6 +21,9 @@ class _TeamOverviewViewState extends ConsumerState<TeamOverviewView> {
     // TODO: This is a hack to get the players by team to stay up to date, but it is not the best way to do it
     ref.read(playersProvider.notifier).getPlayersByTeam(int.parse(widget.id));
     ref.read(statsProvider.notifier).getStatsByTeam(id: int.parse(widget.id));
+    ref
+        .read(managerTournamentStatsProvider.notifier)
+        .getManagerTournamentStatByTeam(teamId: int.parse(widget.id));
   }
 
   @override

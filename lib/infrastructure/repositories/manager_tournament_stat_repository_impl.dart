@@ -7,8 +7,7 @@ class ManagerTournamentStatRepositoryImpl
     extends ManagerTournamentStatRepository {
   final ManagerTournamentStatDatasource datasource;
 
-  ManagerTournamentStatRepositoryImpl(
-      {required this.datasource});
+  ManagerTournamentStatRepositoryImpl({required this.datasource});
 
   @override
   Future<bool> deleteManagerTournamentStats(Id id) {
@@ -44,30 +43,37 @@ class ManagerTournamentStatRepositoryImpl
   @override
   Future<List<ManagerTournamentStat>> getManagerTournamentStatsByTournament(
       {int limit = 10, offset = 10, required Id id}) {
-    return datasource
-        .getManagerTournamentStatsByTournament(
-            id: id, limit: limit, offset: offset);
+    return datasource.getManagerTournamentStatsByTournament(
+        id: id, limit: limit, offset: offset);
   }
 
   @override
   Future<ManagerTournamentStat> saveManagerTournamentStat(
       ManagerTournamentStat managerTournamentStat) {
-    return datasource
-        .saveManagerTournamentStat(managerTournamentStat);
+    return datasource.saveManagerTournamentStat(managerTournamentStat);
   }
 
   @override
-  Future<bool> updateManagerTournamentStats(Id id, ManagerTournamentStat managerTournamentStat) {
+  Future<bool> updateManagerTournamentStats(
+      Id id, ManagerTournamentStat managerTournamentStat) {
     return datasource.updateManagerTournamentStats(id, managerTournamentStat);
   }
-  
+
   @override
-  Future<List<ManagerTournamentStat>> loadNextPage({int limit = 10, offset = 10}) {
+  Future<List<ManagerTournamentStat>> loadNextPage(
+      {int limit = 10, offset = 10}) {
     return datasource.loadNextPage(limit: limit, offset: offset);
   }
-  
+
   @override
-  Future<List<ManagerTournamentStat>> getManagerTournamentStatsByDoubleKey(Id teamId, Id seasonId) {
+  Future<List<ManagerTournamentStat>> getManagerTournamentStatsByDoubleKey(
+      Id teamId, Id seasonId) {
     return datasource.getManagerTournamentStatsByDoubleKey(teamId, seasonId);
+  }
+
+  @override
+  Future<List<ManagerTournamentStat>> getManagerTournamentStatsByTeam(
+      {int limit = 10, offset = 10, required Id id}) {
+    return datasource.getManagerTournamentStatsByTeam(id: id);
   }
 }
