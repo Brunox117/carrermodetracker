@@ -8,6 +8,7 @@ import 'package:carrermodetracker/presentation/providers/players/players_provide
 import 'package:carrermodetracker/presentation/providers/stats/manager_tournament_stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/stats/stats_provider.dart';
 import 'package:carrermodetracker/presentation/providers/teams/teams_provider.dart';
+import 'package:carrermodetracker/presentation/views/team/team_tournaments_history_card.dart';
 import 'package:carrermodetracker/presentation/widgets/shared/best_stats_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -156,7 +157,7 @@ class TeamView extends ConsumerWidget {
                           fit: BoxFit.contain,
                         ),
                       ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     (topScorers.isEmpty &&
                             topAssists.isEmpty &&
                             mostPlayed.isEmpty)
@@ -204,8 +205,13 @@ class TeamView extends ConsumerWidget {
                             ),
                           ),
                     const SizedBox(
-                      height: 200,
-                    )
+                      height: 10,
+                    ),
+                    TeamTournamentsHistoryCard(
+                        managerTournamentStats: tournaments.toList()),
+                    const SizedBox(
+                      height: 100,
+                    ),
                   ],
                 ),
               ),
