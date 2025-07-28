@@ -1,4 +1,5 @@
 import 'package:carrermodetracker/presentation/widgets/onboarding/feature_card.dart';
+import 'package:carrermodetracker/presentation/widgets/onboarding/onboarding_carousel.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -6,6 +7,26 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> features = [
+      const FeatureCard(
+        icon: Icons.analytics,
+        title: 'Estadísticas Detalladas',
+        description:
+            'Registra y analiza cada aspecto de tu carrera: goles, asistencias, partidos jugados y mucho más.',
+      ),
+      const FeatureCard(
+        icon: Icons.people,
+        title: 'Gestión de Jugadores',
+        description:
+            'Administra tu plantilla completa con perfiles individuales, posiciones y rendimiento detallado.',
+      ),
+      const FeatureCard(
+        icon: Icons.emoji_events,
+        title: 'Seguimiento de Torneos',
+        description:
+            'Monitorea tu progreso en ligas, copas y competiciones internacionales con estadísticas específicas.',
+      ),
+    ];
     return Scaffold(
       body: Stack(
         children: [
@@ -49,36 +70,9 @@ class OnboardingScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 30),
-                    const FeatureCard(
-                      icon: Icons.analytics,
-                      title: 'Estadísticas Detalladas',
-                      description:
-                          'Registra y analiza cada aspecto de tu carrera: goles, asistencias, minutos jugados y mucho más.',
-                    ),
-                    const SizedBox(height: 30),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: Navigate to main app
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color.fromARGB(255, 9, 96, 4),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text(
-                          'Continuar',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
+                    OnboardingCarousel(
+                      carouselWidgets: features,
+                    )
                   ],
                 ),
               ),
