@@ -1,5 +1,6 @@
 import 'package:carrermodetracker/presentation/widgets/onboarding/feature_card.dart';
 import 'package:carrermodetracker/presentation/widgets/onboarding/onboarding_carousel.dart';
+import 'package:carrermodetracker/presentation/widgets/onboarding/dynamic_icons_background.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -30,10 +31,7 @@ class OnboardingScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            height: MediaQuery.of(context).size.height,
-            color: Colors.black87,
-          ),
+          const DynamicIconsBackground(),
           Positioned(
             bottom: 0,
             left: 0,
