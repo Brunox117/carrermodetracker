@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 class OnboardingCarousel extends StatefulWidget {
   final List<Widget> carouselWidgets;
-  const OnboardingCarousel({super.key, required this.carouselWidgets});
+  final void Function() completeOnboarding;
+  const OnboardingCarousel(
+      {super.key,
+      required this.carouselWidgets,
+      required this.completeOnboarding});
 
   @override
   State<OnboardingCarousel> createState() => _OnboardingCarouselState();
@@ -11,6 +15,7 @@ class OnboardingCarousel extends StatefulWidget {
 class _OnboardingCarouselState extends State<OnboardingCarousel> {
   late PageController _pageController;
   int currentPage = 0;
+
   @override
   void initState() {
     super.initState();
@@ -70,7 +75,7 @@ class _OnboardingCarouselState extends State<OnboardingCarousel> {
                   curve: Curves.easeInOut,
                 );
               } else {
-                // TODO: Navigate to main app
+                widget.completeOnboarding();
               }
             },
             style: ElevatedButton.styleFrom(

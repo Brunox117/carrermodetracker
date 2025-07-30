@@ -4,7 +4,8 @@ import 'package:carrermodetracker/presentation/widgets/onboarding/dynamic_icons_
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({super.key});
+  final void Function() completeOnboarding;
+  const OnboardingScreen({super.key, required this.completeOnboarding});
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +70,7 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     OnboardingCarousel(
+                      completeOnboarding: completeOnboarding,
                       carouselWidgets: features,
                     )
                   ],
